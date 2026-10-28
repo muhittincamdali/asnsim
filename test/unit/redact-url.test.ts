@@ -36,6 +36,20 @@ describe('URLs (§8.4)', () => {
     }
   });
 
+  it('#40 cuts a URL with characters the parser drops to scheme and host (SF-ASN-5)', () => {
+    for (const raw of [
+      'http://127.0.0.1:3917/pin/.\t./4831',
+      'https://example.com/pin/.\n./4831',
+      'https://example.com/pin/.\r\n./4831',
+      'https://example.com/to\tken/4831',
+      ' https://example.com/pin/4831',
+      'https://example.com/pin/4831\u0000',
+    ]) {
+      expect(redactUrl(raw), JSON.stringify(raw)).toMatch(/^https?:\/\/[^/]+$/);
+    }
+    expect(redactUrl('http://127.0.0.1:3917/pin/.\t./4831')).toBe('http://127.0.0.1:3917');
+  });
+
   it('#41 cuts a path of more than 64 segments', () => {
     expect(redactUrl(`https://example.com${'/a'.repeat(65)}`)).toBe('https://example.com');
   });
