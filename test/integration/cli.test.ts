@@ -172,7 +172,71 @@ describe('asnsim run', () => {
     });
     expect(result.code).toBe(1);
     expect(result.stdout).toContain('check-failed');
-    expect(result.stdout).toContain('body: does not contain "nothing"');
+    expect(result.stdout.replace(/\s+/g, ' ')).toContain('body: does not contain "nothing"');
+  });
+});
+
+describe('asnsim reports', () => {
+  const secrets = ['SEKRET', 'hunter2', 'SECRET-TOKEN-123', 'alice'];
+
+  it('hide query values, IDs and secrets in the answers, in every format and in -o files', async () => {
+    const backend = await startServer((request, response) => {
+      if (request.method === 'POST') {
+        response.writeHead(400).end('denied password=hunter2 token SECRET-TOKEN-123');
+      } else {
+        response
+          .writeHead(200, { 'content-type': 'application/json' })
+          .end('{"active":false,"token":"SECRET-TOKEN-123","owner":"alice@example.com"}');
+      }
+    });
+    try {
+      const url = `${backend.url}/asn?token=SEKRET`;
+      writeFileSync(
+        join(project, 'redact.yaml'),
+        "steps:\n  - type: TEST\n    expect: { status: 400 }\n    check: { url: '/state/{notificationUUID}?session=SEKRET', json: { active: true } }\n",
+      );
+      for (const format of ['tty', 'text', 'markdown', 'json']) {
+        for (const args of [
+          ['send', 'TEST', '--url', url, '-f', format],
+          ['run', 'redact.yaml', '--url', url, '-f', format],
+          ['run', 'redact.yaml', '--url', url, '-f', format, '-o', `redact.${format}`],
+        ]) {
+          const result = await asnsim(args, { cwd: project, stdoutIsTty: format === 'tty' });
+          const written = args.includes('-o')
+            ? readFileSync(join(project, `redact.${format}`), 'utf8')
+            : '';
+          const report = result.stdout + result.stderr + written;
+          expect(result.code, args.join(' ')).toBe(1);
+          for (const secret of secrets)
+            expect(report, `${args.join(' ')}: ${secret}`).not.toContain(secret);
+          expect(report, args.join(' ')).toContain('/asn?token=[redacted]');
+        }
+      }
+      const json = JSON.parse(
+        (await asnsim(['run', 'redact.yaml', '--url', url, '-f', 'json'], { cwd: project })).stdout,
+      );
+      const [step] = json.steps;
+      expect(json.url).toBe(`${backend.url}/asn?token=[redacted]`);
+      expect(step.attempts[0].body).toBe('denied password=[redacted]');
+      expect(step.check.url).toBe(`${backend.url}/state/:id?session=[redacted]`);
+      // "SECRET-TOKEN-123" names a secret, so its neighbours are hidden too.
+      expect(step.check.body).toBe(
+        '{"active":"[redacted]","token":"[redacted]","owner":"[redacted]"}',
+      );
+      expect(step.check.mismatches).toEqual(['$.active: expected true, got "[redacted]"']);
+      const text = (
+        await asnsim(['send', 'TEST', '--url', url, '-f', 'text', '--expect', '200'], {
+          cwd: project,
+        })
+      ).stdout;
+      expect(text).toContain('answer: denied password=[redacted]');
+      // The requests themselves carry what the reports hide.
+      expect(backend.received.some((request) => request.url.endsWith('?session=SEKRET'))).toBe(
+        true,
+      );
+    } finally {
+      await backend.close();
+    }
   });
 });
 
