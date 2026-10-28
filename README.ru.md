@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ webhook на библиотеке Apple для Node.js (<code>npm run demo</code
 - **Сценарии с проверками.** YAML-файл с шагами, после каждого из которых можно добавить необязательный запрос, проверяющий, что сделал ваш бэкенд: «после `REFUND` запрос `GET /entitlements/{originalTransactionId}` возвращает `active: false`». Девять сценариев встроены.
 - **Правила доставки App Store.** Ответы от 200 до 206 означают успех, всё остальное (включая перенаправления) — неудачную доставку. `--retries` повторно отправляет уведомление без изменений, как это делает production, а `--duplicate` отправляет каждое уведомление дважды, чтобы проверить, что сервер игнорирует повторный `notificationUUID`.
 - **Декодер для настоящих данных.** `asnsim decode` читает тело уведомления, подписанную транзакцию или ответ App Store Server API, декодирует каждый вложенный JWS и проверяет его по Apple Root CA - G3 офлайн, так же, как это делают библиотеки Apple. Он также читает данные StoreKit Testing из Xcode.
-- **Создан для CI.** Отчёты в терминале, в виде текста, Markdown и JSON; код завершения 0 означает успех, 1 — сбой доставки, проверки или верификации, 2 — ошибку использования.
+- **Создан для CI.** Отчёты в терминале, в виде текста, Markdown и JSON; код завершения 0 означает успех, 1 — сбой доставки, проверки или верификации, 2 — ошибку использования. Отчёты скрывают учётные данные в URL, значения query, ID и секреты в ответах webhook ([что именно скрывается](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Быстрый старт
 
@@ -99,8 +99,7 @@ asnsim run trial-renew-refund --url http://localhost:3000/notifications
 | Прочие payload               | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` выводит каждую пару вместе с тем, что она, по словам Apple, означает для доступа. Данные, на которых это построено, лежат в
-[catalog/notifications.json](catalog/notifications.json), и тесты падают, если они расходятся
-со значениями на страницах Apple. [What asnsim sends](docs/guides/notifications.md) перечисляет поля,
+[catalog/notifications.json](catalog/notifications.json), и тесты сравнивают его со значениями, которые были на страницах Apple при чтении 28 октября 2026 года и сохранены копией в тесте; тип или подтип, который Apple добавит позже, сам по себе не обнаружится, а появится, когда эту копию обновят. [What asnsim sends](docs/guides/notifications.md) перечисляет поля,
 которые меняет каждое уведомление, и значения, которые asnsim выбирает там, где страницы Apple их не дают.
 
 ## Использование
@@ -217,7 +216,7 @@ console.log(result.ok, result.counts);
 | Настоящая цепочка Apple (Apple Root CA - G3, WWDR G6, сертификат подписи квитанций 2025 года) проходит проверки цепочки в decode                      | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | Транзакция и данные о продлении из StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) декодируются                                                     | [test/data/xcode](test/data/xcode)                                                                                   |
 
-В наборе 280 тестов (модульные, интеграционные, snapshot и сквозные).
+В наборе 351 тестов в 24 файлах (модульные, интеграционные, snapshot и сквозные); все прошли через `npm test` 28 октября 2026 года на Mac (Apple silicon) с Node.js 26.
 
 ## Демо
 
@@ -314,7 +313,7 @@ console.log(result.ok, result.counts);
 ## Требования
 
 Node.js 22.12 или новее на macOS, Linux или Windows. Больше ничего: ни Xcode, ни аккаунта Apple, ни
-сети, кроме вашего webhook. Для примера на Swift нужен Swift 6.0 или новее.
+сети, кроме вашего webhook. Для примера на Swift нужен Swift 6.4: его Package.resolved фиксирует swift-collections 1.7.5, которому нужен Swift tools 6.4.
 
 ## Архитектура
 

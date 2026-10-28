@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ Apple의 Node.js 라이브러리로 만든 webhook입니다(<code>npm run demo</
 - **검사가 포함된 시나리오.** 단계를 나열한 YAML 파일이며, 각 단계 뒤에 백엔드가 무엇을 했는지 확인하는 요청을 선택적으로 붙일 수 있습니다. 예를 들어 "`REFUND` 뒤에 `GET /entitlements/{originalTransactionId}`가 `active: false`를 반환한다"와 같습니다. 시나리오 9개가 내장되어 있습니다.
 - **App Store의 전송 규칙.** 200~206은 성공이고, 그 밖의 응답(리디렉션 포함)은 전송 실패입니다. `--retries`는 Production처럼 내용을 바꾸지 않고 다시 보내며, `--duplicate`는 각 알림을 두 번 보내 서버가 중복된 `notificationUUID`를 무시하는지 테스트합니다.
 - **실제 데이터를 읽는 디코더.** `asnsim decode`는 알림 본문, 서명된 거래, App Store Server API 응답을 읽어 안에 든 모든 JWS를 디코딩하고, Apple의 라이브러리와 같은 방식으로 오프라인에서 Apple Root CA - G3에 대해 검증합니다. Xcode의 StoreKit Testing 데이터도 읽을 수 있습니다.
-- **CI를 위해 만들었습니다.** 터미널, 텍스트, Markdown, JSON 보고서를 지원하며, 종료 코드 0은 통과, 1은 전송·검사·검증 실패, 2는 사용법 오류입니다.
+- **CI를 위해 만들었습니다.** 터미널, 텍스트, Markdown, JSON 보고서를 지원하며, 종료 코드 0은 통과, 1은 전송·검사·검증 실패, 2는 사용법 오류입니다. 보고서는 URL의 자격 증명, 쿼리 값, ID, webhook 응답 속 비밀 값을 가립니다([가리는 항목](docs/guides/ci.md#what-the-reports-hide)).
 
 ## 빠른 시작
 
@@ -97,7 +97,7 @@ Apple 확장 두 개를 가진 인증서 세 개짜리 체인으로 ES256 서명
 | 기타 페이로드        | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`, Advanced Commerce의 `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types`는 각 쌍을, Apple이 접근 권한 측면에서 그 의미를 어떻게 설명하는지와 함께 출력합니다. 그 바탕이 되는 데이터는
-[catalog/notifications.json](catalog/notifications.json)이며, Apple 페이지의 값과 다르면 테스트가 실패합니다.
+[catalog/notifications.json](catalog/notifications.json)이며, 테스트는 이를 2026년 10월 28일에 읽었을 때 Apple 페이지에 나열된 값(테스트에 사본으로 보관)과 비교합니다. Apple이 나중에 추가한 type이나 subtype은 자동으로 잡히지 않고, 그 사본을 갱신해야 드러납니다.
 [What asnsim sends](docs/guides/notifications.md)에는 각 알림이 바꾸는 필드와, Apple 페이지에 값이 없는 곳에서 asnsim이 고르는 값이 정리되어 있습니다.
 
 ## 사용법
@@ -212,7 +212,7 @@ console.log(result.ok, result.counts);
 | Apple의 실제 체인(Apple Root CA - G3, WWDR G6, 2025년 receipt signing 인증서)이 decode의 체인 검사를 통과                 | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                            |
 | StoreKit Testing(Xcode 27.1, iOS 27.0 Simulator)의 거래와 갱신 정보를 디코딩                                              | [test/data/xcode](test/data/xcode)                                                                              |
 
-테스트 스위트는 테스트 280개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있습니다.
+테스트 스위트는 24개 파일, 테스트 351개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있으며, 2026년 10월 28일 Mac(Apple silicon)에서 Node.js 26으로 `npm test`를 실행해 모두 통과했습니다.
 
 ## 데모
 
@@ -307,7 +307,7 @@ API 레퍼런스와 가이드: [muhittincamdali.github.io/asnsim](https://muhitt
 ## 요구 사항
 
 macOS, Linux, Windows에서 Node.js 22.12 이상. 그 밖에는 필요하지 않습니다. Xcode도, Apple 계정도,
-webhook 외의 네트워크도 필요 없습니다. Swift 예제에는 Swift 6.0 이상이 필요합니다.
+webhook 외의 네트워크도 필요 없습니다. Swift 예제에는 Swift 6.4가 필요합니다. Package.resolved가 고정한 swift-collections 1.7.5가 Swift tools 6.4를 요구하기 때문입니다.
 
 ## 아키텍처
 

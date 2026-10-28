@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ bu, Apple'ın Node.js kütüphanesiyle yazılmış bir webhook'tur (<code>npm ru
 - **Kontrollü senaryolar.** Her biri ardından isteğe bağlı bir istekle backend'inizin ne yaptığını kontrol edebilen adımlardan oluşan bir YAML dosyası: "`REFUND` sonrasında `GET /entitlements/{originalTransactionId}` yanıtı `active: false` olmalı". Dokuz senaryo yerleşik gelir.
 - **App Store'un teslimat kuralları.** 200 ile 206 arası başarıdır; geri kalan her şey (yönlendirmeler dahil) başarısız teslimattır. `--retries` production'daki gibi bildirimi değiştirmeden yeniden gönderir, `--duplicate` ise sunucunuzun tekrarlanan bir `notificationUUID`'yi yok saydığını test etmek için her bildirimi iki kez gönderir.
 - **Gerçeği çözen bir decoder.** `asnsim decode`, bir bildirim gövdesini, imzalı bir işlemi veya bir App Store Server API yanıtını okur, içindeki her JWS'yi çözer ve Apple'ın kütüphaneleri gibi, çevrimdışı olarak Apple Root CA - G3'e karşı doğrular. Xcode'daki StoreKit Testing verisini de okur.
-- **CI için tasarlandı.** Terminal, düz metin, Markdown ve JSON raporları; çıkış kodu 0 başarılı, 1 teslimat, kontrol veya doğrulama hatası, 2 kullanım hatası demektir.
+- **CI için tasarlandı.** Terminal, düz metin, Markdown ve JSON raporları; çıkış kodu 0 başarılı, 1 teslimat, kontrol veya doğrulama hatası, 2 kullanım hatası demektir. Raporlar URL'lerdeki kimlik bilgilerini, query değerlerini, ID'leri ve webhook yanıtlarındaki sırları gizler ([neleri gizlediği](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Hızlı başlangıç
 
@@ -101,8 +101,7 @@ alanlarını içerir.
 | Diğer payload'lar                | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` her çifti, Apple'ın erişim açısından ne anlama geldiğini söylediğiyle birlikte yazdırır. Arkasındaki veri
-[catalog/notifications.json](catalog/notifications.json) dosyasıdır ve Apple'ın sayfalarındaki
-değerlerden farklı olduğunda testler başarısız olur. [What asnsim sends](docs/guides/notifications.md) rehberi,
+[catalog/notifications.json](catalog/notifications.json) dosyasıdır; testler onu, Apple'ın sayfalarının 28 Ekim 2026'da okunduğunda listelediği ve testte bir kopya olarak tutulan değerlerle karşılaştırır. Apple'ın sonradan eklediği bir tür ya da alt tür kendiliğinden yakalanmaz, o kopya güncellendiğinde görünür. [What asnsim sends](docs/guides/notifications.md) rehberi,
 her bildirimin hangi alanları değiştirdiğini ve Apple'ın sayfalarında değer verilmeyen yerlerde asnsim'in hangi değerleri seçtiğini listeler.
 
 ## Kullanım
@@ -218,7 +217,7 @@ console.log(result.ok, result.counts);
 | Apple'ın gerçek zinciri (Apple Root CA - G3, WWDR G6, 2025 receipt signing sertifikası) decode'un zincir kontrollerinden geçer                   | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                  |
 | StoreKit Testing'den (Xcode 27.1, iOS 27.0 Simulator) bir işlem ve yenileme bilgisi çözülür                                                      | [test/data/xcode](test/data/xcode)                                                                                    |
 
-Test paketi 280 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca).
+Test paketi 24 dosyada 351 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
 
 ## Demo
 
@@ -314,7 +313,7 @@ API başvurusu ve rehberler: [muhittincamdali.github.io/asnsim](https://muhittin
 ## Gereksinimler
 
 macOS, Linux veya Windows üzerinde Node.js 22.12 veya üstü. Başka bir şey gerekmez: Xcode yok, Apple hesabı yok,
-webhook'unuz dışında ağ yok. Swift örneği için Swift 6.0 veya üstü gerekir.
+webhook'unuz dışında ağ yok. Swift örneği Swift 6.4 gerektirir: Package.resolved dosyası, Swift tools 6.4 isteyen swift-collections 1.7.5'i sabitler.
 
 ## Mimari
 

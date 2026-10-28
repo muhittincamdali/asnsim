@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ Apple 的 Request a Test Notification 端点只会发送 `TEST` 类型，而它�
 - **带检查的场景。** 一个由步骤组成的 YAML 文件，每一步后面可以跟一个请求，用来检查你的后端做了什么：“`REFUND` 之后，`GET /entitlements/{originalTransactionId}` 返回 `active: false`”。内置九个场景。
 - **App Store 的投递规则。** 200 到 206 为成功，其他任何响应（包括重定向）都算投递失败；`--retries` 像 Production 一样原样重发，`--duplicate` 把每条通知发送两次，用来测试你的服务器是否会忽略重复的 `notificationUUID`。
 - **能解码真实数据的解码器。** `asnsim decode` 可以读取通知正文、已签名的交易或 App Store Server API 的响应，解码其中的每个 JWS，并像 Apple 的库一样离线对照 Apple Root CA - G3 进行验证。它也能读取 Xcode 的 StoreKit Testing 数据。
-- **为 CI 而设计。** 提供终端、纯文本、Markdown 和 JSON 报告；退出码 0 表示通过，1 表示投递、检查或验证失败，2 表示用法错误。
+- **为 CI 而设计。** 提供终端、纯文本、Markdown 和 JSON 报告；退出码 0 表示通过，1 表示投递、检查或验证失败，2 表示用法错误。 报告会隐藏 URL 中的凭据、查询参数的值、ID 以及 webhook 响应中的机密信息（[隐藏哪些内容](docs/guides/ci.md#what-the-reports-hide)）。
 
 ## 快速开始
 
@@ -93,7 +93,7 @@ POST 正文与 App Store 发送的相同：`{"signedPayload": "…"}`。JWS 由�
 | 其他载荷         | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`；Advanced Commerce 的 `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` 会打印每一对类型，以及 Apple 对它在访问权限方面含义的说明。背后的数据是
-[catalog/notifications.json](catalog/notifications.json)，一旦它与 Apple 页面上的值不一致，测试就会失败。
+[catalog/notifications.json](catalog/notifications.json)，测试会把它与 2026 年 10 月 28 日读取时 Apple 页面列出的值（作为副本保存在测试中）进行比较；Apple 之后新增的类型或子类型不会被自动发现，要等这份副本更新后才会体现。
 [What asnsim sends](docs/guides/notifications.md) 列出了每条通知会改动哪些字段，以及在 Apple 页面没有给出取值的地方 asnsim 选择了哪些值。
 
 ## 使用方法
@@ -203,7 +203,7 @@ console.log(result.ok, result.counts);
 | Apple 的真实证书链（Apple Root CA - G3、WWDR G6、2025 年 receipt signing 证书）通过 decode 的证书链检查                     | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                      |
 | 来自 StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）的一笔交易和续订信息可以解码                                         | [test/data/xcode](test/data/xcode)                                                                                        |
 
-测试套件共有 280 个测试（单元、集成、快照和端到端）。
+测试套件共有 24 个文件、351 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
 
 ## 演示
 
@@ -287,7 +287,7 @@ API 参考与指南：[muhittincamdali.github.io/asnsim](https://muhittincamdali
 
 ## 系统要求
 
-macOS、Linux 或 Windows 上的 Node.js 22.12 或更高版本。无需其他任何东西：不需要 Xcode，不需要 Apple 账号，除你的 webhook 之外也不需要网络。Swift 示例需要 Swift 6.0 或更高版本。
+macOS、Linux 或 Windows 上的 Node.js 22.12 或更高版本。无需其他任何东西：不需要 Xcode，不需要 Apple 账号，除你的 webhook 之外也不需要网络。Swift 示例需要 Swift 6.4：它的 Package.resolved 锁定了 swift-collections 1.7.5，而该版本需要 Swift tools 6.4。
 
 ## 架构
 

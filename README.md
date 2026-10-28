@@ -54,7 +54,8 @@ a webhook on Apple's Node.js library (<code>npm run demo</code>).</sub>
   or an App Store Server API response, decodes every JWS inside and checks it against Apple Root
   CA - G3 the way Apple's libraries do, offline. It reads StoreKit Testing data from Xcode too.
 - **Made for CI.** Terminal, text, Markdown and JSON reports; exit code 0 passed, 1 a delivery,
-  check or verification failed, 2 usage error.
+  check or verification failed, 2 usage error. Reports hide URL credentials, query values, IDs and
+  secrets in webhook answers ([what they hide](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Quick start
 
@@ -116,8 +117,9 @@ and [JWSRenewalInfoDecodedPayload](https://developer.apple.com/documentation/app
 | Other payloads             | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE`     |
 
 `asnsim types` prints each pair with what Apple says it means for access. The data behind it is
-[catalog/notifications.json](catalog/notifications.json), and the tests fail when it differs from
-the values on Apple's pages. [What asnsim sends](docs/guides/notifications.md) lists the fields
+[catalog/notifications.json](catalog/notifications.json), and the tests compare it with the values
+Apple's pages listed when they were read on 28 October 2026, kept as a copy in the test; a type or
+subtype Apple adds later shows up once that copy is updated, not on its own. [What asnsim sends](docs/guides/notifications.md) lists the fields
 each notification changes, and which values asnsim chooses where Apple's pages give none.
 
 ## Usage
@@ -234,7 +236,8 @@ console.log(result.ok, result.counts);
 | Apple's real chain (Apple Root CA - G3, WWDR G6, the 2025 receipt signing certificate) passes decode's chain checks | [test/unit/verify.test.ts](test/unit/verify.test.ts)                          |
 | A transaction and renewal info from StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) decode          | [test/data/xcode](test/data/xcode)                                          |
 
-The suite has 280 tests (unit, integration, snapshot and end-to-end).
+The suite has 351 tests in 24 files (unit, integration, snapshot and end-to-end), all passing with
+`npm test` on 28 October 2026 on a Mac (Apple silicon) with Node.js 26.
 
 ## Demo
 
@@ -331,7 +334,8 @@ Read on 28 October 2026:
 ## Requirements
 
 Node.js 22.12 or later on macOS, Linux or Windows. Nothing else: no Xcode, no Apple account, no
-network beyond your webhook. The Swift example needs Swift 6.0 or later.
+network beyond your webhook. The Swift example needs Swift 6.4: its
+Package.resolved pins swift-collections 1.7.5, which needs Swift tools 6.4.
 
 ## Architecture
 

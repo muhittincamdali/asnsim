@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ um webhook criado com a biblioteca Node.js da Apple (<code>npm run demo</code>).
 - **Cenários com verificações.** Um arquivo YAML de etapas, cada uma seguida por uma requisição opcional que verifica o que o seu backend fez: “depois de `REFUND`, `GET /entitlements/{originalTransactionId}` responde `active: false`”. Nove cenários já vêm incluídos.
 - **As regras de entrega da App Store.** De 200 a 206 é sucesso; qualquer outra resposta (inclusive redirecionamentos) é uma entrega com falha. `--retries` reenvia sem alterações, como a produção faz, e `--duplicate` envia cada notificação duas vezes para testar se o seu servidor ignora um `notificationUUID` repetido.
 - **Um decodificador para o material real.** `asnsim decode` lê o corpo de uma notificação, uma transação assinada ou uma resposta da App Store Server API, decodifica cada JWS que houver nela e a verifica contra a Apple Root CA - G3 como as bibliotecas da Apple fazem, sem rede. Ele também lê os dados do StoreKit Testing do Xcode.
-- **Feito para CI.** Relatórios para terminal, texto, Markdown e JSON; código de saída 0 se tudo passou, 1 se uma entrega, verificação ou checagem falhou, 2 em caso de erro de uso.
+- **Feito para CI.** Relatórios para terminal, texto, Markdown e JSON; código de saída 0 se tudo passou, 1 se uma entrega, verificação ou checagem falhou, 2 em caso de erro de uso. Os relatórios ocultam credenciais de URLs, valores da query, IDs e segredos nas respostas do webhook ([o que ocultam](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Início rápido
 
@@ -100,8 +100,7 @@ e [JWSRenewalInfoDecodedPayload](https://developer.apple.com/documentation/appst
 | Outros payloads               | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` imprime cada par com o que a Apple diz que ele significa para o acesso. Os dados por trás disso estão em
-[catalog/notifications.json](catalog/notifications.json), e os testes falham quando eles diferem dos
-valores das páginas da Apple. [What asnsim sends](docs/guides/notifications.md) lista os campos
+[catalog/notifications.json](catalog/notifications.json), e os testes o comparam com os valores que as páginas da Apple listavam quando foram lidas em 28 de outubro de 2026, guardados como cópia no teste; um tipo ou subtipo que a Apple adicionar depois não é detectado sozinho, aparece quando essa cópia é atualizada. [What asnsim sends](docs/guides/notifications.md) lista os campos
 que cada notificação altera e quais valores o asnsim escolhe onde as páginas da Apple não dão nenhum.
 
 ## Uso
@@ -218,7 +217,7 @@ console.log(result.ok, result.counts);
 | A cadeia real da Apple (Apple Root CA - G3, WWDR G6, o certificado de assinatura de recibos de 2025) passa nas verificações de cadeia do decode                           | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                          |
 | Uma transação e as informações de renovação do StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) são decodificadas                                                        | [test/data/xcode](test/data/xcode)                                                                                            |
 
-A suíte tem 280 testes (unitários, de integração, de snapshot e de ponta a ponta).
+A suíte tem 351 testes em 24 arquivos (unitários, de integração, de snapshot e de ponta a ponta); todos passaram com `npm test` em 28 de outubro de 2026 em um Mac (Apple silicon) com Node.js 26.
 
 ## Demonstração
 
@@ -315,7 +314,7 @@ Consultadas em 28 de outubro de 2026:
 ## Requisitos
 
 Node.js 22.12 ou posterior em macOS, Linux ou Windows. Nada além disso: sem Xcode, sem conta Apple, sem
-rede além do seu webhook. O exemplo em Swift precisa de Swift 6.0 ou posterior.
+rede além do seu webhook. O exemplo em Swift precisa de Swift 6.4: o Package.resolved dele fixa o swift-collections 1.7.5, que exige Swift tools 6.4.
 
 ## Arquitetura
 
