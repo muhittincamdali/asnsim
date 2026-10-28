@@ -7,6 +7,25 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 
 ## [Unreleased]
 
+### Security
+
+- Names held as values are read without every character that shows nothing: Hangul fillers
+  (U+3164, U+115F, U+1160, U+FFA0), the braille blank, combining marks, the combining grapheme
+  joiner and variation selectors, as well as controls and format characters, and with their
+  letters joined. `{"OptionName":"pa\u3164ss","OptionValue":"x"}` showed the value.
+- Free text is cut right after a secret's name glued to its value (`password/x`, `token-x`,
+  `sid.x`, `path=/v1/pin/x`, `GET /reset/password/x 200`); the whole word was shown before.
+- An allowed key's value with a further `:` or `=` (`count=12:30 x`), a card number that starts
+  as a key's value (`status=4111 1111 1111 1111`), a URL wrapped after its closing punctuation and
+  the key after an OpenSSH key type are hidden in free text.
+- A JSON answer that names a member twice or holds a lone UTF-16 surrogate is omitted from reports:
+  `{"label":"Password","label":"Status","value":"x"}` parsed as a status label and showed `x`. A
+  byte order mark makes an answer free text.
+
+### Tests
+
+- The shared review corpus of the author's redaction rules (7,866 probes) runs with the suite.
+
 ## [0.1.1] - 2026-10-28
 
 ### Security

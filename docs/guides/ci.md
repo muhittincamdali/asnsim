@@ -64,9 +64,19 @@ changed.
 
 Text is cut at the first word that may hold or name a secret: anything outside printable ASCII,
 quotes, markup, escapes, `@`, a key other than `status`, `method`, `path`, `duration_ms` and
-`count`, a secret's name, or a value that looks like a card number, JWT or long token. That hides
-more than strictly needed (a Turkish error message is cut at its first `ş`); it is meant to.
+`count`, a secret's name, or a value that looks like a card number, JWT or long token. A name
+glued to its value is cut right after the name: `password/x` and `token-x` show as
+`password[redacted]` and `token[redacted]`, `path=/v1/pin/x` as `path=/v1/pin[redacted]`. That
+hides more than strictly needed (a Turkish error message is cut at its first `ş`); it is meant to.
+A JSON answer that names a member twice, or holds half of a UTF-16 pair, is left out of the report
+(`[body omitted: …]`), since parsing it would drop or change a member.
 A URL with a user name or password is refused before anything is sent.
+
+The rules are tested against the review corpus the author's packages share (7,866 probes): every
+probe whose secret the rules say is hidden hides it, except two that free text cannot tell apart,
+a value written before its name (`ssh-keygen -N x passphrase`) and the value of `status=`, and two
+JSON answers that the reference package hides only for their content type (asnsim reads an answer
+as JSON whatever its content type).
 
 ## Without a running backend
 
