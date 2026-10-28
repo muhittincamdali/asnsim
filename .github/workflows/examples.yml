@@ -3,6 +3,10 @@ name: Examples
 # Verifies the notifications asnsim writes with Apple's App Store Server Library for Swift
 # (examples/swift-verifier): all 40 notification types, written with --dry-run and checked by
 # SignedDataVerifier with the test root. The Node.js receiver runs in the CI tests.
+#
+# The example's Package.resolved pins swift-collections 1.7.5, whose manifest needs Swift tools
+# 6.4, so the job runs on the Xcode 27 image (Swift 6.4), the toolchain the example was resolved
+# and checked with; macos-15 has Swift 6.1.
 
 on:
   push:
@@ -29,7 +33,7 @@ concurrency:
 jobs:
   swift-verifier:
     name: Swift library verifies every type
-    runs-on: macos-15
+    runs-on: xcode-27
     timeout-minutes: 30
     permissions:
       contents: read
