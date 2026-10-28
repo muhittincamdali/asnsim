@@ -3,9 +3,11 @@ import type { Server } from 'node:http';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DEMOS, mediaPath, prepare, record } from '../../scripts/demo.ts';
 import { parseAnsi, terminalSvg } from '../../scripts/terminal-svg.ts';
+import { stableTimes } from '../helpers/cli.js';
 
-// Request times change from run to run; the demos are compared with them masked.
-const stable = (svg: string) => svg.replace(/\b\d+ ms\b/g, 'N ms');
+// Request times change from run to run; the demos are compared with them masked, the time
+// column keeping its width (see stableTimes).
+const stable = (svg: string) => stableTimes(svg);
 
 describe('parseAnsi', () => {
   it('splits a line into styled spans', () => {
