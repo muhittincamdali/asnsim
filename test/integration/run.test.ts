@@ -360,4 +360,51 @@ describe('check URLs', () => {
     expect(webhook.received).toHaveLength(0);
     expect(other.received).toHaveLength(0);
   });
+
+  it('start with a single /: a template that is not a path is refused before sending', async () => {
+    const webhook = await server(reply(200, '{}'));
+    for (const url of [
+      '{originalTransactionId}//127.0.0.1:1/steal',
+      'state',
+      '//{bundleId}/p',
+      '/\\example.org/x',
+    ]) {
+      const scenario = parseScenario({ steps: [{ type: 'TEST', check: { url } }] }, 'p');
+      await expect(runScenario(scenario, { workspace, url: `${webhook.url}/asn` })).rejects.toThrow(
+        /steps\[0\]\.check\.url: .*(does not start with a single \/|is another)/,
+      );
+      await expect(runScenario(scenario, { workspace, dryRun: true })).rejects.toThrow(
+        'does not start with a single /',
+      );
+    }
+    expect(webhook.received).toHaveLength(0);
+  });
+
+  it('are tested again once filled in: a value that leaves the origin stops the run', async () => {
+    const webhook = await server(reply(200, '{}'));
+    const other = await server(reply(200, '{}'));
+    const host = new URL(other.url).host;
+    const scenario = parseScenario(
+      {
+        steps: [
+          {
+            type: 'SUBSCRIBED',
+            subtype: 'INITIAL_BUY',
+            set: { transaction: { originalTransactionId: '' } },
+            check: { url: `/{originalTransactionId}/${host}/steal` },
+          },
+        ],
+      },
+      'f',
+    );
+    await expect(
+      runScenario(scenario, {
+        workspace,
+        url: `${webhook.url}/asn`,
+        headers: { authorization: 'Bearer secret' },
+      }),
+    ).rejects.toThrow(`goes to ${other.url}, not the webhook's origin ${webhook.url}`);
+    expect(webhook.received).toHaveLength(1);
+    expect(other.received).toHaveLength(0);
+  });
 });
