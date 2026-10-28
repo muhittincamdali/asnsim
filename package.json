@@ -1,6 +1,6 @@
 {
   "name": "@mcamdali/asnsim",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simulates App Store Server Notifications V2 on your machine: signed refund, renewal, billing retry and grace period notifications posted to your webhook, from a local test certificate chain.",
   "keywords": [
     "app-store",

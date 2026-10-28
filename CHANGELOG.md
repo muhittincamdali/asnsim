@@ -7,6 +7,8 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-28
+
 ### Security
 
 - `decode` no longer skips verification because a payload says `"environment": "Xcode"`: a
@@ -71,5 +73,6 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 - A JavaScript API (`@mcamdali/asnsim`), a TypeDoc site with six guides, examples for Node.js,
   Swift, GitHub Actions and the shell, and terminal demos recorded from the CLI.
 
-[Unreleased]: https://github.com/muhittincamdali/asnsim/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/muhittincamdali/asnsim/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/muhittincamdali/asnsim/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0
