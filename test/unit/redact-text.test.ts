@@ -365,3 +365,41 @@ describe('detectors (§8.3)', () => {
     );
   });
 });
+
+describe('the free text leaks of the shared review corpus (§8 #65)', () => {
+  const text: [string, string][] = [
+    // A secret's name glued to its value is cut right after the name.
+    ['password/Vq091Lm8x', `password${R}`],
+    ['password.Vq107Lm8x', `password${R}`],
+    ['password,Vq412Lm8x', `password${R}`],
+    ['password(Vq416Lm8x)', `password${R}`],
+    ['token-Qx166Np7v', `token${R}`],
+    ['token_Qx165Np7v', `token${R}`],
+    ["token'Qx161Np7v", `token${R}`],
+    ['sid.Qz427Wk7r', `sid${R}`],
+    ['pin-Qz428Wk7r', `pin${R}`],
+    ['p_w Qx495Np7v', `p_w ${R}`],
+    ['to ken/Qx1Np7v', `to ken${R}`],
+    // ... also in a path, the value of an allowed key included.
+    ['path=/v1/pin/Vq125Lm8x', `path=/v1/pin${R}`],
+    ['GET /reset/password/Qn610Rt7w 200', `GET /reset/password${R}`],
+    ['GET /api/v1/token/Qz340Wk7r/info 200', `GET /api/v1/token${R}`],
+    ['status=200 path=/v1/api-keys/Qx429Np7v', `status=200 path=/v1/api-keys${R}`],
+    // A name with nothing after it in its word is kept whole, as before.
+    ['enter password, then hunter2', `enter password, ${R}`],
+    // An allowed key holds one plain value.
+    ['count=12:30 Qx31Sec', `count=${R}`],
+    ['status=200 count=3', 'status=200 count=3'],
+    // A card number that starts as the value of a key.
+    ['status=4111 1111 1111 1111', `status=${R}`],
+    ['count=4242 4242 4242 4242', `count=${R}`],
+    // A URL that ends in punctuation and a line break may go on, wrapped.
+    ['see https://x.example/a/b.\nQx283Np7v', `see ${R}`],
+    ['see https://x.example/a. Next', 'see https://x.example/a. Next'],
+    // What follows an OpenSSH key type is a key.
+    ['ssh-rsa AAAAB3NzaC1yc2E Jx384Pb8n bob@host', `ssh-rsa ${R}`],
+  ];
+  for (const [input, expected] of text) {
+    it(`reads ${JSON.stringify(input)}`, () => expect(redactText(input)).toBe(expected));
+  }
+});

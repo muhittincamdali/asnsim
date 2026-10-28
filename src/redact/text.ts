@@ -58,6 +58,8 @@ function readKey(word: string, at: number, parenthesesOk: boolean): Reading {
   const rest = word.slice(at + separator.length);
   if (!isPlainName(key)) return cutAt(0);
   if (!TEXT_KEYS.has(key) || namesSecret(words(key))) return cutAt(at + separator.length);
+  // An allowed key holds one plain value: "count=12:30" may be a key and its value in turn.
+  if (/[:=]/.test(rest)) return cutAt(at + separator.length);
   const value = readWord(rest, parenthesesOk);
   if (value.cut) return cutAt(at + separator.length + value.keep);
   return whole(`${key}${separator}${value.text}`);
@@ -92,8 +94,44 @@ function cutAfterWord(shown: string, rest: string): string {
 // Digit groups are read as one number across this much white space, line breaks included, and
 // across `.` `,` `/` `-` written between them, as card numbers are written and wrapped.
 const MAX_DIGIT_GAP = 8;
-const isDigitGroup = (word: string) => /^[\d.,/-]+$/.test(word) && /\d/.test(word);
+const DIGITS = /^[\d.,/-]*\d[\d.,/-]*$/;
 const isDigitSeparator = (word: string) => /^[.,/-]{1,3}$/.test(word);
+
+/** Where a word's digit group starts, as a number or as the value of a key ("count=4242"), or -1. */
+function digitGroupStart(word: string): number {
+  if (DIGITS.test(word)) return 0;
+  const separator = word.search(/[:=][^:=]*$/);
+  return separator >= 0 && DIGITS.test(word.slice(separator + 1)) ? separator + 1 : -1;
+}
+
+/** Whether text, after `previous` (the words before it on the line), names a secret. */
+function namesSecretAfter(text: string, previous: string[]): boolean {
+  const parts = words(text);
+  const across = previous.length > 0 && parts.length > 0 ? [`${previous.at(-1)}${parts[0]}`] : [];
+  // Also with its letters and digits joined, so "p_w" and "s.id" name one.
+  return namesSecret(parts) || namesSecret([parts.join('')]) || namesSecret(across);
+}
+
+/**
+ * Where the first secret's name in a word ends, or -1: "password/x" and "path=/v1/pin/x" end
+ * before their value, "password," at the end of the word.
+ */
+function secretNameEnd(word: string, previous: string[]): number {
+  if (SSH_KEY_TYPE.test(word)) return word.length;
+  for (const match of word.matchAll(/[A-Za-z0-9]+/g)) {
+    const end = match.index + match[0].length;
+    if (!namesSecretAfter(word.slice(0, end), previous)) continue;
+    return /[A-Za-z0-9]/.test(word.slice(end)) ? end : word.length;
+  }
+  return -1;
+}
+
+// The key types of an OpenSSH key line ("ssh-rsa AAAA… comment"): what follows is a key.
+const SSH_KEY_TYPE =
+  /^(ssh-(rsa|dss|ed25519|ed448)|ecdsa-sha2-[a-z0-9]+|sk-[a-z0-9-]+@openssh\.com)$/i;
+
+// A URL that ends in punctuation and a line break may go on on the next line, wrapped.
+const WRAPPED_URL = /:\/\/.*[.,!)]$/;
 
 /** `text` with everything from its first possible secret on replaced by one [redacted]. */
 export function redactText(text: string): string {
@@ -113,14 +151,20 @@ export function redactText(text: string): string {
     const before = out + gap;
     if (!sameLine) previous = [];
     const pending = digits.count > 0 && near ? digits.start : undefined;
-    if (isDigitGroup(word)) {
-      if (pending === undefined) digits = { count: 0, start: before.length };
+    const groupStart = digitGroupStart(word);
+    if (groupStart === 0 && pending !== undefined) {
       digits.count += word.replace(/\D/g, '').length;
-      if (digits.count >= 13) return `${before.slice(0, digits.start)}${REDACTED}`;
+    } else if (groupStart >= 0) {
+      digits = {
+        count: word.slice(groupStart).replace(/\D/g, '').length,
+        start: before.length + groupStart,
+      };
     } else if (!(isDigitSeparator(word) && pending !== undefined)) {
       digits = { count: 0, start: 0 };
     }
-    const reading = readWord(word, parenthesesOk);
+    if (digits.count >= 13) return `${before.slice(0, digits.start)}${REDACTED}`;
+    const wrapped = WRAPPED_URL.test(word) && /^[\r\n]/.test(text.slice(last));
+    const reading = wrapped ? cutAt(0) : readWord(word, parenthesesOk);
     if (reading.cut) {
       // A number that runs on into the cut is hidden from its start (D11).
       if (reading.keep === 0 && pending !== undefined && /^\d/.test(word)) {
@@ -130,12 +174,13 @@ export function redactText(text: string): string {
         ? cutAfterWord(before + word, text.slice(last))
         : `${before}${word.slice(0, reading.keep)}${REDACTED}`;
     }
+    // A secret's name, alone, split over two words ("to ken") or glued to its value
+    // ("token/x"): the text after the name is hidden.
+    const nameEnd = secretNameEnd(word, previous);
+    if (nameEnd === word.length) return cutAfterWord(before + reading.text, text.slice(last));
+    if (nameEnd >= 0) return `${before}${word.slice(0, nameEnd)}${REDACTED}`;
     out = before + reading.text;
-    // A secret's name, alone or split over two words ("to ken"): the text after it is hidden.
-    const parts = words(word);
-    const across = previous.length > 0 && parts.length > 0 ? [`${previous.at(-1)}${parts[0]}`] : [];
-    if (namesSecret(parts) || namesSecret(across)) return cutAfterWord(out, text.slice(last));
-    previous = parts;
+    previous = words(word);
   }
   return out + text.slice(last);
 }
