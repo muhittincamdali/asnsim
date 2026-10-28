@@ -10,6 +10,10 @@ const chain = createTestChain();
 const roots = [{ label: 'asnsim test root', der: chain.root }];
 const xcode = (name: string) =>
   readFileSync(new URL(`../data/xcode/${name}`, import.meta.url), 'utf8').trim();
+const base64url = (text: string) => Buffer.from(text).toString('base64url');
+/** An unsigned JWS whose payload is `payload`, as written. */
+const jwsOf = (payload: string) =>
+  `${base64url(JSON.stringify({ alg: 'ES256', x5c: [] }))}.${base64url(payload)}.c2ln`;
 const signed = (type: string, subtype?: string | null) =>
   signParts(standalone(type, subtype, simulation({ start: new Date() })).last, chain).signedPayload;
 
@@ -126,11 +130,8 @@ describe('decode', () => {
 
   it('reports a JWS it does not decode, wherever it is, as a problem', () => {
     const keys = [chain.signing, chain.intermediate, chain.root];
-    const deep = signJws(
-      JSON.parse(`${'['.repeat(5000)}${']'.repeat(5000)}`),
-      chain.signingKey,
-      keys,
-    );
+    // Written as text: JSON.stringify of an array 5,000 levels deep overflows the stack on Linux.
+    const deep = jwsOf(`${'['.repeat(5000)}${']'.repeat(5000)}`);
     const token = signJws(
       {
         notificationType: 'TEST',
