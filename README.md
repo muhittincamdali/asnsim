@@ -142,7 +142,7 @@ asnsim scenarios   list the built-in scenarios
 | `--retries <n>`          | Resend a failed notification unchanged, up to 5 times                                |
 | `--duplicate`            | Send every notification twice                                                        |
 | `--timeout <ms>`         | Time limit per request, default 10000                                                |
-| `-H, --header <header>`  | Extra request header, repeatable; sent to the webhook's host only                     |
+| `-H, --header <header>`  | Extra request header for the webhook and its checks, repeatable                      |
 | `--out <folder>`         | Also write each request body to a file                                               |
 | `--dry-run`              | Sign and write, send nothing                                                         |
 | `-f, --format <format>`  | `tty` (default), `text`, `markdown` or `json`; `--json` is short for the last        |

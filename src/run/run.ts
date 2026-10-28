@@ -141,6 +141,28 @@ function checkPlaceholders(template: string, index: number): void {
   }
 }
 
+/**
+ * A check may only go to the webhook's own origin (scheme, host and port). A scenario file can
+ * come from someone else; without this rule it could make asnsim request any host, with the
+ * --header values meant for the webhook.
+ */
+function checkTarget(template: string, index: number, options: RunOptions): void {
+  checkPlaceholders(template, index);
+  if (options.dryRun || !options.url) return;
+  const webhook = new URL(options.url);
+  let target: URL;
+  try {
+    target = new URL(template.replace(/\{[A-Za-z]+\}/g, 'x'), webhook);
+  } catch {
+    throw new ScenarioError(`steps[${index}].check.url: ${template} is not a URL.`);
+  }
+  if (target.origin !== webhook.origin) {
+    throw new ScenarioError(
+      `steps[${index}].check.url: a check goes to the webhook's origin, ${webhook.origin}; ${target.protocol === 'http:' || target.protocol === 'https:' ? target.origin : target.protocol} is another. Use a path such as /entitlements/{originalTransactionId}.`,
+    );
+  }
+}
+
 function fillTemplate(template: string, values: Record<string, string | undefined>, index: number) {
   checkPlaceholders(template, index);
   return template.replace(/\{([A-Za-z]+)\}/g, (_match, name: string) => {
@@ -159,15 +181,12 @@ async function runCheck(
   index: number,
   options: RunOptions,
 ): Promise<CheckResult> {
-  const target = new URL(fillTemplate(check.url, values, index), base);
-  const url = target.toString();
-  // --header values are often credentials for the webhook's host: a check on another host, which
-  // a scenario file can name, does not get them.
-  const sameOrigin = base !== undefined && target.origin === new URL(base).origin;
+  // checkTarget() has made sure the URL is on the webhook's origin.
+  const url = new URL(fillTemplate(check.url, values, index), base).toString();
   const answer = await request(url, {
     method: check.method,
     timeoutMs: options.timeoutMs ?? 10_000,
-    ...(options.headers && sameOrigin ? { headers: options.headers } : {}),
+    ...(options.headers ? { headers: options.headers } : {}),
     ...(options.fetch ? { fetch: options.fetch } : {}),
   });
   const mismatches: string[] = [];
@@ -434,9 +453,9 @@ export async function runScenario(scenario: Scenario, options: RunOptions): Prom
     ...(seed ? { seed } : {}),
     ...(scenario.appAccountToken ? { appAccountToken: scenario.appAccountToken } : {}),
   });
-  // Placeholders are checked before anything is sent.
+  // Check URLs are checked before anything is sent.
   scenario.steps.forEach((step, index) => {
-    if (step.check) checkPlaceholders(step.check.url, index);
+    if (step.check) checkTarget(step.check.url, index, options);
   });
   const steps: StepResult[] = [];
   await execute(
