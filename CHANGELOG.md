@@ -22,6 +22,11 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
   `{"label":"Password","label":"Status","value":"x"}` parsed as a status label and showed `x`. A
   byte order mark makes an answer free text.
 
+### Fixed
+
+- `decode` reads a file, standard input and `--root` files as a stream and stops at the first
+  byte past 2 MB (exit 2): `asnsim decode /dev/zero` used to read until memory ran out.
+
 ### Tests
 
 - The shared review corpus of the author's redaction rules (7,866 probes) runs with the suite.
