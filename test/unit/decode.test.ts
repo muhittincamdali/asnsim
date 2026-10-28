@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decode, DecodeError, findToken } from '../../src/decode/decode.js';
+import { renderDecode } from '../../src/report/decode.js';
 import { signJws } from '../../src/jws/jws.js';
 import { createTestChain } from '../../src/pki/chain.js';
 import { signParts } from '../../src/sim/payloads.js';
@@ -157,6 +158,25 @@ describe('decode', () => {
     ]);
     // A JWS the reader decodes is not one.
     expect(decode(signed('REFUND'), { roots }).problems).toEqual([]);
+  });
+
+  it('leaves out a payload nested more than 64 levels deep, in every report format', () => {
+    const deep = jwsOf(`${'['.repeat(100_000)}${']'.repeat(100_000)}`);
+    const outer = jwsOf(
+      JSON.stringify({ notificationType: 'TEST', data: { signedTransactionInfo: deep } }),
+    );
+    const result = decode(outer, { verify: false });
+    expect(result.parts.map((part) => part.path)).toEqual(['jws', 'data.signedTransactionInfo']);
+    expect(result.parts[1]?.payload).toBe('[payload nested more than 64 levels deep, not shown]');
+    expect(result.problems).toEqual([
+      expect.objectContaining({ path: 'data.signedTransactionInfo', code: 'deep-payload' }),
+    ]);
+    for (const format of ['tty', 'text', 'markdown', 'json'] as const) {
+      expect(renderDecode(result, format)).toContain('deep-payload');
+    }
+    // 64 levels are still shown.
+    const shallow = jwsOf(`${'['.repeat(64)}${']'.repeat(64)}`);
+    expect(decode(shallow, { verify: false }).problems).toEqual([]);
   });
 
   it('lists at most five unread JWS by path', () => {

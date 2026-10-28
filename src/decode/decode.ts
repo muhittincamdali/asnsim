@@ -22,7 +22,7 @@ export type PartKind =
   'notification' | 'transaction' | 'renewalInfo' | 'appTransaction' | 'unknown';
 
 export type DecodeProblemCode =
-  ProblemCode | 'bundle-id-mismatch' | 'environment-mismatch' | 'unread-jws';
+  ProblemCode | 'bundle-id-mismatch' | 'environment-mismatch' | 'unread-jws' | 'deep-payload';
 
 export interface DecodeProblem {
   /** Which JWS: "signedPayload", "data.signedTransactionInfo", … */
@@ -90,6 +90,8 @@ const FIXES: Record<DecodeProblemCode, string> = {
     'The data is for another app: check --bundle-id, or where the data came from.',
   'environment-mismatch':
     'The data is from another environment: Sandbox and Production data need separate handling.',
+  'deep-payload':
+    'App Store payloads are a few levels deep, so this one was not made by the App Store. Do not trust its content.',
   'unread-jws':
     'App Store data holds signed values only in those fields. Decode each value on its own with asnsim decode, and check where this payload came from before trusting it.',
 };
@@ -111,6 +113,21 @@ const API_FIELDS = [
 
 const MAX_INPUT = 2_000_000;
 const LISTED_UNREAD = 5;
+// App Store payloads are three or four levels deep; a deeper one is shown as a note instead, so
+// no report has to print (and JSON.stringify) arrays nested thousands of levels deep.
+const MAX_PAYLOAD_DEPTH = 64;
+
+/** Whether `value` holds arrays or objects nested more than `limit` levels deep. */
+function deeperThan(value: unknown, limit: number): boolean {
+  const stack: [unknown, number][] = [[value, 0]];
+  while (stack.length > 0) {
+    const [item, depth] = stack.pop() as [unknown, number];
+    if (typeof item !== 'object' || item === null) continue;
+    if (depth >= limit) return true;
+    for (const child of Object.values(item)) stack.push([child, depth + 1]);
+  }
+  return false;
+}
 
 /** A string the reports show as a nested JWS: a JSON header ("ey…") and three parts. */
 export const NESTED_JWS = /^ey[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*$/;
@@ -233,7 +250,18 @@ export function decode(input: string, options: DecodeOptions = {}): DecodeResult
       }
       throw new DecodeError((error as Error).message);
     }
-    const payload = decoded.payload;
+    const tooDeep = deeperThan(decoded.payload, MAX_PAYLOAD_DEPTH);
+    const payload = tooDeep
+      ? `[payload nested more than ${MAX_PAYLOAD_DEPTH} levels deep, not shown]`
+      : decoded.payload;
+    if (tooDeep) {
+      result.problems.push({
+        path,
+        code: 'deep-payload',
+        message: `The payload holds arrays or objects nested more than ${MAX_PAYLOAD_DEPTH} levels deep; asnsim does not show or read it.`,
+        fix: FIXES['deep-payload'],
+      });
+    }
     const part: DecodedPart = {
       path,
       kind: kindOf(payload),
