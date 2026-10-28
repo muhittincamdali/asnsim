@@ -1,0 +1,12 @@
+description: A renewal fails, Billing Grace Period runs out, then billing retry recovers the subscription.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+  - type: DID_RENEW
+  - type: DID_FAIL_TO_RENEW
+    subtype: GRACE_PERIOD
+    gracePeriod: P16D
+  - type: GRACE_PERIOD_EXPIRED
+  - type: DID_RENEW
+    subtype: BILLING_RECOVERY
+    after: P5D

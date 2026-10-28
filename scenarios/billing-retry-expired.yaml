@@ -1,0 +1,7 @@
+description: A renewal fails without a grace period and the 60-day billing retry ends without payment.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+  - type: DID_FAIL_TO_RENEW
+  - type: EXPIRED
+    subtype: BILLING_RETRY

@@ -1,0 +1,12 @@
+description: A price increase that needs consent, the customer consents, and the next renewal charges the new price.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+  - type: PRICE_INCREASE
+    subtype: PENDING
+    price: 12.99
+    after: P7D
+  - type: PRICE_INCREASE
+    subtype: ACCEPTED
+    after: P3D
+  - type: DID_RENEW

@@ -1,0 +1,9 @@
+description: A one-week free trial, its first paid renewal, then a refund of that renewal.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+    offer: { type: introductory, discount: FREE_TRIAL, period: P1W }
+  - type: DID_RENEW
+  - type: REFUND
+    after: P3D
+    refund: { reason: 0 }

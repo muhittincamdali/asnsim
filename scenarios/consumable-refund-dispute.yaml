@@ -1,0 +1,11 @@
+description: Coins bought, a refund request with a consumption request, the refund, then the refund reversed after a dispute.
+steps:
+  - type: ONE_TIME_CHARGE
+    product: com.example.coins.100
+  - type: CONSUMPTION_REQUEST
+    reason: UNINTENDED_PURCHASE
+    after: P2D
+  - type: REFUND
+    refund: { reason: 0 }
+  - type: REFUND_REVERSED
+    after: P20D

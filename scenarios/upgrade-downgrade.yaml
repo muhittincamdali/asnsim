@@ -1,0 +1,14 @@
+description: Basic to Premium at once, then a downgrade back to Basic that waits for the next renewal.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+    product: com.example.basic.monthly
+  - type: DID_CHANGE_RENEWAL_PREF
+    subtype: UPGRADE
+    product: com.example.premium.monthly
+    after: P5D
+  - type: DID_CHANGE_RENEWAL_PREF
+    subtype: DOWNGRADE
+    product: com.example.basic.monthly
+    after: P10D
+  - type: DID_RENEW

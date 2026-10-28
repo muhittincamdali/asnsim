@@ -1,0 +1,7 @@
+description: A family member gets the subscription through Family Sharing, then loses it.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+    ownership: FAMILY_SHARED
+  - type: REVOKE
+    after: P12D

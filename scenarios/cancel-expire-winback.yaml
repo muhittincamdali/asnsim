@@ -1,0 +1,13 @@
+description: The customer turns off auto-renew, the subscription expires, and a win-back offer brings them back.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+  - type: DID_CHANGE_RENEWAL_STATUS
+    subtype: AUTO_RENEW_DISABLED
+    after: P10D
+  - type: EXPIRED
+    subtype: VOLUNTARY
+  - type: SUBSCRIBED
+    subtype: RESUBSCRIBE
+    after: P14D
+    offer: { type: win-back, id: come-back-50, discount: PAY_AS_YOU_GO, period: P1M, price: 4.99 }
