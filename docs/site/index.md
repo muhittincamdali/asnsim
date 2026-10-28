@@ -12,15 +12,11 @@ asnsim init
 asnsim run trial-renew-refund --url http://localhost:3000/notifications
 ```
 
-Without Homebrew, npm installs the same package from the
-[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) (Node.js 22.12
-or later):
+Without Homebrew, npm installs the same package (Node.js 22.12 or later):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
-
-Publishing to the npm registry as `@mcamdali/asnsim` is planned.
 
 ## Guides
 

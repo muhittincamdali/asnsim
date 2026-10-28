@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
+<!-- i18n-source: README.md@96700b9724784fa6daebc2437aeedce047a58e27 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -49,14 +49,14 @@ Apple 的 Request a Test Notification 端点只会发送 `TEST` 类型，而它�
 brew install muhittincamdali/tap/asnsim
 ```
 
-或者通过 npm 从 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) 安装，需要
+或者通过 npm 安装，需要
 [Node.js](https://nodejs.org/) 22.12 或更高版本（`node --version` 可查看）：
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
 
-该软件包尚未发布到 npm registry；计划以 `@mcamdali/asnsim` 的名称发布。两条命令安装的是同一个 release 压缩包。
+两条命令安装的是与 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) 相同的压缩包。
 
 **2. 创建测试证书链，然后让你的后端在测试中信任它。** 在项目文件夹中：
 

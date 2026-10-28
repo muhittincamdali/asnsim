@@ -65,16 +65,14 @@ a webhook on Apple's Node.js library (<code>npm run demo</code>).</sub>
 brew install muhittincamdali/tap/asnsim
 ```
 
-Or with npm from the
-[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2), which needs
+Or with npm, which needs
 [Node.js](https://nodejs.org/) 22.12 or later (`node --version` prints it):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
 
-The package is not on the npm registry yet; publishing it there as `@mcamdali/asnsim` is planned.
-Both commands install the same release tarball.
+Both commands install the same tarball as the [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2).
 
 **2. Create the test chain, then let your backend trust it in tests.** In your project's folder:
 

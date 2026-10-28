@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
+<!-- i18n-source: README.md@96700b9724784fa6daebc2437aeedce047a58e27 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -49,15 +49,14 @@ un webhook creado con la biblioteca Node.js de Apple (<code>npm run demo</code>)
 brew install muhittincamdali/tap/asnsim
 ```
 
-O con npm desde la [release de GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2), que necesita
+O con npm, que necesita
 [Node.js](https://nodejs.org/) 22.12 o posterior (`node --version` lo muestra):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
 
-El paquete aún no está en el registro de npm; está previsto publicarlo allí como `@mcamdali/asnsim`.
-Ambos comandos instalan el mismo tarball de la release.
+Ambos comandos instalan el mismo tarball que la [release de GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2).
 
 **2. Crea la cadena de pruebas y haz que tu backend confíe en ella en los tests.** En la carpeta de tu proyecto:
 
