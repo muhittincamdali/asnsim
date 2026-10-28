@@ -43,10 +43,12 @@ that verifies against Apple's roots, and every certificate it makes says `asnsim
 intermediate are discarded once the chain exists, so the root cannot vouch for any other key.
 
 **What asnsim sends.** Requests go only to the `--url` you give and to the check URLs of the
-scenario you run, and a check URL must have the webhook's origin (scheme, host and port): a
-scenario that names another host, port or scheme is refused before anything is sent. So a
-scenario file from someone else cannot make asnsim request other hosts or carry your `--header`
-values elsewhere. Redirects are not followed. `asnsim decode` makes no requests at all; it does not
+scenario you run, and a check URL must be a path that starts with a single `/` on the webhook's
+origin (scheme, host and port): a scenario that names another host, port or scheme is refused
+before anything is sent, and the URL is tested again once its placeholders are filled in, so a
+value cannot move it to another host either (an empty one would turn `/{originalTransactionId}/x`
+into `//x`). So a scenario file from someone else cannot make asnsim request other hosts or carry
+your `--header` values elsewhere. Redirects are not followed. `asnsim decode` makes no requests at all; it does not
 check revocation.
 
 **What asnsim reads.** Scenario files up to 1 MB and 500 steps, decode input up to 2 MB, a JWS up to
