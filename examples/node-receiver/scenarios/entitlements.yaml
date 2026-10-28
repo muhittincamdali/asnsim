@@ -1,0 +1,22 @@
+description: >-
+  The receiver's entitlement follows the subscription: on after the purchase, still on in Billing
+  Grace Period, off when grace runs out, on again after billing recovery, off after a refund.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+    check: { url: '/entitlements/{originalTransactionId}', json: { active: true } }
+  - type: DID_FAIL_TO_RENEW
+    subtype: GRACE_PERIOD
+    check: { url: '/entitlements/{originalTransactionId}', json: { active: true } }
+  - type: GRACE_PERIOD_EXPIRED
+    check: { url: '/entitlements/{originalTransactionId}', json: { active: false } }
+  - type: DID_RENEW
+    subtype: BILLING_RECOVERY
+    duplicate: true
+    check:
+      {
+        url: '/entitlements/{originalTransactionId}',
+        json: { active: true, lastNotification: DID_RENEW/BILLING_RECOVERY },
+      }
+  - type: REFUND
+    check: { url: '/entitlements/{originalTransactionId}', json: { active: false } }

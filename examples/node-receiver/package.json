@@ -1,0 +1,12 @@
+{
+  "name": "asnsim-example-node-receiver",
+  "private": true,
+  "description": "A webhook for App Store Server Notifications V2 on Apple's Node.js library, tested with asnsim.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@apple/app-store-server-library": "3.1.0"
+  }
+}
