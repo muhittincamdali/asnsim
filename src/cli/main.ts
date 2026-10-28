@@ -1,11 +1,8 @@
 #!/usr/bin/env node
+import { readLimited } from './input.js';
 import { run } from './run.js';
 
-async function stdin(): Promise<string> {
-  const chunks: Buffer[] = [];
-  for await (const chunk of process.stdin) chunks.push(chunk as Buffer);
-  return Buffer.concat(chunks).toString('utf8');
-}
+const stdin = async () => (await readLimited(process.stdin)).toString('utf8');
 
 process.exitCode = await run(process.argv.slice(2), {
   cwd: process.cwd(),
