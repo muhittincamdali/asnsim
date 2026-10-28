@@ -77,12 +77,16 @@ describe('renderRun', () => {
 describe('renderDecode', () => {
   const chain = createTestChain();
 
-  it('writes dates out and shortens nested JWS', () => {
-    expect(
-      rows({ signedDate: 1790845200000, data: { signedTransactionInfo: 'eyJhbGciOi.eyJ0.sig' } }),
-    ).toEqual([
+  it('writes dates out and shortens nested JWS, saying whether each one follows', () => {
+    const payload = {
+      signedDate: 1790845200000,
+      data: { signedTransactionInfo: 'eyJhbGciOi.eyJ0.sig' },
+      signedTransactionInfo: 'eyJhbGciOi.eyJ0.sig',
+    };
+    expect(rows(payload, '', new Set(['data.signedTransactionInfo']))).toEqual([
       ['signedDate', '1790845200000  2026-10-01T09:00:00.000Z'],
       ['data.signedTransactionInfo', 'eyJhbGciOi.eyJ0.… (JWS, below)'],
+      ['signedTransactionInfo', 'eyJhbGciOi.eyJ0.… (JWS, not decoded)'],
     ]);
   });
 

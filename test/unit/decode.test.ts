@@ -123,4 +123,51 @@ describe('decode', () => {
       'data.signedTransactionInfo is not a readable JWS: A JWS has three parts separated by dots.',
     );
   });
+
+  it('reports a JWS it does not decode, wherever it is, as a problem', () => {
+    const keys = [chain.signing, chain.intermediate, chain.root];
+    const deep = signJws(
+      JSON.parse(`${'['.repeat(5000)}${']'.repeat(5000)}`),
+      chain.signingKey,
+      keys,
+    );
+    const token = signJws(
+      {
+        notificationType: 'TEST',
+        signedDate: Date.now(),
+        signedTransactionInfo: deep,
+        list: [{ jws: deep }],
+        version: '1.2.3',
+      },
+      chain.signingKey,
+      keys,
+    );
+    const result = decode(token, { roots });
+    expect(result.ok).toBe(false);
+    expect(result.parts).toHaveLength(1);
+    expect(result.problems).toEqual([
+      expect.objectContaining({
+        path: 'jws',
+        code: 'unread-jws',
+        message: expect.stringContaining(
+          '2 JWS were not decoded: signedTransactionInfo, list[0].jws.',
+        ),
+      }),
+    ]);
+    // A JWS the reader decodes is not one.
+    expect(decode(signed('REFUND'), { roots }).problems).toEqual([]);
+  });
+
+  it('lists at most five unread JWS by path', () => {
+    const jws = signJws({ a: 1 }, chain.signingKey, [chain.signing]);
+    const token = signJws(
+      { notificationType: 'TEST', signedDate: Date.now(), list: Array(7).fill(jws) },
+      chain.signingKey,
+      [chain.signing, chain.intermediate, chain.root],
+    );
+    const [problem] = decode(token, { roots }).problems;
+    expect(problem?.message).toContain(
+      '7 JWS were not decoded: list[0], list[1], list[2], list[3], list[4], and 2 more.',
+    );
+  });
 });
