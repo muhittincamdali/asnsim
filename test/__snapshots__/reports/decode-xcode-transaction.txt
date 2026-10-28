@@ -1,7 +1,7 @@
 asnsim decode · jws
-1 JWS decoded, none verified
+1 problem: do not trust this data
 
-jws  transaction  ES256 · 1 certificate  not checked: signed by Xcode
+jws  transaction  ES256 · 1 certificate  not checked (--environment Xcode)
   appTransactionId             "0"
   billingPlanType              "BILLED_UPFRONT"
   bundleId                     "com.example.app"
@@ -27,5 +27,8 @@ jws  transaction  ES256 · 1 certificate  not checked: signed by Xcode
   type                         "Auto-Renewable Subscription"
   webOrderLineItemId           "1"
 
-Note: Data from Xcode StoreKit Testing (environment Xcode) is signed by Xcode, not the App Store;
-      Apple’s server libraries skip its verification, and so does asnsim.
+Problems
+  not-verified in jws: Not verified: --environment Xcode skips the signature and chain checks, as
+    Apple’s SignedDataVerifier does when it is set up for the Xcode environment.
+    Fix: Xcode signs StoreKit Testing data with its own key, so nothing proves where it came from.
+    Use it only in tests; a server must not accept environment Xcode.

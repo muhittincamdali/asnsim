@@ -442,9 +442,10 @@ function program(context: Context): Command {
       .option('--no-verify', 'decode only')
       .option('--bundle-id <id>', 'fail unless the data is for this bundle ID')
       .addOption(
-        new Option('--environment <name>', 'fail unless the data is from this environment').choices(
-          ENVIRONMENTS,
-        ),
+        new Option(
+          '--environment <name>',
+          'fail unless the data is from this environment; Xcode reads StoreKit Testing data without verifying it',
+        ).choices([...ENVIRONMENTS, 'Xcode']),
       ),
   ).action(
     async (

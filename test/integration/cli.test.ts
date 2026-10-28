@@ -334,10 +334,14 @@ describe('asnsim payload and decode', () => {
     expect(garbage.stderr).toContain('not a JWS');
   });
 
-  it('reads the Xcode StoreKit Testing fixture', async () => {
+  it('reads the Xcode StoreKit Testing fixture only with --environment Xcode', async () => {
     const file = new URL('../data/xcode/transaction-subscription.jws', import.meta.url).pathname;
-    const result = await asnsim(['decode', file]);
-    expect(result.code).toBe(0);
+    const verified = await asnsim(['decode', file]);
+    expect(verified.code).toBe(1);
+    expect(verified.stdout).toContain('NOT verified');
+    expect(verified.stdout).toContain('pass --environment Xcode');
+    const result = await asnsim(['decode', file, '--environment', 'Xcode']);
+    expect(result.code).toBe(1);
     await expect(result.stdout).toMatchFileSnapshot(
       '../__snapshots__/reports/decode-xcode-transaction.txt',
     );

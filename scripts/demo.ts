@@ -55,7 +55,12 @@ export const DEMOS: Demo[] = [
   },
   {
     name: 'decode-xcode',
-    args: ['decode', `${ROOT}test/data/xcode/transaction-subscription.jws`],
+    args: [
+      'decode',
+      `${ROOT}test/data/xcode/transaction-subscription.jws`,
+      '--environment',
+      'Xcode',
+    ],
     title: 'asnsim decode · a transaction from StoreKit Testing in Xcode',
     comment: '# recorded with Xcode 27.1 on an iOS 27.0 simulator',
   },
