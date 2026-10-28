@@ -1,7 +1,16 @@
 import { DATE_FIELDS, type DecodedPart, type DecodeResult } from '../decode/decode.js';
 import { formatName } from '../pki/certificate.js';
 import { VERSION } from '../version.js';
-import { cut, type Format, markdownText, oneLine, type Paint, painter, wrap } from './style.js';
+import {
+  cut,
+  type Format,
+  markdownCode,
+  markdownText,
+  oneLine,
+  type Paint,
+  painter,
+  wrap,
+} from './style.js';
 import type { RenderOptions } from './run.js';
 
 // The report of `asnsim decode`: each JWS with its verification and its fields, dates written
@@ -136,7 +145,7 @@ function markdown(result: DecodeResult): string {
     );
     lines.push('| Field | Value |', '| ----- | ----- |');
     for (const [key, text] of rows(part.payload)) {
-      lines.push(`| \`${oneLine(key)}\` | ${markdownText(text)} |`);
+      lines.push(`| ${markdownCode(key)} | ${markdownText(text)} |`);
     }
     if (part.verification) {
       lines.push('', `Checked at ${part.verification.effectiveDate}. Chain:`, '');
@@ -151,7 +160,7 @@ function markdown(result: DecodeResult): string {
     lines.push('', '## Problems', '');
     for (const problem of result.problems) {
       lines.push(
-        `- **${problem.code}** in \`${problem.path}\`: ${markdownText(problem.message)} ${markdownText(problem.fix)}`,
+        `- **${problem.code}** in ${markdownCode(problem.path)}: ${markdownText(problem.message)} ${markdownText(problem.fix)}`,
       );
     }
   }

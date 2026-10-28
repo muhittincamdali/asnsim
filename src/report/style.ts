@@ -78,5 +78,15 @@ export function markdownText(text: string): string {
   return oneLine(text).replace(/([\\`*_[\]<>|#])/g, '\\$1');
 }
 
+/**
+ * Text as a Markdown code span, or as escaped text when it holds a backtick or a `|`. A backslash
+ * does not escape inside a code span, so a backtick in an untrusted name would end the span and
+ * let the rest through as Markdown or HTML; a `|` would end the table cell.
+ */
+export function markdownCode(text: string): string {
+  const line = oneLine(text);
+  return line !== '' && !/[`|]/.test(line) ? `\`${line}\`` : markdownText(line);
+}
+
 export const plural = (count: number, one: string, many = `${one}s`) =>
   `${count} ${count === 1 ? one : many}`;
