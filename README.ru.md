@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
+<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="Статус CI"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Последняя версия: v0.1.1"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Последняя версия: v0.1.2"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="Версия языка: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="Лицензия: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ webhook на библиотеке Apple для Node.js (<code>npm run demo</code
 brew install muhittincamdali/tap/asnsim
 ```
 
-Или через npm из [релиза на GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1); для этого нужен
+Или через npm из [релиза на GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2); для этого нужен
 [Node.js](https://nodejs.org/) 22.12 или новее (версию покажет `node --version`):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
 ```
 
 Пакета пока нет в реестре npm; его планируется опубликовать там как `@mcamdali/asnsim`.
@@ -216,7 +216,7 @@ console.log(result.ok, result.counts);
 | Настоящая цепочка Apple (Apple Root CA - G3, WWDR G6, сертификат подписи квитанций 2025 года) проходит проверки цепочки в decode                      | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | Транзакция и данные о продлении из StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) декодируются                                                     | [test/data/xcode](test/data/xcode)                                                                                   |
 
-В наборе 708 теста в 26 файлах (модульные, интеграционные, snapshot и сквозные); все прошли через `npm test` 28 октября 2026 года на Mac (Apple silicon) с Node.js 26.
+В наборе 717 тестов в 27 файлах (модульные, интеграционные, snapshot и сквозные); все прошли через `npm test` 28 октября 2026 года на Mac (Apple silicon) с Node.js 26.
 
 ## Демо
 
@@ -228,10 +228,12 @@ console.log(result.ok, result.counts);
 | Проверка, которая не проходит, и как её исправить                          | [светлая](docs/media/demo-failure-light.svg) · [тёмная](docs/media/demo-failure-dark.svg)           |
 | `asnsim decode` для транзакции, подписанной StoreKit Testing               | [светлая](docs/media/demo-decode-xcode-light.svg) · [тёмная](docs/media/demo-decode-xcode-dark.svg) |
 
-Измерено 28 октября 2026 года на Mac (Apple silicon, M5 Max) с Node.js 26.12.1, по семь запусков
-каждого варианта, с учётом запуска Node.js: `asnsim send --all` против examples/node-receiver (40
-уведомлений, каждое проверяется библиотекой Apple в приёмнике) заняла от 0,17 до 0,20 секунды,
-медиана 0,18; то же с `--dry-run` — от 0,13 до 0,14 секунды. Во время замеров другая работа держала среднюю нагрузку (load average) машины около 11 (18 ядер).
+Измерено 28 октября 2026 года на Mac (Apple silicon, M5 Max) с Node.js 26.12.1 и asnsim 0.1.2,
+установленным из tarball релиза, по 29 запусков каждого варианта в три захода, с учётом запуска
+Node.js: `asnsim send --all` против examples/node-receiver (40 уведомлений, каждое проверяется
+библиотекой Apple в приёмнике) заняла от 0,17 до 0,26 секунды, медиана 0,19; то же с `--dry-run` —
+от 0,12 до 0,17 секунды, медиана 0,13. Машина не простаивала: другая работа держала её среднюю
+нагрузку (load average) между 9 и 11 (18 ядер) во время замеров, и с ростом нагрузки время растёт.
 
 ## Статус
 
@@ -260,7 +262,7 @@ console.log(result.ok, result.counts);
   у тестовой цепочки нет OCSP-сервера, поэтому тесты запускаются с отключёнными проверками.
 - **Один клиент на сценарий,** с одной группой подписок и любым числом разовых покупок.
 - **Ограниченный ввод.** Файлы сценариев до 1 МБ и 500 шагов, входные данные decode до 2 МБ, JWS до
-  1 000 000 символов, вложенность сертификатов не более 32 уровней и первые 64 КБ каждого ответа. Вход decode и файлы `--root` читаются потоком и отклоняются на первом байте сверх 2 МБ: `asnsim decode /dev/zero` завершается за 0,10–0,13 секунды при 72 МБ памяти (Mac (Apple silicon), Node.js 26).
+  1 000 000 символов, вложенность сертификатов не более 32 уровней и первые 64 КБ каждого ответа. Вход decode и файлы `--root` читаются потоком и отклоняются на первом байте сверх 2 МБ: `asnsim decode /dev/zero` завершается за 0,11–0,15 секунды при 72–73 МБ памяти (Mac (Apple silicon), Node.js 26, asnsim 0.1.2, средняя нагрузка около 10).
 
 ## Документация
 

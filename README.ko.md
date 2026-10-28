@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
+<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI 상태"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="최신 버전: v0.1.1"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="최신 버전: v0.1.2"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="언어 버전: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="라이선스: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ Apple의 Node.js 라이브러리로 만든 webhook입니다(<code>npm run demo</
 brew install muhittincamdali/tap/asnsim
 ```
 
-또는 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1)에서 npm으로 설치합니다. 이 경우
+또는 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2)에서 npm으로 설치합니다. 이 경우
 [Node.js](https://nodejs.org/) 22.12 이상이 필요합니다(`node --version`으로 확인할 수 있습니다):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
 ```
 
 이 패키지는 아직 npm registry에 없으며, `@mcamdali/asnsim`이라는 이름으로 게시할 계획입니다.
@@ -212,7 +212,7 @@ console.log(result.ok, result.counts);
 | Apple의 실제 체인(Apple Root CA - G3, WWDR G6, 2025년 receipt signing 인증서)이 decode의 체인 검사를 통과                 | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                            |
 | StoreKit Testing(Xcode 27.1, iOS 27.0 Simulator)의 거래와 갱신 정보를 디코딩                                              | [test/data/xcode](test/data/xcode)                                                                              |
 
-테스트 스위트는 26개 파일, 테스트 708개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있으며, 2026년 10월 28일 Mac(Apple silicon)에서 Node.js 26으로 `npm test`를 실행해 모두 통과했습니다.
+테스트 스위트는 27개 파일, 테스트 717개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있으며, 2026년 10월 28일 Mac(Apple silicon)에서 Node.js 26으로 `npm test`를 실행해 모두 통과했습니다.
 
 ## 데모
 
@@ -224,9 +224,9 @@ console.log(result.ok, result.counts);
 | 실패하는 검사와 해결 방법                               | [라이트](docs/media/demo-failure-light.svg) · [다크](docs/media/demo-failure-dark.svg)           |
 | StoreKit Testing이 서명한 거래에 `asnsim decode` 실행   | [라이트](docs/media/demo-decode-xcode-light.svg) · [다크](docs/media/demo-decode-xcode-dark.svg) |
 
-2026년 10월 28일 Mac(Apple silicon, M5 Max)에서 Node.js 26.12.1로 각각 일곱 번씩 실행해 측정했으며
+2026년 10월 28일 Mac(Apple silicon, M5 Max)에서 Node.js 26.12.1과 release tarball로 설치한 asnsim 0.1.2로 각각 세 차례에 걸쳐 29번씩 실행해 측정했으며
 Node.js 시작 시간을 포함합니다. examples/node-receiver를 대상으로 한 `asnsim send --all`(알림 40개, 수신 쪽에서 각각 Apple의 라이브러리로 검증)은
-0.17초에서 0.20초, 중앙값 0.18초가 걸렸고, `--dry-run`을 붙이면 0.13초에서 0.14초가 걸렸습니다. 측정하는 동안 다른 작업이 함께 돌고 있어 머신의 load average는 11 안팎(18코어)이었습니다.
+0.17초에서 0.26초, 중앙값 0.19초가 걸렸고, `--dry-run`을 붙이면 0.12초에서 0.17초, 중앙값 0.13초가 걸렸습니다. 머신은 유휴 상태가 아니었습니다. 측정하는 동안 다른 작업 때문에 load average가 9에서 11(18코어) 사이였고, 부하가 오르면 시간도 늘어납니다.
 
 ## 상태
 
@@ -254,7 +254,7 @@ Node.js 시작 시간을 포함합니다. examples/node-receiver를 대상으로
   테스트 체인에는 OCSP 서버가 없으므로 테스트는 온라인 검사를 끈 상태로 실행합니다.
 - **시나리오 하나에 고객 한 명,** 구독 그룹 하나와 임의 개수의 일회성 구매를 다룹니다.
 - **입력에는 한도가 있습니다.** 시나리오 파일은 1 MB, 500단계까지, decode 입력은 2 MB까지, JWS는 1,000,000자까지,
-  인증서 중첩은 최대 32단계, 각 응답은 처음 64 KB까지만 읽습니다. decode 입력과 `--root` 파일은 스트림으로 읽으며 2 MB를 넘는 첫 바이트에서 거부합니다. `asnsim decode /dev/zero`는 0.10초에서 0.13초, 메모리 72 MB로 끝납니다(Mac(Apple silicon), Node.js 26).
+  인증서 중첩은 최대 32단계, 각 응답은 처음 64 KB까지만 읽습니다. decode 입력과 `--root` 파일은 스트림으로 읽으며 2 MB를 넘는 첫 바이트에서 거부합니다. `asnsim decode /dev/zero`는 0.11초에서 0.15초, 메모리 72에서 73 MB로 끝납니다(Mac(Apple silicon), Node.js 26, asnsim 0.1.2, load average 10 안팎).
 
 ## 문서
 

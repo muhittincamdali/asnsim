@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
+<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI 状态"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新版本: v0.1.1"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新版本: v0.1.2"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="语言版本: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="许可证: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ Apple 的 Request a Test Notification 端点只会发送 `TEST` 类型，而它�
 brew install muhittincamdali/tap/asnsim
 ```
 
-或者通过 npm 从 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1) 安装，需要
+或者通过 npm 从 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) 安装，需要
 [Node.js](https://nodejs.org/) 22.12 或更高版本（`node --version` 可查看）：
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
 ```
 
 该软件包尚未发布到 npm registry；计划以 `@mcamdali/asnsim` 的名称发布。两条命令安装的是同一个 release 压缩包。
@@ -203,7 +203,7 @@ console.log(result.ok, result.counts);
 | Apple 的真实证书链（Apple Root CA - G3、WWDR G6、2025 年 receipt signing 证书）通过 decode 的证书链检查                     | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                      |
 | 来自 StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）的一笔交易和续订信息可以解码                                         | [test/data/xcode](test/data/xcode)                                                                                        |
 
-测试套件共有 26 个文件、708 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
+测试套件共有 27 个文件、717 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
 
 ## 演示
 
@@ -215,7 +215,7 @@ console.log(result.ok, result.counts);
 | 一个失败的检查及其修复方法                         | [浅色](docs/media/demo-failure-light.svg) · [深色](docs/media/demo-failure-dark.svg)           |
 | 对 StoreKit Testing 签名的交易运行 `asnsim decode` | [浅色](docs/media/demo-decode-xcode-light.svg) · [深色](docs/media/demo-decode-xcode-dark.svg) |
 
-2026 年 10 月 28 日在 Mac（Apple silicon，M5 Max）上使用 Node.js 26.12.1 测得，每项运行七次，包含 Node.js 启动时间：针对 examples/node-receiver 运行 `asnsim send --all`（40 条通知，接收端用 Apple 的库逐条验证）耗时 0.17 到 0.20 秒，中位数 0.18 秒；加上 `--dry-run` 时为 0.13 到 0.14 秒。测量期间机器上还有其他任务在运行，负载均值（load average）约为 11（18 核）。
+2026 年 10 月 28 日在 Mac（Apple silicon，M5 Max）上使用 Node.js 26.12.1 和从 release tarball 安装的 asnsim 0.1.2 测得，每项分三批共运行 29 次，包含 Node.js 启动时间：针对 examples/node-receiver 运行 `asnsim send --all`（40 条通知，接收端用 Apple 的库逐条验证）耗时 0.17 到 0.26 秒，中位数 0.19 秒；加上 `--dry-run` 时为 0.12 到 0.17 秒，中位数 0.13 秒。机器并不空闲：测量期间其他任务使负载均值（load average）保持在 9 到 11 之间（18 核），负载越高耗时越长。
 
 ## 状态
 
@@ -237,7 +237,7 @@ console.log(result.ok, result.counts);
 - **是测试根证书，不是 Apple 的。** asnsim 签名的任何内容都无法通过 Apple Root CA - G3 的验证。后端必须在测试中信任 `.asnsim/root.cer`，并且绝不能在 Production 中信任它。
 - **在线检查已关闭。** 开启在线检查时，Apple 的验证器会通过 Apple 的 OCSP 服务器检查吊销情况；测试证书链没有 OCSP 服务器，所以测试要在关闭在线检查的情况下运行。
 - **每个场景只有一位客户，** 包含一个订阅组和任意数量的一次性购买。
-- **输入有上限。** 场景文件最大 1 MB、最多 500 步，decode 输入最大 2 MB，JWS 最多 1,000,000 个字符，证书最多嵌套 32 层，每个响应只读取前 64 KB。decode 输入和 `--root` 文件以流方式读取，超过 2 MB 的第一个字节即被拒绝：`asnsim decode /dev/zero` 在 0.10 到 0.13 秒内结束，内存 72 MB（Mac（Apple silicon），Node.js 26）。
+- **输入有上限。** 场景文件最大 1 MB、最多 500 步，decode 输入最大 2 MB，JWS 最多 1,000,000 个字符，证书最多嵌套 32 层，每个响应只读取前 64 KB。decode 输入和 `--root` 文件以流方式读取，超过 2 MB 的第一个字节即被拒绝：`asnsim decode /dev/zero` 在 0.11 到 0.15 秒内结束，内存 72 到 73 MB（Mac（Apple silicon），Node.js 26，asnsim 0.1.2，负载均值约 10）。
 
 ## 文档
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
+<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI ステータス"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新バージョン: v0.1.1"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新バージョン: v0.1.2"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="言語バージョン: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="ライセンス: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ Apple の Request a Test Notification エンドポイントが送るのは `TEST
 brew install muhittincamdali/tap/asnsim
 ```
 
-または、[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1) から npm でインストールします。この場合は
+または、[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) から npm でインストールします。この場合は
 [Node.js](https://nodejs.org/) 22.12 以降が必要です（`node --version` で確認できます）：
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
 ```
 
 このパッケージはまだ npm registry にありません。`@mcamdali/asnsim` として公開する予定です。どちらのコマンドも、同じ release の tarball をインストールします。
@@ -204,7 +204,7 @@ console.log(result.ok, result.counts);
 | Apple の実際のチェーン（Apple Root CA - G3、WWDR G6、2025 年の receipt signing 証明書）が decode のチェーン確認に合格                        | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）のトランザクションと更新情報をデコードできる                                               | [test/data/xcode](test/data/xcode)                                                                                   |
 
-テストスイートは 26 ファイル・708 件のテスト（ユニット、統合、スナップショット、エンドツーエンド）で構成され、2026 年 10 月 28 日に Mac（Apple シリコン）上の Node.js 26 で `npm test` を実行し、すべて成功しました。
+テストスイートは 27 ファイル・717 件のテスト（ユニット、統合、スナップショット、エンドツーエンド）で構成され、2026 年 10 月 28 日に Mac（Apple シリコン）上の Node.js 26 で `npm test` を実行し、すべて成功しました。
 
 ## デモ
 
@@ -216,9 +216,9 @@ console.log(result.ok, result.counts);
 | 失敗するチェックと、その直し方                                      | [ライト](docs/media/demo-failure-light.svg) · [ダーク](docs/media/demo-failure-dark.svg)           |
 | StoreKit Testing が署名したトランザクションに対する `asnsim decode` | [ライト](docs/media/demo-decode-xcode-light.svg) · [ダーク](docs/media/demo-decode-xcode-dark.svg) |
 
-2026 年 10 月 28 日に Mac（Apple silicon、M5 Max）で Node.js 26.12.1 を使って計測しました。それぞれ 7 回実行し、
-Node.js の起動時間を含みます。examples/node-receiver に対する `asnsim send --all`（40 件の通知。受信側でそれぞれ Apple のライブラリが検証）は
-0.17 秒から 0.20 秒、中央値は 0.18 秒でした。`--dry-run` を付けると 0.13 秒から 0.14 秒でした。計測中はマシンで他の作業も動いており、ロードアベレージは 11 前後（18 コア）でした。
+2026 年 10 月 28 日に Mac（Apple silicon、M5 Max）で Node.js 26.12.1 と release の tarball からインストールした asnsim 0.1.2 を使って計測しました。
+それぞれ 3 回に分けて計 29 回実行し、Node.js の起動時間を含みます。examples/node-receiver に対する `asnsim send --all`（40 件の通知。受信側でそれぞれ Apple のライブラリが検証）は
+0.17 秒から 0.26 秒、中央値は 0.19 秒でした。`--dry-run` を付けると 0.12 秒から 0.17 秒、中央値は 0.13 秒でした。マシンはアイドル状態ではなく、計測中は他の作業によりロードアベレージが 9 から 11（18 コア）で、負荷が上がると時間も伸びます。
 
 ## ステータス
 
@@ -241,7 +241,7 @@ Node.js の起動時間を含みます。examples/node-receiver に対する `as
 - **Apple のものではなく、テスト用のルートです。** asnsim が署名したものは、どれも Apple Root CA - G3 に対して検証できません。バックエンドはテストの中で `.asnsim/root.cer` を信頼する必要があり、Production では決して信頼してはいけません。
 - **オンラインチェックはオフです。** オンラインチェックがオンのとき、Apple の検証ツールは Apple の OCSP サーバーで失効を確認します。テスト用チェーンには OCSP サーバーがないため、テストはオフで実行します。
 - **1 つのシナリオにつき顧客は 1 人です。** サブスクリプショングループは 1 つ、単発の購入は任意の数まで扱えます。
-- **入力には上限があります。** シナリオファイルは 1 MB・500 ステップまで、decode の入力は 2 MB まで、JWS は 1,000,000 文字まで、証明書の入れ子は最大 32 階層、各レスポンスは最初の 64 KB までです。decode の入力と `--root` のファイルはストリームとして読み込み、2 MB を超えた最初のバイトで拒否します。`asnsim decode /dev/zero` は 0.10 秒から 0.13 秒、メモリ 72 MB で終了します（Mac（Apple silicon）、Node.js 26）。
+- **入力には上限があります。** シナリオファイルは 1 MB・500 ステップまで、decode の入力は 2 MB まで、JWS は 1,000,000 文字まで、証明書の入れ子は最大 32 階層、各レスポンスは最初の 64 KB までです。decode の入力と `--root` のファイルはストリームとして読み込み、2 MB を超えた最初のバイトで拒否します。`asnsim decode /dev/zero` は 0.11 秒から 0.15 秒、メモリ 72 MB から 73 MB で終了します（Mac（Apple silicon）、Node.js 26、asnsim 0.1.2、ロードアベレージ 10 前後）。
 
 ## ドキュメント
 
