@@ -203,7 +203,7 @@ console.log(result.ok, result.counts);
 | Apple 的真实证书链（Apple Root CA - G3、WWDR G6、2025 年 receipt signing 证书）通过 decode 的证书链检查                     | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                      |
 | 来自 StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）的一笔交易和续订信息可以解码                                         | [test/data/xcode](test/data/xcode)                                                                                        |
 
-测试套件共有 24 个文件、402 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
+测试套件共有 24 个文件、442 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
 
 ## 演示
 

@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | Apple'ın gerçek zinciri (Apple Root CA - G3, WWDR G6, 2025 receipt signing sertifikası) decode'un zincir kontrollerinden geçer                   | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                  |
 | StoreKit Testing'den (Xcode 27.1, iOS 27.0 Simulator) bir işlem ve yenileme bilgisi çözülür                                                      | [test/data/xcode](test/data/xcode)                                                                                    |
 
-Test paketi 24 dosyada 402 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
+Test paketi 24 dosyada 442 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
 
 ## Demo
 

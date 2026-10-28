@@ -237,7 +237,7 @@ console.log(result.ok, result.counts);
 | Apple's real chain (Apple Root CA - G3, WWDR G6, the 2025 receipt signing certificate) passes decode's chain checks | [test/unit/verify.test.ts](test/unit/verify.test.ts)                          |
 | A transaction and renewal info from StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) decode          | [test/data/xcode](test/data/xcode)                                          |
 
-The suite has 402 tests in 24 files (unit, integration, snapshot and end-to-end), all passing with
+The suite has 442 tests in 24 files (unit, integration, snapshot and end-to-end), all passing with
 `npm test` on 28 October 2026 on a Mac (Apple silicon) with Node.js 26.
 
 ## Demo

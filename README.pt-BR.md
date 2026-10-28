@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | A cadeia real da Apple (Apple Root CA - G3, WWDR G6, o certificado de assinatura de recibos de 2025) passa nas verificações de cadeia do decode                           | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                          |
 | Uma transação e as informações de renovação do StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) são decodificadas                                                        | [test/data/xcode](test/data/xcode)                                                                                            |
 
-A suíte tem 402 testes em 24 arquivos (unitários, de integração, de snapshot e de ponta a ponta); todos passaram com `npm test` em 28 de outubro de 2026 em um Mac (Apple silicon) com Node.js 26.
+A suíte tem 442 testes em 24 arquivos (unitários, de integração, de snapshot e de ponta a ponta); todos passaram com `npm test` em 28 de outubro de 2026 em um Mac (Apple silicon) com Node.js 26.
 
 ## Demonstração
 
