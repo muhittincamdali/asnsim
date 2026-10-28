@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ Apple 的 Request a Test Notification 端点只会发送 `TEST` 类型，而它�
 - **带检查的场景。** 一个由步骤组成的 YAML 文件，每一步后面可以跟一个请求，用来检查你的后端做了什么：“`REFUND` 之后，`GET /entitlements/{originalTransactionId}` 返回 `active: false`”。内置九个场景。
 - **App Store 的投递规则。** 200 到 206 为成功，其他任何响应（包括重定向）都算投递失败；`--retries` 像 Production 一样原样重发，`--duplicate` 把每条通知发送两次，用来测试你的服务器是否会忽略重复的 `notificationUUID`。
 - **能解码真实数据的解码器。** `asnsim decode` 可以读取通知正文、已签名的交易或 App Store Server API 的响应，解码其中的每个 JWS，并像 Apple 的库一样离线对照 Apple Root CA - G3 进行验证。它也能读取 Xcode 的 StoreKit Testing 数据。
-- **为 CI 而设计。** 提供终端、纯文本、Markdown 和 JSON 报告；退出码 0 表示通过，1 表示投递、检查或验证失败，2 表示用法错误。
+- **为 CI 而设计。** 提供终端、纯文本、Markdown 和 JSON 报告；退出码 0 表示通过，1 表示投递、检查或验证失败，2 表示用法错误。 报告会隐藏 URL 中的凭据、查询参数的值、ID 以及 webhook 响应中的机密信息（[隐藏哪些内容](docs/guides/ci.md#what-the-reports-hide)）。
 
 ## 快速开始
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ un webhook construit sur la bibliothèque Node.js d'Apple (<code>npm run demo</c
 - **Des scénarios avec vérifications.** Un fichier YAML d'étapes, chacune pouvant être suivie d'une requête facultative qui vérifie ce qu'a fait votre backend : « après `REFUND`, `GET /entitlements/{originalTransactionId}` répond `active: false` ». Neuf scénarios sont intégrés.
 - **Les règles de livraison de l'App Store.** De 200 à 206, c'est un succès ; toute autre réponse (redirections comprises) est une livraison échouée. `--retries` renvoie sans modification, comme le fait la production, et `--duplicate` envoie chaque notification deux fois pour vérifier que votre serveur ignore un `notificationUUID` répété.
 - **Un décodeur pour le réel.** `asnsim decode` lit le corps d'une notification, une transaction signée ou une réponse de l'App Store Server API, décode chaque JWS qu'il contient et le vérifie hors ligne par rapport à Apple Root CA - G3, comme le font les bibliothèques d'Apple. Il lit aussi les données de StoreKit Testing d'Xcode.
-- **Conçu pour la CI.** Rapports pour le terminal, en texte, en Markdown et en JSON ; code de sortie 0 si tout a réussi, 1 si une livraison, une vérification ou un contrôle a échoué, 2 en cas d'erreur d'utilisation.
+- **Conçu pour la CI.** Rapports pour le terminal, en texte, en Markdown et en JSON ; code de sortie 0 si tout a réussi, 1 si une livraison, une vérification ou un contrôle a échoué, 2 en cas d'erreur d'utilisation. Les rapports masquent les identifiants des URL, les valeurs de la query, les ID et les secrets des réponses du webhook ([ce qu'ils masquent](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Démarrage rapide
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ un webhook creado con la biblioteca Node.js de Apple (<code>npm run demo</code>)
 - **Escenarios con comprobaciones.** Un archivo YAML de pasos, cada uno seguido de una solicitud opcional que comprueba lo que hizo tu backend: «tras `REFUND`, `GET /entitlements/{originalTransactionId}` responde `active: false`». Incluye nueve escenarios.
 - **Las reglas de entrega del App Store.** De 200 a 206 es éxito; cualquier otra respuesta (redirecciones incluidas) es una entrega fallida. `--retries` reenvía sin cambios, como hace producción, y `--duplicate` envía cada notificación dos veces para comprobar que tu servidor ignora un `notificationUUID` repetido.
 - **Un decodificador para lo real.** `asnsim decode` lee el cuerpo de una notificación, una transacción firmada o una respuesta de la App Store Server API, decodifica cada JWS que contiene y lo comprueba contra Apple Root CA - G3 como lo hacen las bibliotecas de Apple, sin conexión. También lee los datos de StoreKit Testing de Xcode.
-- **Pensado para CI.** Informes en terminal, texto, Markdown y JSON; código de salida 0 si todo pasó, 1 si falló una entrega, una comprobación o una verificación, 2 si hubo un error de uso.
+- **Pensado para CI.** Informes en terminal, texto, Markdown y JSON; código de salida 0 si todo pasó, 1 si falló una entrega, una comprobación o una verificación, 2 si hubo un error de uso. Los informes ocultan las credenciales de las URL, los valores de la query, los ID y los secretos de las respuestas del webhook ([qué ocultan](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Inicio rápido
 

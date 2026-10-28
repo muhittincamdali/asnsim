@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ einen Webhook auf Basis von Apples Node.js-Bibliothek (<code>npm run demo</code>
 - **Szenarien mit Prüfungen.** Eine YAML-Datei mit Schritten, auf die jeweils eine optionale Anfrage folgen kann, die prüft, was dein Backend getan hat: „Nach `REFUND` meldet `GET /entitlements/{originalTransactionId}` `active: false`“. Neun Szenarien sind eingebaut.
 - **Die Zustellregeln des App Store.** 200 bis 206 ist Erfolg, alles andere (auch Weiterleitungen) eine fehlgeschlagene Zustellung; `--retries` sendet unverändert erneut, wie es die Produktion tut, und `--duplicate` sendet jede Benachrichtigung zweimal, um zu testen, dass dein Server eine wiederholte `notificationUUID` ignoriert.
 - **Ein Decoder für das Original.** `asnsim decode` liest einen Benachrichtigungs-Body, eine signierte Transaktion oder eine Antwort der App Store Server API, dekodiert jedes darin enthaltene JWS und prüft es wie Apples Bibliotheken offline gegen Apple Root CA - G3. Auch StoreKit-Testing-Daten aus Xcode liest er.
-- **Für CI gemacht.** Berichte als Terminal-Ausgabe, Text, Markdown und JSON; Exit-Code 0 bedeutet bestanden, 1 eine fehlgeschlagene Zustellung, Prüfung oder Verifizierung, 2 einen Aufruffehler.
+- **Für CI gemacht.** Berichte als Terminal-Ausgabe, Text, Markdown und JSON; Exit-Code 0 bedeutet bestanden, 1 eine fehlgeschlagene Zustellung, Prüfung oder Verifizierung, 2 einen Aufruffehler. Die Berichte verbergen Zugangsdaten in URLs, Query-Werte, IDs und Geheimnisse in Webhook-Antworten ([was sie verbergen](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Schnellstart
 

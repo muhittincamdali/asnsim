@@ -54,7 +54,8 @@ a webhook on Apple's Node.js library (<code>npm run demo</code>).</sub>
   or an App Store Server API response, decodes every JWS inside and checks it against Apple Root
   CA - G3 the way Apple's libraries do, offline. It reads StoreKit Testing data from Xcode too.
 - **Made for CI.** Terminal, text, Markdown and JSON reports; exit code 0 passed, 1 a delivery,
-  check or verification failed, 2 usage error.
+  check or verification failed, 2 usage error. Reports hide URL credentials, query values, IDs and
+  secrets in webhook answers ([what they hide](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Quick start
 

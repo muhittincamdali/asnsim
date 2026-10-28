@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ Apple の Request a Test Notification エンドポイントが送るのは `TEST
 - **チェック付きのシナリオ。** ステップを並べた YAML ファイルで、各ステップの後にバックエンドの動作を確認するリクエストを付けられます。たとえば「`REFUND` の後、`GET /entitlements/{originalTransactionId}` が `active: false` を返す」といった確認です。シナリオは 9 つ内蔵しています。
 - **App Store の配信ルール。** 200 から 206 は成功で、それ以外（リダイレクトを含む）は配信失敗です。`--retries` は Production と同じく同じ内容で再送し、`--duplicate` は各通知を 2 回送って、サーバーが重複した `notificationUUID` を無視することを確認します。
 - **実物を読み解くデコーダー。** `asnsim decode` は通知の本文、署名済みトランザクション、App Store Server API のレスポンスを読み、中のすべての JWS をデコードして、Apple のライブラリと同じ方法でオフラインのまま Apple Root CA - G3 に対して検証します。Xcode の StoreKit Testing のデータも読めます。
-- **CI 向けに作られています。** ターミナル、プレーンテキスト、Markdown、JSON のレポートに対応し、終了コードは 0 が成功、1 が配信・チェック・検証の失敗、2 が使い方の誤りです。
+- **CI 向けに作られています。** ターミナル、プレーンテキスト、Markdown、JSON のレポートに対応し、終了コードは 0 が成功、1 が配信・チェック・検証の失敗、2 が使い方の誤りです。 レポートでは URL の認証情報、クエリの値、ID、webhook の応答に含まれる秘密情報が隠されます（[隠される内容](docs/guides/ci.md#what-the-reports-hide)）。
 
 ## クイックスタート
 

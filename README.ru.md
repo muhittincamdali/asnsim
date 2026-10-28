@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ webhook на библиотеке Apple для Node.js (<code>npm run demo</code
 - **Сценарии с проверками.** YAML-файл с шагами, после каждого из которых можно добавить необязательный запрос, проверяющий, что сделал ваш бэкенд: «после `REFUND` запрос `GET /entitlements/{originalTransactionId}` возвращает `active: false`». Девять сценариев встроены.
 - **Правила доставки App Store.** Ответы от 200 до 206 означают успех, всё остальное (включая перенаправления) — неудачную доставку. `--retries` повторно отправляет уведомление без изменений, как это делает production, а `--duplicate` отправляет каждое уведомление дважды, чтобы проверить, что сервер игнорирует повторный `notificationUUID`.
 - **Декодер для настоящих данных.** `asnsim decode` читает тело уведомления, подписанную транзакцию или ответ App Store Server API, декодирует каждый вложенный JWS и проверяет его по Apple Root CA - G3 офлайн, так же, как это делают библиотеки Apple. Он также читает данные StoreKit Testing из Xcode.
-- **Создан для CI.** Отчёты в терминале, в виде текста, Markdown и JSON; код завершения 0 означает успех, 1 — сбой доставки, проверки или верификации, 2 — ошибку использования.
+- **Создан для CI.** Отчёты в терминале, в виде текста, Markdown и JSON; код завершения 0 означает успех, 1 — сбой доставки, проверки или верификации, 2 — ошибку использования. Отчёты скрывают учётные данные в URL, значения query, ID и секреты в ответах webhook ([что именно скрывается](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Быстрый старт
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ Apple의 Node.js 라이브러리로 만든 webhook입니다(<code>npm run demo</
 - **검사가 포함된 시나리오.** 단계를 나열한 YAML 파일이며, 각 단계 뒤에 백엔드가 무엇을 했는지 확인하는 요청을 선택적으로 붙일 수 있습니다. 예를 들어 "`REFUND` 뒤에 `GET /entitlements/{originalTransactionId}`가 `active: false`를 반환한다"와 같습니다. 시나리오 9개가 내장되어 있습니다.
 - **App Store의 전송 규칙.** 200~206은 성공이고, 그 밖의 응답(리디렉션 포함)은 전송 실패입니다. `--retries`는 Production처럼 내용을 바꾸지 않고 다시 보내며, `--duplicate`는 각 알림을 두 번 보내 서버가 중복된 `notificationUUID`를 무시하는지 테스트합니다.
 - **실제 데이터를 읽는 디코더.** `asnsim decode`는 알림 본문, 서명된 거래, App Store Server API 응답을 읽어 안에 든 모든 JWS를 디코딩하고, Apple의 라이브러리와 같은 방식으로 오프라인에서 Apple Root CA - G3에 대해 검증합니다. Xcode의 StoreKit Testing 데이터도 읽을 수 있습니다.
-- **CI를 위해 만들었습니다.** 터미널, 텍스트, Markdown, JSON 보고서를 지원하며, 종료 코드 0은 통과, 1은 전송·검사·검증 실패, 2는 사용법 오류입니다.
+- **CI를 위해 만들었습니다.** 터미널, 텍스트, Markdown, JSON 보고서를 지원하며, 종료 코드 0은 통과, 1은 전송·검사·검증 실패, 2는 사용법 오류입니다. 보고서는 URL의 자격 증명, 쿼리 값, ID, webhook 응답 속 비밀 값을 가립니다([가리는 항목](docs/guides/ci.md#what-the-reports-hide)).
 
 ## 빠른 시작
 

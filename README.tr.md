@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
+<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -39,7 +39,7 @@ bu, Apple'ın Node.js kütüphanesiyle yazılmış bir webhook'tur (<code>npm ru
 - **Kontrollü senaryolar.** Her biri ardından isteğe bağlı bir istekle backend'inizin ne yaptığını kontrol edebilen adımlardan oluşan bir YAML dosyası: "`REFUND` sonrasında `GET /entitlements/{originalTransactionId}` yanıtı `active: false` olmalı". Dokuz senaryo yerleşik gelir.
 - **App Store'un teslimat kuralları.** 200 ile 206 arası başarıdır; geri kalan her şey (yönlendirmeler dahil) başarısız teslimattır. `--retries` production'daki gibi bildirimi değiştirmeden yeniden gönderir, `--duplicate` ise sunucunuzun tekrarlanan bir `notificationUUID`'yi yok saydığını test etmek için her bildirimi iki kez gönderir.
 - **Gerçeği çözen bir decoder.** `asnsim decode`, bir bildirim gövdesini, imzalı bir işlemi veya bir App Store Server API yanıtını okur, içindeki her JWS'yi çözer ve Apple'ın kütüphaneleri gibi, çevrimdışı olarak Apple Root CA - G3'e karşı doğrular. Xcode'daki StoreKit Testing verisini de okur.
-- **CI için tasarlandı.** Terminal, düz metin, Markdown ve JSON raporları; çıkış kodu 0 başarılı, 1 teslimat, kontrol veya doğrulama hatası, 2 kullanım hatası demektir.
+- **CI için tasarlandı.** Terminal, düz metin, Markdown ve JSON raporları; çıkış kodu 0 başarılı, 1 teslimat, kontrol veya doğrulama hatası, 2 kullanım hatası demektir. Raporlar URL'lerdeki kimlik bilgilerini, query değerlerini, ID'leri ve webhook yanıtlarındaki sırları gizler ([neleri gizlediği](docs/guides/ci.md#what-the-reports-hide)).
 
 ## Hızlı başlangıç
 
