@@ -1,4 +1,4 @@
-import { redactBody, redactJson } from '../redact/body.js';
+import { redactAnswer, redactJson } from '../redact/body.js';
 import { REDACTED } from '../redact/names.js';
 import { redactUrl } from '../redact/url.js';
 import { ScenarioError } from '../scenario/load.js';
@@ -164,7 +164,7 @@ export async function runCheck(
     ok: answer.status !== undefined && mismatches.length === 0,
     expectedStatus: check.status,
     ...(answer.status === undefined ? {} : { status: answer.status }),
-    ...(answer.body === undefined ? {} : { body: redactBody(answer.body).slice(0, 2000) }),
+    ...(answer.answer === undefined ? {} : { body: redactAnswer(answer.answer).slice(0, 2000) }),
     ...(answer.error === undefined ? {} : { error: answer.error }),
     ms: answer.ms,
     mismatches,

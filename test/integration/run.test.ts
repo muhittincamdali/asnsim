@@ -120,7 +120,7 @@ describe('runScenario', () => {
   });
 
   it('reports a status outside 200–206 with the App Store’s retry rule', async () => {
-    const webhook = await server(reply(500, 'boom'));
+    const webhook = await server(reply(500, 'boom', { 'content-type': 'text/plain' }));
     const result = await runScenario(loadScenario('family-sharing-revoke'), {
       workspace,
       url: webhook.url,

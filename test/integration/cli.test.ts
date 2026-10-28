@@ -182,7 +182,9 @@ describe('asnsim reports', () => {
   it('hide query values, IDs and secrets in the answers, in every format and in -o files', async () => {
     const backend = await startServer((request, response) => {
       if (request.method === 'POST') {
-        response.writeHead(400).end('denied password=hunter2 token SECRET-TOKEN-123');
+        response
+          .writeHead(400, { 'content-type': 'text/plain; charset=utf-8' })
+          .end('denied password=hunter2 token SECRET-TOKEN-123');
       } else {
         response
           .writeHead(200, { 'content-type': 'application/json' })
@@ -236,6 +238,43 @@ describe('asnsim reports', () => {
       );
     } finally {
       await backend.close();
+    }
+  });
+
+  it('leave out an answer whose content type they do not read, in every format', async () => {
+    // What a review saw shown in text, tty and JSON reports before answers were read by type.
+    const answers: [string, Record<string, string>, string][] = [
+      [
+        'Qx847Np7v',
+        { 'content-type': 'application/octet-stream' },
+        '9 bytes, application/octet-stream',
+      ],
+      [
+        '{"x":"Qx366Np7v"}',
+        { 'content-type': 'application/json, text/plain' },
+        '17 bytes, unreadable content type',
+      ],
+      ['{"x":"Qx371Np7v"}', {}, '17 bytes, no content type'],
+    ];
+    for (const [body, headers, note] of answers) {
+      const backend = await startServer((_request, response) => {
+        response.writeHead(400, headers).end(body);
+      });
+      try {
+        for (const format of ['tty', 'text', 'markdown', 'json']) {
+          const result = await asnsim(['send', 'TEST', '--url', backend.url, '-f', format], {
+            cwd: project,
+            stdoutIsTty: format === 'tty',
+          });
+          const report = result.stdout + result.stderr;
+          expect(result.code, format).toBe(1);
+          expect(report, `${format}: ${body}`).not.toMatch(/Qx\d{3}Np7v/);
+          // The Markdown report leaves answers out.
+          if (format !== 'markdown') expect(report, format).toContain(`[body omitted: ${note}]`);
+        }
+      } finally {
+        await backend.close();
+      }
     }
   });
 });

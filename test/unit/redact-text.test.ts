@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { redactBody, redactJson } from '../../src/redact/body.js';
+import { redactJsonBody, redactJson } from '../../src/redact/body.js';
 import { redactText } from '../../src/redact/text.js';
 
 // The free text (§8.5, with the detectors of §8.3) and JSON (§8.1) cases of the shared redaction
@@ -81,45 +81,49 @@ describe('free text (§8.5)', () => {
 
 describe('JSON answers (§8.1)', () => {
   it('#1, #7 hides values by key and reads strings as free text', () => {
-    expect(redactBody('{"user":"bob","password":"hunter2"}')).toBe(
+    expect(redactJsonBody('{"user":"bob","password":"hunter2"}')).toBe(
       `{"user":"bob","password":"${R}"}`,
     );
-    expect(redactBody('{"note":"password=hunter2","ok":"fine"}')).toBe(
+    expect(redactJsonBody('{"note":"password=hunter2","ok":"fine"}')).toBe(
       `{"note":"password=${R}","ok":"fine"}`,
     );
   });
 
   it('#6 hides a whole value, object or array', () => {
-    expect(redactBody('{"password":{"a":[1,2]},"x":1}')).toBe(`{"password":"${R}","x":1}`);
+    expect(redactJsonBody('{"password":{"a":[1,2]},"x":1}')).toBe(`{"password":"${R}","x":1}`);
   });
 
   it('#10, #16 hides what a held name names', () => {
-    expect(redactBody('[["Authorization","Bearer abc"],["Accept","x"]]')).toBe(
+    expect(redactJsonBody('[["Authorization","Bearer abc"],["Accept","x"]]')).toBe(
       `[["Authorization","${R}"],["Accept","x"]]`,
     );
-    expect(redactBody('{"label":"Password","value":"hunter2","x":1}')).toBe(
+    expect(redactJsonBody('{"label":"Password","value":"hunter2","x":1}')).toBe(
       `{"label":"Password","value":"${R}","x":"${R}"}`,
     );
   });
 
   it('#4 hides the value, and the name, of a key that is not a plain name', () => {
     // Each hidden name is numbered, so the report keeps every member.
-    expect(redactBody('{"pаssword":"x","şifre":"y","user[id]":"z","ok":"1"}')).toBe(
+    expect(redactJsonBody('{"pаssword":"x","şifre":"y","user[id]":"z","ok":"1"}')).toBe(
       `{"${R}":"${R}","[redacted 2]":"${R}","[redacted 3]":"${R}","ok":"1"}`,
     );
-    expect(redactBody('{"__proto__":"a","ok":"1"}')).toBe('{"__proto__":"a","ok":"1"}');
+    expect(redactJsonBody('{"__proto__":"a","ok":"1"}')).toBe('{"__proto__":"a","ok":"1"}');
   });
 
   it('#13 leaves out JSON deeper than 64 levels', () => {
     const deep = `${'['.repeat(65)}${']'.repeat(65)}`;
-    expect(redactBody(deep)).toBe('[body omitted: 130 bytes, JSON deeper than 64 levels]');
+    expect(redactJsonBody(deep)).toBe('[body omitted: 130 bytes, JSON deeper than 64 levels]');
     expect(redactJson(JSON.parse(deep))).toBe(R);
   });
 
-  it('reads anything that is not JSON as free text', () => {
-    expect(redactBody('denied: token SECRET-TOKEN-123')).toBe(`denied: ${R}`);
-    expect(redactBody('{"a":')).toBe(R);
-    expect(redactBody('{"active":true}')).toBe('{"active":true}');
+  it('leaves out an answer that does not parse as JSON (P2)', () => {
+    for (const body of ['denied: token SECRET-TOKEN-123', '{"a":', '{"a":1,}']) {
+      expect(redactJsonBody(body)).toBe(
+        `[body omitted: ${Buffer.byteLength(body)} bytes, JSON that does not parse]`,
+      );
+    }
+    expect(redactJsonBody('{"active":true}')).toBe('{"active":true}');
+    expect(redactJsonBody(' "ok" ')).toBe('"ok"');
   });
 });
 
@@ -180,7 +184,7 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
     ],
   ];
   for (const [rule, body, shown] of cases) {
-    it(`${rule} ${body}`, () => expect(redactBody(body)).toBe(shown));
+    it(`${rule} ${body}`, () => expect(redactJsonBody(body)).toBe(shown));
   }
 
   it('keeps every value a webhook answered with 500 hidden (SF-ASN-7)', () => {
@@ -191,7 +195,7 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
       Option: 'DbPassword:',
       Value: 'hunter2-c',
     });
-    expect(redactBody(body)).not.toMatch(/hunter2/);
+    expect(redactJsonBody(body)).not.toMatch(/hunter2/);
   });
 
   it('hides a value that names a secret next to the name it belongs to (K10)', () => {
@@ -202,7 +206,7 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
         { ParameterKey: 'DbPassword', ParameterValue: 'supersecret' },
       ],
     });
-    expect(redactBody(body)).not.toMatch(/Secret2024|livekey|supersecret/);
+    expect(redactJsonBody(body)).not.toMatch(/Secret2024|livekey|supersecret/);
   });
 });
 
@@ -220,21 +224,25 @@ describe('names with format characters (SF-ASN-9)', () => {
   for (const name of names) {
     for (const [shape, body] of shapes) {
       it(`hides the value next to ${JSON.stringify(name)} as ${shape}`, () =>
-        expect(redactBody(JSON.stringify(body(name)))).not.toMatch(/hunter2/));
+        expect(redactJsonBody(JSON.stringify(body(name)))).not.toMatch(/hunter2/));
     }
   }
 
   it('reads a name of format characters alone as controls alone (K11)', () => {
-    expect(redactBody('{"ParameterKey":"\\uFEFF\\u200B","ParameterValue":"x"}')).toBe(
+    expect(redactJsonBody('{"ParameterKey":"\\uFEFF\\u200B","ParameterValue":"x"}')).toBe(
       `{"ParameterKey":"${R}","ParameterValue":"${R}"}`,
     );
-    expect(redactBody('{"title":"\\u200B","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
-    expect(redactBody('{"title":" \\u2060 ","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
-    expect(redactBody('["\\u00AD","x"]')).toBe(`["${R}","${R}"]`);
+    expect(redactJsonBody('{"title":"\\u200B","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
+    expect(redactJsonBody('{"title":" \\u2060 ","data":"x"}')).toBe(
+      `{"title":"${R}","data":"${R}"}`,
+    );
+    expect(redactJsonBody('["\\u00AD","x"]')).toBe(`["${R}","${R}"]`);
   });
 
   it('keeps a value next to a name that names no secret', () => {
-    expect(redactBody('{"title":"sta\\u200Btus","data":"x"}')).toBe(`{"title":"${R}","data":"x"}`);
+    expect(redactJsonBody('{"title":"sta\\u200Btus","data":"x"}')).toBe(
+      `{"title":"${R}","data":"x"}`,
+    );
   });
 });
 
@@ -275,7 +283,7 @@ describe('names split by characters that show nothing (SF-ASN-10)', () => {
       const name = `${first}${splitter}${second}`;
       for (const [shape, body] of shapes) {
         it(`hides the value next to ${first}|${second} split by ${label} as ${shape}`, () =>
-          expect(redactBody(body(name))).not.toMatch(/hunter2/));
+          expect(redactJsonBody(body(name))).not.toMatch(/hunter2/));
       }
       it(`hides the text after ${first}|${second} split by ${label}`, () => {
         expect(redactText(`DB_${name}=hunter2`)).not.toMatch(/hunter2/);
@@ -289,20 +297,20 @@ describe('names split by characters that show nothing (SF-ASN-10)', () => {
   const joined = ['pa​ss\u0007word', 'pa-ss', 'p_w', 's.id', 'tóken', 'paㅤss​word'];
   for (const name of joined) {
     it(`reads ${JSON.stringify(name)} with its letters joined`, () => {
-      expect(redactBody(JSON.stringify({ OptionName: name, OptionValue: 'hunter2' }))).not.toMatch(
-        /hunter2/,
-      );
-      expect(redactBody(JSON.stringify([name, 'hunter2']))).not.toMatch(/hunter2/);
+      expect(
+        redactJsonBody(JSON.stringify({ OptionName: name, OptionValue: 'hunter2' })),
+      ).not.toMatch(/hunter2/);
+      expect(redactJsonBody(JSON.stringify([name, 'hunter2']))).not.toMatch(/hunter2/);
     });
   }
 
   it('reads a name of these characters alone as controls alone (K11)', () => {
-    expect(redactBody('{"title":"\\u3164","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
-    expect(redactBody('["\\u2800","x"]')).toBe(`["${R}","${R}"]`);
+    expect(redactJsonBody('{"title":"\\u3164","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
+    expect(redactJsonBody('["\\u2800","x"]')).toBe(`["${R}","${R}"]`);
   });
 
   it('keeps a value next to a name that names no secret', () => {
-    expect(redactBody('{"OptionName":"sta\\u3164tus","OptionValue":"x"}')).toBe(
+    expect(redactJsonBody('{"OptionName":"sta\\u3164tus","OptionValue":"x"}')).toBe(
       `{"OptionName":"${R}","OptionValue":"x"}`,
     );
   });
@@ -359,7 +367,7 @@ describe('detectors (§8.3)', () => {
   }
 
   it('#34 hides names that hold a finding', () => {
-    expect(redactBody('{"4111111111111111":1,"alice@example.com":2}')).toBe(
+    expect(redactJsonBody('{"4111111111111111":1,"alice@example.com":2}')).toBe(
       // A key that is not a plain name holds a name, so the other value is hidden too.
       `{"${R}":"${R}","[redacted 2]":"${R}"}`,
     );
@@ -409,25 +417,27 @@ describe('the leaks of the shared review corpus (§8 #65)', () => {
       '{"name":"password","name":"x","value":"Qx998Np7v"}',
       '{"a":{"pass\\u0077ord":1,"password":"Qx1"}}',
     ]) {
-      expect(redactBody(body)).toBe(
+      expect(redactJsonBody(body)).toBe(
         `[body omitted: ${Buffer.byteLength(body)} bytes, JSON with a name written twice]`,
       );
     }
     // The same name in two objects is no repeat.
-    expect(redactBody('[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]')).toBe(
-      '[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]',
-    );
+    expect(
+      redactJsonBody('[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]'),
+    ).toBe('[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]');
   });
 
   it('omits JSON with half of a UTF-16 pair', () => {
     const body = '{"x":"\\ud800","y":"Qx779Np7v"}';
-    expect(redactBody(body)).toBe(
+    expect(redactJsonBody(body)).toBe(
       `[body omitted: ${Buffer.byteLength(body)} bytes, JSON with half of a UTF-16 pair]`,
     );
-    expect(redactBody('{"x":"\\ud83d\\ude00"}')).not.toMatch(/omitted/);
+    expect(redactJsonBody('{"x":"\\ud83d\\ude00"}')).not.toMatch(/omitted/);
   });
 
-  it('reads a body with a byte order mark as text, not JSON', () => {
-    expect(redactBody('﻿{"x":"Qx362Np7v"}')).toBe(R);
+  it('leaves out JSON with a byte order mark, which is not JSON', () => {
+    expect(redactJsonBody('\uFEFF{"x":"Qx362Np7v"}')).toBe(
+      '[body omitted: 20 bytes, JSON that does not parse]',
+    );
   });
 });

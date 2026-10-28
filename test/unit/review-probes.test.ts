@@ -11,18 +11,13 @@ import {
 
 // The shared review corpus (REDACTION-SPEC §8 #65, KL-H2): every probe the documentation says is
 // hidden (claim C) hides its secret, except the limitations listed here by name. The corpus is
-// the one of the reference package (S, 7,866 lines); its bodies sent as a form, multipart, XML or
-// another type that is not JSON test rules asnsim does not have, since asnsim reads a webhook's
-// answer as JSON or as free text whatever its content type.
+// the one of the reference package (S, 7,866 lines); bodies are read with the content type each
+// probe gives (B0).
 
 const documentedLimitations: Record<string, string> = {
   // The same two limitations as the reference package.
   'a-3#311': 'a value written before its name ("ssh-keygen -N x passphrase")',
   'a-7#496': 'the value of `status`, which free text shows ("status=x")',
-  // The reference package hides any body whose content type names two charsets or is missing;
-  // asnsim reads the body as JSON whatever its content type, and {"x":"…"} names no secret.
-  'a-16#367': 'a content type with two charsets, which asnsim does not read',
-  'a-16#371': 'a body without a content type, which asnsim reads as JSON all the same',
 };
 
 const describeProbe = (probe: Probe, output: string) =>
