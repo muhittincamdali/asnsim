@@ -27,7 +27,7 @@ const isNameField = (key: string) =>
   NAME_FIELDS.has(key.toLowerCase()) || NAME_FIELDS_SHORT.has(key.toLowerCase());
 
 // Punctuation, symbols, spaces and controls at either end of a name ("Password:", "api_key =").
-const NAME_EDGES = /^[\p{P}\p{S}\p{Z}\p{Cc}]+|[\p{P}\p{S}\p{Z}\p{Cc}]+$/gu;
+const NAME_EDGES = /^[\p{P}\p{S}\p{Z}\p{Cc}\p{Cf}]+|[\p{P}\p{S}\p{Z}\p{Cc}\p{Cf}]+$/gu;
 
 /**
  * A string that is only a name (K12): at most 256 characters, a letter or digit (in compatibility

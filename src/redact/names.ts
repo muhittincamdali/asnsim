@@ -79,22 +79,28 @@ export function namesSecret(parts: string[]): boolean {
   return WORD.some((name) => parts.some((word) => isWord(word, name)));
 }
 
-const CONTROL = /\p{Cc}/gu;
+// Control (Cc) and format (Cf) characters: a zero-width space, soft hyphen, word joiner or BOM
+// shows nothing, so "pass\u200Bword" reads as "password" on screen.
+const INVISIBLE = /[\p{Cc}\p{Cf}]/gu;
 
 /**
- * Whether a name held as a value names a secret (K10, K11): read as written, with its control
- * characters left out ("pa\nss"), and in its compatibility form ("ⓟⓘⓝ"). words() already reads a
- * control as a space ("Db\nPassword").
+ * Whether a name held as a value names a secret (K10, K11): read as written, with its control and
+ * format characters left out ("pa\nss", "s\u200Bid"), and in its compatibility form ("ⓟⓘⓝ"),
+ * again without them. words() already reads such a character as a space ("Db\nPassword").
  */
 export function heldNameNamesSecret(name: string): boolean {
-  return [name, name.replace(CONTROL, ''), name.normalize('NFKC')].some((reading) =>
-    namesSecret(words(reading)),
+  const compatible = name.normalize('NFKC');
+  return [name, name.replace(INVISIBLE, ''), compatible, compatible.replace(INVISIBLE, '')].some(
+    (reading) => namesSecret(words(reading)),
   );
 }
 
-/** A short string of control characters and spaces only, with at least one control (K11). */
+/**
+ * A short string of control and format characters and spaces only, with at least one control or
+ * format character (K11): "\t", "\uFEFF\u200B".
+ */
 export const isOnlyControls = (text: string) =>
-  [...text].length <= 256 && /^[\p{Cc}\s]+$/u.test(text) && /\p{Cc}/u.test(text);
+  [...text].length <= 256 && /^[\p{Cc}\p{Cf}\s]+$/u.test(text) && /[\p{Cc}\p{Cf}]/u.test(text);
 
 /** A plain ASCII name (K1): letters, digits, `_ - .` and spaces, at least one letter or digit. */
 export const isPlainName = (name: string) =>

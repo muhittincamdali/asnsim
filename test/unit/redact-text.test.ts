@@ -206,6 +206,38 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
   });
 });
 
+describe('names with format characters (SF-ASN-9)', () => {
+  // A zero-width space, soft hyphen, BOM or word joiner shows nothing on screen.
+  const names = ['pass​word', 'api­key', 'to﻿ken', 'secret⁠', 's​id'];
+  const shapes: [string, (name: string) => unknown][] = [
+    ['key', (name) => ({ [name]: 'hunter2', ok: '1' })],
+    ['label', (name) => ({ label: name, value: 'hunter2' })],
+    ['title', (name) => ({ title: name, data: 'hunter2' })],
+    ['ParameterKey', (name) => ({ ParameterKey: name, ParameterValue: 'hunter2' })],
+    ['OptionName', (name) => ({ OptionName: name, Value: 'hunter2' })],
+    ['pair', (name) => [name, 'hunter2']],
+  ];
+  for (const name of names) {
+    for (const [shape, body] of shapes) {
+      it(`hides the value next to ${JSON.stringify(name)} as ${shape}`, () =>
+        expect(redactBody(JSON.stringify(body(name)))).not.toMatch(/hunter2/));
+    }
+  }
+
+  it('reads a name of format characters alone as controls alone (K11)', () => {
+    expect(redactBody('{"ParameterKey":"\\uFEFF\\u200B","ParameterValue":"x"}')).toBe(
+      `{"ParameterKey":"${R}","ParameterValue":"${R}"}`,
+    );
+    expect(redactBody('{"title":"\\u200B","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
+    expect(redactBody('{"title":" \\u2060 ","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
+    expect(redactBody('["\\u00AD","x"]')).toBe(`["${R}","${R}"]`);
+  });
+
+  it('keeps a value next to a name that names no secret', () => {
+    expect(redactBody('{"title":"sta\\u200Btus","data":"x"}')).toBe(`{"title":"${R}","data":"x"}`);
+  });
+});
+
 describe('detectors (§8.3)', () => {
   // asnsim hides every finding whole, so the masks of the reference package (•••• 1111) are [R].
   const cases: [string, string, string][] = [
