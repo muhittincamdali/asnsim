@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@82bd21b19ac265498a5e575dd520386f497217a5 status=reviewed -->
+<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI 状态"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新版本: v0.1.0"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新版本: v0.1.1"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="语言版本: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="许可证: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ Apple 的 Request a Test Notification 端点只会发送 `TEST` 类型，而它�
 brew install muhittincamdali/tap/asnsim
 ```
 
-或者通过 npm 从 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0) 安装，需要
+或者通过 npm 从 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1) 安装，需要
 [Node.js](https://nodejs.org/) 22.12 或更高版本（`node --version` 可查看）：
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.0/asnsim-0.1.0.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
 ```
 
 该软件包尚未发布到 npm registry；计划以 `@mcamdali/asnsim` 的名称发布。两条命令安装的是同一个 release 压缩包。
@@ -203,7 +203,7 @@ console.log(result.ok, result.counts);
 | Apple 的真实证书链（Apple Root CA - G3、WWDR G6、2025 年 receipt signing 证书）通过 decode 的证书链检查                     | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                      |
 | 来自 StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）的一笔交易和续订信息可以解码                                         | [test/data/xcode](test/data/xcode)                                                                                        |
 
-测试套件共有 24 个文件、402 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
+测试套件共有 24 个文件、442 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
 
 ## 演示
 

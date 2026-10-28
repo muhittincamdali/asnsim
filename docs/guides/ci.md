@@ -11,7 +11,7 @@ workflow. Its steps:
 
 ```yaml
 - name: Install asnsim from its GitHub release
-  run: npm install --global https://github.com/muhittincamdali/asnsim/releases/download/v0.1.0/asnsim-0.1.0.tgz
+  run: npm install --global https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
 
 - name: Create the test chain
   run: asnsim init --bundle-id com.example.app

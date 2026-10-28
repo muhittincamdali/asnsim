@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@82bd21b19ac265498a5e575dd520386f497217a5 status=reviewed -->
+<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI durumu"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Son sürüm: v0.1.0"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Son sürüm: v0.1.1"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="Dil sürümü: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="Lisans: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ bu, Apple'ın Node.js kütüphanesiyle yazılmış bir webhook'tur (<code>npm ru
 brew install muhittincamdali/tap/asnsim
 ```
 
-Ya da [GitHub sürümünden](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0) npm ile; bunun için
+Ya da [GitHub sürümünden](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1) npm ile; bunun için
 [Node.js](https://nodejs.org/) 22.12 veya üstü gerekir (`node --version` sürümü yazdırır):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.0/asnsim-0.1.0.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
 ```
 
 Paket henüz npm registry'de değil; `@mcamdali/asnsim` adıyla oraya yayımlanması planlanıyor.
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | Apple'ın gerçek zinciri (Apple Root CA - G3, WWDR G6, 2025 receipt signing sertifikası) decode'un zincir kontrollerinden geçer                   | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                  |
 | StoreKit Testing'den (Xcode 27.1, iOS 27.0 Simulator) bir işlem ve yenileme bilgisi çözülür                                                      | [test/data/xcode](test/data/xcode)                                                                                    |
 
-Test paketi 24 dosyada 402 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
+Test paketi 24 dosyada 442 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
 
 ## Demo
 

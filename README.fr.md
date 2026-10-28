@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@82bd21b19ac265498a5e575dd520386f497217a5 status=reviewed -->
+<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="État de la CI"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Dernière version: v0.1.0"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Dernière version: v0.1.1"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="Version du langage: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="Licence: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ un webhook construit sur la bibliothèque Node.js d'Apple (<code>npm run demo</c
 brew install muhittincamdali/tap/asnsim
 ```
 
-Ou avec npm depuis la [release GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0), qui nécessite
+Ou avec npm depuis la [release GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1), qui nécessite
 [Node.js](https://nodejs.org/) 22.12 ou plus récent (`node --version` l'affiche) :
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.0/asnsim-0.1.0.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
 ```
 
 Le paquet n'est pas encore sur le registre npm ; sa publication sous le nom `@mcamdali/asnsim` est prévue.
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | La vraie chaîne d'Apple (Apple Root CA - G3, WWDR G6, le certificat de signature des reçus de 2025) passe les contrôles de chaîne de decode                                                  | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                       |
 | Une transaction et des informations de renouvellement issues de StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) se décodent                                                                | [test/data/xcode](test/data/xcode)                                                                                         |
 
-La suite compte 402 tests répartis dans 24 fichiers (unitaires, d'intégration, de snapshot et de bout en bout) ; tous ont réussi avec `npm test` le 28 octobre 2026 sur un Mac (Apple silicon) avec Node.js 26.
+La suite compte 442 tests répartis dans 24 fichiers (unitaires, d'intégration, de snapshot et de bout en bout) ; tous ont réussi avec `npm test` le 28 octobre 2026 sur un Mac (Apple silicon) avec Node.js 26.
 
 ## Démo
 

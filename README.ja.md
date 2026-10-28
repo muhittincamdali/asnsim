@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@82bd21b19ac265498a5e575dd520386f497217a5 status=reviewed -->
+<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI ステータス"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新バージョン: v0.1.0"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="最新バージョン: v0.1.1"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="言語バージョン: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="ライセンス: MIT"></picture></a>
 </p>
@@ -49,11 +49,11 @@ Apple の Request a Test Notification エンドポイントが送るのは `TEST
 brew install muhittincamdali/tap/asnsim
 ```
 
-または、[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0) から npm でインストールします。この場合は
+または、[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1) から npm でインストールします。この場合は
 [Node.js](https://nodejs.org/) 22.12 以降が必要です（`node --version` で確認できます）：
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.0/asnsim-0.1.0.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
 ```
 
 このパッケージはまだ npm registry にありません。`@mcamdali/asnsim` として公開する予定です。どちらのコマンドも、同じ release の tarball をインストールします。
@@ -204,7 +204,7 @@ console.log(result.ok, result.counts);
 | Apple の実際のチェーン（Apple Root CA - G3、WWDR G6、2025 年の receipt signing 証明書）が decode のチェーン確認に合格                        | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）のトランザクションと更新情報をデコードできる                                               | [test/data/xcode](test/data/xcode)                                                                                   |
 
-テストスイートは 24 ファイル・402 件のテスト（ユニット、統合、スナップショット、エンドツーエンド）で構成され、2026 年 10 月 28 日に Mac（Apple シリコン）上の Node.js 26 で `npm test` を実行し、すべて成功しました。
+テストスイートは 24 ファイル・442 件のテスト（ユニット、統合、スナップショット、エンドツーエンド）で構成され、2026 年 10 月 28 日に Mac（Apple シリコン）上の Node.js 26 で `npm test` を実行し、すべて成功しました。
 
 ## デモ
 

@@ -8,7 +8,7 @@
 
 <p align="center">
 <a href="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml"><img src="https://github.com/muhittincamdali/asnsim/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
-<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Latest version: v0.1.0"></picture></a>
+<a href="https://github.com/muhittincamdali/asnsim/releases"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-version-light.svg" alt="Latest version: v0.1.1"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/package.json"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-language-light.svg" alt="Language version: Node.js 22.12+"></picture></a>
 <a href="https://github.com/muhittincamdali/asnsim/blob/main/LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/badge-license-light.svg" alt="License: MIT"></picture></a>
 </p>
@@ -66,11 +66,11 @@ brew install muhittincamdali/tap/asnsim
 ```
 
 Or with npm from the
-[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0), which needs
+[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.1), which needs
 [Node.js](https://nodejs.org/) 22.12 or later (`node --version` prints it):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.0/asnsim-0.1.0.tgz
+npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.1/asnsim-0.1.1.tgz
 ```
 
 The package is not on the npm registry yet; publishing it there as `@mcamdali/asnsim` is planned.
@@ -237,7 +237,7 @@ console.log(result.ok, result.counts);
 | Apple's real chain (Apple Root CA - G3, WWDR G6, the 2025 receipt signing certificate) passes decode's chain checks | [test/unit/verify.test.ts](test/unit/verify.test.ts)                          |
 | A transaction and renewal info from StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) decode          | [test/data/xcode](test/data/xcode)                                          |
 
-The suite has 402 tests in 24 files (unit, integration, snapshot and end-to-end), all passing with
+The suite has 442 tests in 24 files (unit, integration, snapshot and end-to-end), all passing with
 `npm test` on 28 October 2026 on a Mac (Apple silicon) with Node.js 26.
 
 ## Demo
