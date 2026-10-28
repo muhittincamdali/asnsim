@@ -20,7 +20,14 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
   the key after an OpenSSH key type are hidden in free text.
 - A JSON answer that names a member twice or holds a lone UTF-16 surrogate is omitted from reports:
   `{"label":"Password","label":"Status","value":"x"}` parsed as a status label and showed `x`. A
-  byte order mark makes an answer free text.
+  JSON answer that starts with a byte order mark is omitted too.
+- A webhook's or a check's answer is read the way its `Content-Type` says (REDACTION-SPEC §4 B0):
+  JSON types as JSON, `text/plain` as free text. Every other body is omitted from reports
+  (`[body omitted: N bytes, <type>]`), as is a body without a content type, with a content type
+  that does not read as one `type/subtype` and its parameters (`application/json, text/plain`),
+  with a charset other than UTF-8 or US-ASCII, that is not UTF-8, that was cut at 64 KB, or that
+  says it is JSON and does not parse. `application/octet-stream` and `application/json,
+text/plain` answers were shown as free text and JSON.
 
 ### Fixed
 
@@ -29,7 +36,8 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 
 ### Tests
 
-- The shared review corpus of the author's redaction rules (7,866 probes) runs with the suite.
+- The shared review corpus of the author's redaction rules (7,866 probes) runs with the suite,
+  every body probe with its own content type.
 
 ## [0.1.1] - 2026-10-28
 

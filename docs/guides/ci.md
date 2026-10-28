@@ -57,10 +57,19 @@ changed.
 | `--url 'https://hooks.example.com/asn?token=abc#x'`   | `https://hooks.example.com/asn?token=[redacted]`             |
 | check `/entitlements/{originalTransactionId}`         | `http://127.0.0.1:3000/entitlements/:id`                     |
 | a path that names a secret: `/v1/cards/4242/pin/4831` | `/v1/cards/:id/pin/:id`                                      |
-| answer `denied password=hunter2`                      | `answer: denied password=[redacted]`                         |
+| answer `denied password=hunter2` as `text/plain`      | `answer: denied password=[redacted]`                         |
 | answer `{"user":"bob","password":"hunter2"}`          | `{"user":"bob","password":"[redacted]"}`                     |
 | answer `{"label":"Password","value":"hunter2","x":1}` | `{"label":"Password","value":"[redacted]","x":"[redacted]"}` |
 | answer `Error: card 4111 1111 1111 1111 declined`     | `Error: [redacted]`                                          |
+
+An answer is read the way its `Content-Type` says: `application/json`, `text/json` and any
+`+json` type as JSON, `text/plain` as text. Every other body is left out of the report as
+`[body omitted: N bytes, <type>]`: HTML, XML, a form, multipart, `application/octet-stream`, a body
+without a content type, one whose content type is not a single `type/subtype` with `; name=value`
+parameters (`application/json, text/plain` reads `unreadable content type`), a charset other than
+UTF-8 or US-ASCII, bytes that are not UTF-8, and an answer longer than the 64 KB asnsim keeps. A
+JSON answer that does not parse is left out too. Node.js's `response.end('text')` sends no content
+type, so set one (`text/plain`) to see the answer in the report.
 
 Text is cut at the first word that may hold or name a secret: anything outside printable ASCII,
 quotes, markup, escapes, `@`, a key other than `status`, `method`, `path`, `duration_ms` and
@@ -72,11 +81,10 @@ A JSON answer that names a member twice, or holds half of a UTF-16 pair, is left
 (`[body omitted: …]`), since parsing it would drop or change a member.
 A URL with a user name or password is refused before anything is sent.
 
-The rules are tested against the review corpus the author's packages share (7,866 probes): every
-probe whose secret the rules say is hidden hides it, except two that free text cannot tell apart,
-a value written before its name (`ssh-keygen -N x passphrase`) and the value of `status=`, and two
-JSON answers that the reference package hides only for their content type (asnsim reads an answer
-as JSON whatever its content type).
+The rules are tested against the review corpus the author's packages share. All 7,866 probes run,
+bodies with the content type each probe gives; of the 7,234 whose secret the rules say is hidden,
+every one hides it except two that free text cannot tell apart: a value written before its name
+(`ssh-keygen -N x passphrase`) and the value of `status=`.
 
 ## Without a running backend
 
