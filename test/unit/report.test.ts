@@ -21,6 +21,11 @@ describe('text helpers', () => {
     expect(cut('abcdef', 4)).toBe('abc…');
     expect(wrap('one two three four', 10, '  ', 0)).toBe('one two\n  three\n  four');
     expect(markdownText('a|b *c* <d>')).toBe('a\\|b \\*c\\* \\<d\\>');
+    // Images, links, entities and strikethrough stay text, and GitHub links no bare URL.
+    expect(markdownText('![x](y) &amp; ~~z~~')).toBe('\\!\\[x\\]\\(y\\) \\&amp; \\~\\~z\\~\\~');
+    expect(markdownText('see https://evil.example/x or WWW.evil.example')).toBe(
+      'see https\\://evil.example/x or WWW\\.evil.example',
+    );
   });
 });
 
@@ -144,7 +149,7 @@ describe('renderDecode with a hostile payload key', () => {
   it('keeps the key inside its table cell in Markdown', () => {
     const text = renderDecode(decode(token, { verify: false }), 'markdown');
     const row = text.split('\n').find((line) => line.includes('onerror'));
-    expect(row).toBe('| a\\` \\| \\<img src=x onerror=alert(1)\\> \\| \\`b | 1 |');
+    expect(row).toBe('| a\\` \\| \\<img src=x onerror=alert\\(1\\)\\> \\| \\`b | 1 |');
     // Three unescaped pipes: the two edges and the one between the cells.
     expect(row?.match(/(?<!\\)\|/g)).toHaveLength(3);
     expect(text).not.toMatch(/(?<!\\)<img/);
