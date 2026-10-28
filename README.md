@@ -211,7 +211,8 @@ decode checks each JWS the way Apple's `SignedDataVerifier` does with online che
 certificates, each issued by the next, Apple's two extensions, validity at `signedDate`, the
 ES256 signature, against Apple Root CA - G3 (built in), the test root in `.asnsim` and any
 `--root`. Revocation needs Apple's OCSP server and is not checked. Data from StoreKit Testing in
-Xcode is signed by Xcode; decode prints it and skips the check, as Apple's libraries do.
+Xcode is signed by Xcode and does not verify; `--environment Xcode` prints it without the check and
+reports it as not verified, as Apple's verifier skips the check only when it is set up for Xcode.
 [Decode what the App Store sent](docs/guides/decode.md) has the details.
 
 ### From JavaScript

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -191,7 +191,7 @@ decode проверяет каждый JWS так же, как `SignedDataVerifi
 три сертификата, каждый выдан следующим, два расширения Apple, действительность на момент `signedDate`,
 подпись ES256 — по Apple Root CA - G3 (встроен), тестовому корню в `.asnsim` и любому
 `--root`. Проверка отзыва требует OCSP-сервера Apple и не выполняется.
-Данные StoreKit Testing в Xcode подписывает Xcode; decode выводит их и пропускает проверку, как это делают библиотеки Apple.
+Данные StoreKit Testing в Xcode подписывает Xcode, поэтому проверку они не проходят; с `--environment Xcode` decode выводит их без проверки и сообщает, что они не проверены: верификатор Apple тоже пропускает проверку, только когда настроен на Xcode.
 Подробности — в [Decode what the App Store sent](docs/guides/decode.md).
 
 ### Из JavaScript
