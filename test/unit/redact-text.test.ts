@@ -103,8 +103,11 @@ describe('JSON answers (§8.1)', () => {
   });
 
   it('#4 hides the value, and the name, of a key that is not a plain name', () => {
-    // Both keys are written [redacted], so the object keeps one of them.
-    expect(redactBody('{"pаssword":"x","user[id]":"z","ok":"1"}')).toBe(`{"${R}":"${R}","ok":"1"}`);
+    // Each hidden name is numbered, so the report keeps every member.
+    expect(redactBody('{"pаssword":"x","şifre":"y","user[id]":"z","ok":"1"}')).toBe(
+      `{"${R}":"${R}","[redacted 2]":"${R}","[redacted 3]":"${R}","ok":"1"}`,
+    );
+    expect(redactBody('{"__proto__":"a","ok":"1"}')).toBe('{"__proto__":"a","ok":"1"}');
   });
 
   it('#13 leaves out JSON deeper than 64 levels', () => {
@@ -227,7 +230,9 @@ describe('detectors (§8.3)', () => {
   }
 
   it('#34 hides names that hold a finding', () => {
-    const shown = redactBody('{"4111111111111111":1,"alice@example.com":2}');
-    expect(shown).not.toMatch(/4111|alice/);
+    expect(redactBody('{"4111111111111111":1,"alice@example.com":2}')).toBe(
+      // A key that is not a plain name holds a name, so the other value is hidden too.
+      `{"${R}":"${R}","[redacted 2]":"${R}"}`,
+    );
   });
 });

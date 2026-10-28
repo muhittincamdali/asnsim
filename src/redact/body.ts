@@ -64,9 +64,14 @@ function redactObject(object: Record<string, unknown>, depth: number): Record<st
   const naming = new Set(
     entries.filter(([key, value]) => namesSecretField(key, value)).map(([key]) => key),
   );
-  const shown: Record<string, unknown> = {};
+  // No prototype, so a "__proto__" key stays a member.
+  const shown: Record<string, unknown> = Object.create(null);
+  let hiddenNames = 0;
   for (const [key, value] of entries) {
-    const name = redactText(key) === key && !looksSecret(key) ? key : REDACTED;
+    const plain = redactText(key) === key && !looksSecret(key);
+    // Hidden names stay apart ("[redacted]", "[redacted 2]"), so no member is lost; a key as
+    // written can never read "[redacted 2]", since "[" cuts free text.
+    const name = plain ? key : hiddenNames++ === 0 ? REDACTED : `[redacted ${hiddenNames}]`;
     const kept =
       naming.has(key) ||
       KEPT_FIELDS.has(key.toLowerCase()) ||
