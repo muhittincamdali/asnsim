@@ -1,4 +1,12 @@
-import { isPlainName, looksSecret, namesSecret, REDACTED, words } from './names.js';
+import {
+  heldNameNamesSecret,
+  isOnlyControls,
+  isPlainName,
+  looksSecret,
+  namesSecret,
+  REDACTED,
+  words,
+} from './names.js';
 import { redactText } from './text.js';
 
 // A webhook's answer as a report may show it (REDACTION-SPEC §2, §4): JSON is read as JSON, each
@@ -18,23 +26,36 @@ class TooDeep extends Error {}
 const isNameField = (key: string) =>
   NAME_FIELDS.has(key.toLowerCase()) || NAME_FIELDS_SHORT.has(key.toLowerCase());
 
-/** A string that is only a name (K12): no `: = , ; " ' ( ) [ ] { } < >`, a letter or digit. */
+// Punctuation, symbols, spaces and controls at either end of a name ("Password:", "api_key =").
+const NAME_EDGES = /^[\p{P}\p{S}\p{Z}\p{Cc}]+|[\p{P}\p{S}\p{Z}\p{Cc}]+$/gu;
+
+/**
+ * A string that is only a name (K12): at most 256 characters, a letter or digit (in compatibility
+ * form, so "ⓟ" counts), and none of `: = , ; " ' ( ) [ ] { } < >` once the punctuation, spaces and
+ * line breaks at either end are left out.
+ */
 const isName = (text: string) =>
-  text.length <= 256 && /[A-Za-z0-9]/.test(text) && !/[:=,;"'()[\]{}<>]/.test(text.trim());
+  [...text].length <= 256 &&
+  /[\p{L}\p{N}]/u.test(text.normalize('NFKC')) &&
+  !/[:=,;"'()[\]{}<>]/.test(text.replace(NAME_EDGES, ''));
+
+/** Whether a string, wherever it is, names a secret as a name would (K10–K12). */
+const isSecretName = (text: string) =>
+  isOnlyControls(text) || (isName(text) && heldNameNamesSecret(text));
 
 /** Whether a name field's value names a secret: anything but a plain name that names none. */
 function heldNameIsSecret(key: string, value: unknown): boolean {
   if (typeof value !== 'string') return true;
   const names = key.toLowerCase() === 'path' ? value.split('/').filter(Boolean) : [value];
   if (names.length === 0) return true;
-  return names.some((name) => !isPlainName(name) || namesSecret(words(name)));
+  return names.some((name) => !isPlainName(name) || heldNameNamesSecret(name));
 }
 
 /** Whether a member names a secret: a key that is not a plain name, or a value that names one. */
 function namesSecretField(key: string, value: unknown): boolean {
   // A field whose own name is not plain holds a name, as name fields do.
   if (!isPlainName(key) || isNameField(key)) return heldNameIsSecret(key, value);
-  return typeof value === 'string' && isName(value) && namesSecret(words(value));
+  return typeof value === 'string' && isSecretName(value);
 }
 
 function redactObject(object: Record<string, unknown>, depth: number): Record<string, unknown> {
@@ -60,19 +81,20 @@ function redactArray(array: unknown[], depth: number): unknown[] {
   let afterName = false;
   return array.map((entry, index) => {
     if (afterName) return REDACTED;
-    const isSecretName = typeof entry === 'string' && isName(entry) && namesSecret(words(entry));
+    const namesOne = typeof entry === 'string' && isSecretName(entry);
     // ["Authorization","Bearer …"]: a pair whose first element is not a plain name, or names a
     // secret, hides the second; ["password","…"] hides what follows the name.
     if (index === 0 && array.length === 2 && typeof entry === 'string' && !isPlainName(entry)) {
       afterName = true;
     }
-    if (isSecretName) afterName = true;
+    if (namesOne) afterName = true;
     return redactValue(entry, depth + 1);
   });
 }
 
 function redactValue(value: unknown, depth: number): unknown {
-  if (typeof value === 'string') return redactText(value);
+  // A string of controls alone ("\t") is hidden like the value it names (K11).
+  if (typeof value === 'string') return isOnlyControls(value) ? REDACTED : redactText(value);
   if (typeof value === 'number') return looksSecret(String(value)) ? REDACTED : value;
   if (typeof value !== 'object' || value === null) return value;
   // depth counts the arrays and objects around this one.

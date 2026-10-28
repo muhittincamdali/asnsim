@@ -119,3 +119,59 @@ describe('JSON answers (§8.1)', () => {
     expect(redactBody('{"active":true}')).toBe('{"active":true}');
   });
 });
+
+describe('held names and control characters (§8.2, K10–K12)', () => {
+  // The member that names a secret is itself read as free text, so it may be cut too.
+  const R_ = `"${R}"`;
+  const cases: [string, string, string][] = [
+    ['#20', '{"name":"Hello\\nWorld","value":"x"}', `{"name":"Hello\\nWorld","value":${R_}}`],
+    ['#21', '{"note":"pass\\nword","id":"7"}', `{"note":"pass${R}","id":${R_}}`],
+    ['#22', '{"title":"\\n","data":"x"}', `{"title":${R_},"data":${R_}}`],
+    [
+      '#22',
+      '{"ParameterKey":"\\t","ParameterValue":"x"}',
+      `{"ParameterKey":${R_},"ParameterValue":${R_}}`,
+    ],
+    ['#22', '{"title":" \\u0000 ","data":"x"}', `{"title":${R_},"data":${R_}}`],
+    ['#23', '{"message":"Hello\\nWorld","id":"7"}', '{"message":"Hello\\nWorld","id":"7"}'],
+    [
+      '#24',
+      '{"ParameterKey":"DbPassword\\n","ParameterValue":"x"}',
+      `{"ParameterKey":${R_},"ParameterValue":${R_}}`,
+    ],
+    [
+      '#24',
+      '{"OptionName":"pa\\nssword","Value":"x"}',
+      `{"OptionName":"pa\\nssword","Value":${R_}}`,
+    ],
+    ['K11', '{"note":"pa\\nss","v":"x"}', `{"note":"pa\\nss","v":${R_}}`],
+    // K12: punctuation at either end of a name does not stop it naming a secret (SF-ASN-7).
+    [
+      'K12',
+      '{"Option":"DbPassword:","Value":"hunter2-c"}',
+      `{"Option":"DbPassword:","Value":${R_}}`,
+    ],
+    ['K12', '{"label":"api_key =","value":"x"}', `{"label":"api_key ${R}","value":${R_}}`],
+    ['K12', '{"title":"(Password)","v":"x"}', `{"title":"(Password)","v":${R_}}`],
+    ['K12', '["db","password:","hunter2-b"]', `["db","password:",${R_}]`],
+    ['K12', '["password:","hunter2"]', `["password:",${R_}]`],
+    ['K12', '["\\n","hunter2"]', `[${R_},${R_}]`],
+    ['K12', '{"title":"ⓟⓘⓝ","v":"1234"}', `{"title":"${R}","v":${R_}}`],
+    // A sentence is free text, not a name.
+    ['K12', '{"note":"pass: ok, done","id":"7"}', `{"note":"pass: ${R}","id":"7"}`],
+  ];
+  for (const [rule, body, shown] of cases) {
+    it(`${rule} ${body}`, () => expect(redactBody(body)).toBe(shown));
+  }
+
+  it('keeps every value a webhook answered with 500 hidden (SF-ASN-7)', () => {
+    const body = JSON.stringify({
+      ParameterKey: '\t',
+      ParameterValue: 'hunter2-a',
+      errors: ['db', 'password:', 'hunter2-b'],
+      Option: 'DbPassword:',
+      Value: 'hunter2-c',
+    });
+    expect(redactBody(body)).not.toMatch(/hunter2/);
+  });
+});
