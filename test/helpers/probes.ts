@@ -51,16 +51,6 @@ function probeAnswer(probe: Probe): Answer {
   };
 }
 
-/**
- * Whether asnsim reads the probe the way the corpus means it. The corpus sends bodies as a form,
- * multipart, XML or another type that is not JSON to test rules asnsim does not have.
- */
-export function appliesToAsnsim(probe: Probe): boolean {
-  if (probe.kind !== 'body') return true;
-  const type = (probe.type ?? '').split(';')[0]?.trim().toLowerCase() ?? '';
-  return type === '' || type === 'application/json' || type === 'text/json' || /\+json$/.test(type);
-}
-
 export function redactProbe(probe: Probe): string {
   if (probe.kind === 'url') return redactUrl(probeText(probe));
   if (probe.kind === 'body') return redactAnswer(probeAnswer(probe));
