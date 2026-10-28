@@ -89,7 +89,11 @@ function cutAfterWord(shown: string, rest: string): string {
   return `${shown}${/^[ \t]*/.exec(rest)?.[0] ?? ''}${REDACTED}`;
 }
 
-const isDigitGroup = (word: string) => /^[\d-]+$/.test(word) && /\d/.test(word);
+// Digit groups are read as one number across this much white space, line breaks included, and
+// across `.` `,` `/` `-` written between them, as card numbers are written and wrapped.
+const MAX_DIGIT_GAP = 8;
+const isDigitGroup = (word: string) => /^[\d.,/-]+$/.test(word) && /\d/.test(word);
+const isDigitSeparator = (word: string) => /^[.,/-]{1,3}$/.test(word);
 
 /** `text` with everything from its first possible secret on replaced by one [redacted]. */
 export function redactText(text: string): string {
@@ -98,21 +102,30 @@ export function redactText(text: string): string {
   let out = '';
   let last = 0;
   let previous: string[] = [];
-  // Digit groups written next to each other are read together, as card numbers are written.
+  // Digit groups written near each other are read together, as card numbers are written.
   let digits = { count: 0, start: 0 };
   for (const match of text.matchAll(/[^ \t\r\n]+/g)) {
     const word = match[0];
     const gap = text.slice(last, match.index);
     const sameLine = !/[\r\n]/.test(gap) && gap.length <= 3;
+    const near = gap.length <= MAX_DIGIT_GAP;
     last = match.index + word.length;
     const before = out + gap;
     if (!sameLine) previous = [];
-    if (!isDigitGroup(word)) digits = { count: 0, start: 0 };
-    else if (digits.count === 0 || !sameLine) digits = { count: 0, start: before.length };
-    digits.count += isDigitGroup(word) ? word.replace(/\D/g, '').length : 0;
-    if (digits.count >= 13) return `${before.slice(0, digits.start)}${REDACTED}`;
+    const pending = digits.count > 0 && near ? digits.start : undefined;
+    if (isDigitGroup(word)) {
+      if (pending === undefined) digits = { count: 0, start: before.length };
+      digits.count += word.replace(/\D/g, '').length;
+      if (digits.count >= 13) return `${before.slice(0, digits.start)}${REDACTED}`;
+    } else if (!(isDigitSeparator(word) && pending !== undefined)) {
+      digits = { count: 0, start: 0 };
+    }
     const reading = readWord(word, parenthesesOk);
     if (reading.cut) {
+      // A number that runs on into the cut is hidden from its start (D11).
+      if (reading.keep === 0 && pending !== undefined && /^\d/.test(word)) {
+        return `${before.slice(0, pending)}${REDACTED}`;
+      }
       return reading.keep === word.length
         ? cutAfterWord(before + word, text.slice(last))
         : `${before}${word.slice(0, reading.keep)}${REDACTED}`;

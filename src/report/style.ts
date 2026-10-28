@@ -31,10 +31,11 @@ export function painter(color: boolean): Paint {
   };
 }
 
-// C0 and C1 controls (tab and line feed kept separately), DEL, and the Unicode bidirectional
+// C0 and C1 controls (tab and line feed kept separately), DEL, the Unicode line and paragraph
+// separators (a terminal or editor may break the line there), and the Unicode bidirectional
 // formatting characters.
 // biome-ignore lint/suspicious/noControlCharactersInRegex: matching control characters is the point
-const CONTROLS = /[\u0000-\u0008\u000b-\u001f\u007f-\u009f؜‎‏‪-‮⁦-⁩]/g;
+const CONTROLS = /[\u0000-\u0008\u000b-\u001f\u007f-\u009f\u2028\u2029؜‎‏‪-‮⁦-⁩]/g;
 
 /** Text with control characters shown as U+XXXX, so it prints as it is. */
 export function clean(text: string): string {

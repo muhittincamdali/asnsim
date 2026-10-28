@@ -9,6 +9,8 @@ const MAX_SEGMENTS = 64;
 const MAX_PARAMETERS = 128;
 // Segments made of these characters, once decoded, are shown; anything else becomes `:id`.
 const SHOWN_SEGMENT = /^[A-Za-z0-9_.~ +-]*$/;
+// biome-ignore lint/suspicious/noControlCharactersInRegex: these are what the parser strips
+const STRIPPED_BY_PARSER = /[\t\n\r]|^[\u0000-\u0020]|[\u0000-\u0020]$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function hostIsShown(host: string): boolean {
@@ -98,6 +100,9 @@ export function redactUrl(raw: string): string {
   if (url.hostname === '') return '<unparsed URL>';
   if (!hostIsShown(url.hostname)) return `${url.protocol}//${REDACTED}`;
   const authority = `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ''}`;
+  // The URL parser drops tabs and line breaks anywhere, and controls and spaces at either end, so
+  // the written path would not be the one it reads ("/pin/.<TAB>./4831" is "/4831").
+  if (STRIPPED_BY_PARSER.test(raw)) return authority;
   const path = writtenPath(raw);
   if (path === undefined || readsDifferently(path)) return authority;
   const segments = url.pathname.split('/').slice(1);

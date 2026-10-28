@@ -13,6 +13,7 @@ describe('text helpers', () => {
     expect(clean('ok\u001b[31mred\u0007')).toBe('ok<U+001B>[31mred<U+0007>');
     expect(clean('a‮b⁦c')).toBe('a<U+202E>b<U+2066>c');
     expect(clean('two\nlines')).toBe('two\nlines');
+    expect(clean('a\u2028b\u2029c\u0085d')).toBe('a<U+2028>b<U+2029>c<U+0085>d');
     expect(oneLine('two\r\nlines\tand tab')).toBe('two lines and tab');
   });
 

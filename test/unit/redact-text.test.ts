@@ -103,8 +103,11 @@ describe('JSON answers (§8.1)', () => {
   });
 
   it('#4 hides the value, and the name, of a key that is not a plain name', () => {
-    // Both keys are written [redacted], so the object keeps one of them.
-    expect(redactBody('{"pаssword":"x","user[id]":"z","ok":"1"}')).toBe(`{"${R}":"${R}","ok":"1"}`);
+    // Each hidden name is numbered, so the report keeps every member.
+    expect(redactBody('{"pаssword":"x","şifre":"y","user[id]":"z","ok":"1"}')).toBe(
+      `{"${R}":"${R}","[redacted 2]":"${R}","[redacted 3]":"${R}","ok":"1"}`,
+    );
+    expect(redactBody('{"__proto__":"a","ok":"1"}')).toBe('{"__proto__":"a","ok":"1"}');
   });
 
   it('#13 leaves out JSON deeper than 64 levels', () => {
@@ -117,5 +120,119 @@ describe('JSON answers (§8.1)', () => {
     expect(redactBody('denied: token SECRET-TOKEN-123')).toBe(`denied: ${R}`);
     expect(redactBody('{"a":')).toBe(R);
     expect(redactBody('{"active":true}')).toBe('{"active":true}');
+  });
+});
+
+describe('held names and control characters (§8.2, K10–K12)', () => {
+  // The member that names a secret is itself read as free text, so it may be cut too.
+  const R_ = `"${R}"`;
+  const cases: [string, string, string][] = [
+    ['#20', '{"name":"Hello\\nWorld","value":"x"}', `{"name":"Hello\\nWorld","value":${R_}}`],
+    ['#21', '{"note":"pass\\nword","id":"7"}', `{"note":"pass${R}","id":${R_}}`],
+    ['#22', '{"title":"\\n","data":"x"}', `{"title":${R_},"data":${R_}}`],
+    [
+      '#22',
+      '{"ParameterKey":"\\t","ParameterValue":"x"}',
+      `{"ParameterKey":${R_},"ParameterValue":${R_}}`,
+    ],
+    ['#22', '{"title":" \\u0000 ","data":"x"}', `{"title":${R_},"data":${R_}}`],
+    ['#23', '{"message":"Hello\\nWorld","id":"7"}', '{"message":"Hello\\nWorld","id":"7"}'],
+    [
+      '#24',
+      '{"ParameterKey":"DbPassword\\n","ParameterValue":"x"}',
+      `{"ParameterKey":${R_},"ParameterValue":${R_}}`,
+    ],
+    [
+      '#24',
+      '{"OptionName":"pa\\nssword","Value":"x"}',
+      `{"OptionName":"pa\\nssword","Value":${R_}}`,
+    ],
+    ['K11', '{"note":"pa\\nss","v":"x"}', `{"note":"pa\\nss","v":${R_}}`],
+    // K12: punctuation at either end of a name does not stop it naming a secret (SF-ASN-7).
+    [
+      'K12',
+      '{"Option":"DbPassword:","Value":"hunter2-c"}',
+      `{"Option":"DbPassword:","Value":${R_}}`,
+    ],
+    ['K12', '{"label":"api_key =","value":"x"}', `{"label":"api_key ${R}","value":${R_}}`],
+    ['K12', '{"title":"(Password)","v":"x"}', `{"title":"(Password)","v":${R_}}`],
+    ['K12', '["db","password:","hunter2-b"]', `["db","password:",${R_}]`],
+    ['K12', '["password:","hunter2"]', `["password:",${R_}]`],
+    ['K12', '["\\n","hunter2"]', `[${R_},${R_}]`],
+    ['K12', '{"title":"ⓟⓘⓝ","v":"1234"}', `{"title":"${R}","v":${R_}}`],
+    // A sentence is free text, not a name.
+    ['K12', '{"note":"pass: ok, done","id":"7"}', `{"note":"pass: ${R}","id":"7"}`],
+  ];
+  for (const [rule, body, shown] of cases) {
+    it(`${rule} ${body}`, () => expect(redactBody(body)).toBe(shown));
+  }
+
+  it('keeps every value a webhook answered with 500 hidden (SF-ASN-7)', () => {
+    const body = JSON.stringify({
+      ParameterKey: '\t',
+      ParameterValue: 'hunter2-a',
+      errors: ['db', 'password:', 'hunter2-b'],
+      Option: 'DbPassword:',
+      Value: 'hunter2-c',
+    });
+    expect(redactBody(body)).not.toMatch(/hunter2/);
+  });
+});
+
+describe('detectors (§8.3)', () => {
+  // asnsim hides every finding whole, so the masks of the reference package (•••• 1111) are [R].
+  const cases: [string, string, string][] = [
+    ['#25', 'paid 4111 1111 1111 1111 ok', `paid ${R}`],
+    ['#25', 'ok 4111-1111-1111-1111 ok', `ok ${R}`],
+    ['#26', '٤٢٤٢ ٤٢٤٢ ٤٢٤٢ ٤٢٤٢', R],
+    ['#27', 'ref DE89 3704 0044 0532 0130 00 ok', `ref ${R}`],
+    // More than the rules: 13 or more digits are hidden whatever their letters.
+    ['#27', 'de89370400440532013000 lowercase', R],
+    ['#28', 'mail alice@example.com ok', `mail ${R}`],
+    ['#29', 'contact alice%40example.com', `contact ${R}`],
+    ['#30', 'tok eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.dozjgNryP4J3jVmNHl0w5N ok', `tok ${R}`],
+    ['#31', 'hdr Bearer abcdefgh12345678 ok', `hdr Bearer ${R}`],
+    ['#31', 'hdr bearer abcdefgh12345678 ok', `hdr bearer ${R}`],
+    ['#32', 'hex 0123456789abcdef0123456789abcdef ok', `hex ${R}`],
+    [
+      '#32',
+      'uuid 123e4567-e89b-12d3-a456-426614174000 ok',
+      'uuid 123e4567-e89b-12d3-a456-426614174000 ok',
+    ],
+    ['#33', 'git clone https://bob:hunter2@github.com/x/y.git', `git clone ${R}`],
+    ['#33', 'redis://:hunter2@host', R],
+    ['#35', 'paid with 4111 1111 1111\u20281111', `paid with ${R}`],
+    ['#35', 'paid with 4111 1111 1111\u000b1111', `paid with ${R}`],
+    ['#35', 'paid 4111\f1111\u00851111\u20291111', `paid ${R}`],
+    ['#35', 'mail ali\u2028ce@example.com ok', `mail ${R}`],
+    // More than the rules, which let a line break end a card number: asnsim reads groups across
+    // line breaks too (SF-ASN-6), as a wrapped log line would split them.
+    ['#36', '4111 1111 1111\n1111', R],
+    ['SF-ASN-6', '4111 1111\n1111 1111', R],
+    ['SF-ASN-6', 'paid 4111 1111\r\n\r\n1111 1111', `paid ${R}`],
+    ['SF-ASN-6', '4111 1111. 1111 1111', R],
+    ['SF-ASN-6', '4111.1111.1111.1111', R],
+    ['SF-ASN-6', '4111/1111/1111/1111', R],
+    ['SF-ASN-6', 'card no 4111 / 1111 / 1111 / 1111', `card ${R}`],
+    ['SF-ASN-6', 'no 4111 - 1111 - 1111 - 1111 ok', `no ${R}`],
+    ['SF-ASN-6', 'no 4111, 1111, 1111, 1111', `no ${R}`],
+    // Short numbers and times stay.
+    ['D1', 'at 12:30 and 13:45, 10 of 12 items ok', 'at 12:30 and 13:45, 10 of 12 items ok'],
+    // Groups further apart than eight white space characters are two numbers.
+    [
+      'D1',
+      `id 4111 1111${'\n'.repeat(9)}1111 1111 ok`,
+      `id 4111 1111${'\n'.repeat(9)}1111 1111 ok`,
+    ],
+  ];
+  for (const [rule, text, shown] of cases) {
+    it(`${rule} ${JSON.stringify(text)}`, () => expect(redactText(text)).toBe(shown));
+  }
+
+  it('#34 hides names that hold a finding', () => {
+    expect(redactBody('{"4111111111111111":1,"alice@example.com":2}')).toBe(
+      // A key that is not a plain name holds a name, so the other value is hidden too.
+      `{"${R}":"${R}","[redacted 2]":"${R}"}`,
+    );
   });
 });

@@ -79,6 +79,23 @@ export function namesSecret(parts: string[]): boolean {
   return WORD.some((name) => parts.some((word) => isWord(word, name)));
 }
 
+const CONTROL = /\p{Cc}/gu;
+
+/**
+ * Whether a name held as a value names a secret (K10, K11): read as written, with its control
+ * characters left out ("pa\nss"), and in its compatibility form ("ⓟⓘⓝ"). words() already reads a
+ * control as a space ("Db\nPassword").
+ */
+export function heldNameNamesSecret(name: string): boolean {
+  return [name, name.replace(CONTROL, ''), name.normalize('NFKC')].some((reading) =>
+    namesSecret(words(reading)),
+  );
+}
+
+/** A short string of control characters and spaces only, with at least one control (K11). */
+export const isOnlyControls = (text: string) =>
+  [...text].length <= 256 && /^[\p{Cc}\s]+$/u.test(text) && /\p{Cc}/u.test(text);
+
 /** A plain ASCII name (K1): letters, digits, `_ - .` and spaces, at least one letter or digit. */
 export const isPlainName = (name: string) =>
   name.length <= 256 && /^[A-Za-z0-9_ .-]+$/.test(name) && /[A-Za-z0-9]/.test(name);
