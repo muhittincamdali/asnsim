@@ -5,7 +5,7 @@ A one-week free trial, its first paid renewal, then a refund of that renewal.
 - Webhook: `http://127.0.0.1:PORT/asn`
 - App: `com.example.pantry`, Sandbox
 - Dates: the scenario’s own
-- asnsim 0.1.1
+- asnsim 0.1.2
 
 | # | Notification | Answer | Time | Check | Result |
 | - | ------------ | ------ | ---- | ----- | ------ |
