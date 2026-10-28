@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
+<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -204,7 +204,7 @@ console.log(result.ok, result.counts);
 | Apple の実際のチェーン（Apple Root CA - G3、WWDR G6、2025 年の receipt signing 証明書）が decode のチェーン確認に合格                        | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）のトランザクションと更新情報をデコードできる                                               | [test/data/xcode](test/data/xcode)                                                                                   |
 
-テストスイートは 280 件のテスト（ユニット、統合、スナップショット、エンドツーエンド）で構成されています。
+テストスイートは 24 ファイル・351 件のテスト（ユニット、統合、スナップショット、エンドツーエンド）で構成され、2026 年 10 月 28 日に Mac（Apple シリコン）上の Node.js 26 で `npm test` を実行し、すべて成功しました。
 
 ## デモ
 

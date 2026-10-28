@@ -28,7 +28,16 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 - `asnsim decode`: decodes a notification body, signed payloads and App Store Server API responses,
   and checks every JWS like Apple's `SignedDataVerifier` with online checks off, against Apple Root
   CA - G3, the test root or `--root`; reads StoreKit Testing data from Xcode.
-- Terminal, text, Markdown and JSON reports; exit codes 0, 1 and 2.
+- Terminal, text, Markdown and JSON reports; exit codes 0, 1 and 2. Reports never show URL user
+  names, passwords, fragments or query values, write IDs in paths as `:id`, and show webhook and
+  check answers redacted (JSON values under secret names, card numbers, e-mail addresses, tokens;
+  text cut at its first possible secret).
+- Check URLs are paths on the webhook's origin that start with a single `/`, tested before sending
+  and again once their placeholders are filled in; `--header` values go nowhere else. A `--url`
+  with a user name or password is a usage error.
+- `decode` reports a nested JWS it does not decode (outside `data.signed…` and `appData.signed…`)
+  as an `unread-jws` problem, and a payload nested more than 64 levels deep as `deep-payload`
+  without printing it.
 - A JavaScript API (`@mcamdali/asnsim`), a TypeDoc site with six guides, examples for Node.js,
   Swift, GitHub Actions and the shell, and terminal demos recorded from the CLI.
 

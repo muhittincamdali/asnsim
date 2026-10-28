@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
+<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | Apple'ın gerçek zinciri (Apple Root CA - G3, WWDR G6, 2025 receipt signing sertifikası) decode'un zincir kontrollerinden geçer                   | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                  |
 | StoreKit Testing'den (Xcode 27.1, iOS 27.0 Simulator) bir işlem ve yenileme bilgisi çözülür                                                      | [test/data/xcode](test/data/xcode)                                                                                    |
 
-Test paketi 280 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca).
+Test paketi 24 dosyada 351 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
 
 ## Demo
 

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
+<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -216,7 +216,7 @@ console.log(result.ok, result.counts);
 | Настоящая цепочка Apple (Apple Root CA - G3, WWDR G6, сертификат подписи квитанций 2025 года) проходит проверки цепочки в decode                      | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | Транзакция и данные о продлении из StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) декодируются                                                     | [test/data/xcode](test/data/xcode)                                                                                   |
 
-В наборе 280 тестов (модульные, интеграционные, snapshot и сквозные).
+В наборе 351 тестов в 24 файлах (модульные, интеграционные, snapshot и сквозные); все прошли через `npm test` 28 октября 2026 года на Mac (Apple silicon) с Node.js 26.
 
 ## Демо
 

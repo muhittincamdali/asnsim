@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@f78b403db7ba97bfdf4c9843d82f18f8c47c7318 status=reviewed -->
+<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -212,7 +212,7 @@ console.log(result.ok, result.counts);
 | Apple의 실제 체인(Apple Root CA - G3, WWDR G6, 2025년 receipt signing 인증서)이 decode의 체인 검사를 통과                 | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                            |
 | StoreKit Testing(Xcode 27.1, iOS 27.0 Simulator)의 거래와 갱신 정보를 디코딩                                              | [test/data/xcode](test/data/xcode)                                                                              |
 
-테스트 스위트는 테스트 280개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있습니다.
+테스트 스위트는 24개 파일, 테스트 351개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있으며, 2026년 10월 28일 Mac(Apple silicon)에서 Node.js 26으로 `npm test`를 실행해 모두 통과했습니다.
 
 ## 데모
 
