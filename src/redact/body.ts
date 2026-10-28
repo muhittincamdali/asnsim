@@ -27,7 +27,7 @@ const isNameField = (key: string) =>
   NAME_FIELDS.has(key.toLowerCase()) || NAME_FIELDS_SHORT.has(key.toLowerCase());
 
 // Punctuation, symbols, spaces and controls at either end of a name ("Password:", "api_key =").
-const NAME_EDGES = /^[\p{P}\p{S}\p{Z}\p{Cc}]+|[\p{P}\p{S}\p{Z}\p{Cc}]+$/gu;
+const NAME_EDGES = /^[\p{P}\p{S}\p{Z}\p{Cc}\p{Cf}]+|[\p{P}\p{S}\p{Z}\p{Cc}\p{Cf}]+$/gu;
 
 /**
  * A string that is only a name (K12): at most 256 characters, a letter or digit (in compatibility
@@ -58,12 +58,25 @@ function namesSecretField(key: string, value: unknown): boolean {
   return typeof value === 'string' && isSecretName(value);
 }
 
+/**
+ * The members that name a secret and stay shown as the name they hold. A name field holds the
+ * name; any other member that names a secret may be the value of the pair
+ * ({"label":"Password","value":"Secret2024!"}), so it stays shown only when no name field names
+ * a secret and it is the one member that does ({"OptionName":"pa\nssword","Value":"x"}).
+ */
+function shownNames(naming: Set<string>): Set<string> {
+  const holders = [...naming].filter(isNameField);
+  if (holders.length > 0) return new Set(holders);
+  return naming.size === 1 ? naming : new Set();
+}
+
 function redactObject(object: Record<string, unknown>, depth: number): Record<string, unknown> {
   const entries = Object.entries(object);
   // A member that names a secret hides the values of all the others: {"label":"Password",…}.
   const naming = new Set(
     entries.filter(([key, value]) => namesSecretField(key, value)).map(([key]) => key),
   );
+  const names = shownNames(naming);
   // No prototype, so a "__proto__" key stays a member.
   const shown: Record<string, unknown> = Object.create(null);
   let hiddenNames = 0;
@@ -73,7 +86,7 @@ function redactObject(object: Record<string, unknown>, depth: number): Record<st
     // written can never read "[redacted 2]", since "[" cuts free text.
     const name = plain ? key : hiddenNames++ === 0 ? REDACTED : `[redacted ${hiddenNames}]`;
     const kept =
-      naming.has(key) ||
+      names.has(key) ||
       KEPT_FIELDS.has(key.toLowerCase()) ||
       (key === 'op' && typeof value === 'string' && PATCH_OPS.has(value));
     const hidden = !isPlainName(key) || namesSecret(words(key)) || (naming.size > 0 && !kept);

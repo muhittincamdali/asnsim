@@ -21,6 +21,11 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
   it, or next to a string of control characters alone (`"\t"`).
 - A card number wrapped onto the next line or written with `.`, `,` or `/` between its groups is
   hidden in free text.
+- Webhook answers no longer show the value of a name and value pair when the value names a secret
+  as well (`{"label":"Password","value":"Secret2024!"}`, `{"name":"api_key","value":"livekey"}`,
+  `{"ParameterKey":"DbPassword","ParameterValue":"supersecret"}`).
+- Names are read without zero-width spaces, soft hyphens, word joiners and byte order marks, and a
+  string of those characters alone hides the values next to it, as a string of controls does.
 
 ### Fixed
 
