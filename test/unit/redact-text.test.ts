@@ -1,0 +1,121 @@
+import { describe, expect, it } from 'vitest';
+import { redactBody, redactJson } from '../../src/redact/body.js';
+import { redactText } from '../../src/redact/text.js';
+
+// The free text (§8.5, with the detectors of §8.3) and JSON (§8.1) cases of the shared redaction
+// rules (REDACTION-SPEC 2.1-r2) that apply to the answers asnsim reports. `[R]` is `[redacted]`.
+// Where asnsim hides more than the rules ask (they allow it), the case says so.
+
+const R = '[redacted]';
+
+describe('free text (§8.5)', () => {
+  const cases: [string, string][] = [
+    // #49–51
+    [
+      'GET /api/items status=200 method=GET duration_ms=12',
+      'GET /api/items status=200 method=GET duration_ms=12',
+    ],
+    ['login user=bob status=401 password=hunter2', `login user=${R}`],
+    ['Error: connection refused\nretrying in 5 s', `Error: ${R}`],
+    // #52–54, URLs in text
+    ['see https://x.example/a. Next', 'see https://x.example/a. Next'],
+    ['see https://x.example/a). ok', `see ${R}`],
+    ['see https://x.example/a.. ok', `see ${R}`],
+    ['see "https://x.example/a" ok', `see ${R}`],
+    ['GET https://api.example.com/users/12345678 200', 'GET https://api.example.com/users/:id 200'],
+    ['GET https://api.example.com/items?page=2 done', `GET ${R}`],
+    ['see https://x.example:8080/a ok', `see ${R}`],
+    ['see https://pin.example/a ok', `see ${R}`],
+    ['https://x.example/to ken hunter2', `https://x.example/to ken ${R}`],
+    ['git clone https://bob:hunter2@github.com/x/y.git', `git clone ${R}`],
+    // #55 quoted keys (asnsim cuts at the quote's word)
+    ['cache miss for "session Qz9Wk7rX": refetching', `cache miss for ${R}`],
+    ['x"status": 200', R],
+    // #56 secret names
+    ['pass word hunter2', `pass ${R}`],
+    ['PIN 1234', `PIN ${R}`],
+    ['bypass ok', 'bypass ok'],
+    ['hdr Bearer abcdefgh12345678 ok', `hdr Bearer ${R}`],
+    // #57–59 markup and escapes (asnsim also cuts "a < b")
+    ['<_id>7</_id>', R],
+    ['pattern ^\\d+$ matched', `pattern ${R}`],
+    ['copied to \\\\nas\\backup', `copied to ${R}`],
+    ['user&colon;hunter2', R],
+    ['R&D team', R],
+    // #60 numbers with a colon
+    ['user1:2345678 at 12:30', `user1:${R}`],
+    ['at 12:30 id 7:9hunter2', `at 12:30 id 7:${R}`],
+    ['t 1:482913', `t 1:${R}`],
+    ['at 10.0.0.1:8080 ok', 'at 10.0.0.1:8080 ok'],
+    ['at 2026-10-19T12:30:45.123+03:00 ok', 'at 2026-10-19T12:30:45.123+03:00 ok'],
+    ['line 42:10', 'line 42:10'],
+    // #61 outside printable ASCII
+    ['Merhaba dünya 👋 bye', `Merhaba ${R}`],
+    ['a b', R],
+    ['status=200\u000bok', R],
+    // #62 brackets
+    ['say (hello', `say ${R}`],
+    ['say (hello) ok', 'say (hello) ok'],
+    // §8.3 detectors
+    ['paid 4111 1111 1111 1111 ok', `paid ${R}`],
+    ['ok 4111-1111-1111-1111 ok', `ok ${R}`],
+    ['ref DE89 3704 0044 0532 0130 00 ok', `ref ${R}`],
+    ['mail alice@example.com ok', `mail ${R}`],
+    ['tok eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.sig ok', `tok ${R}`],
+    ['hex 0123456789abcdef0123456789abcdef ok', `hex ${R}`],
+    [
+      'uuid 123e4567-e89b-12d3-a456-426614174000 ok',
+      'uuid 123e4567-e89b-12d3-a456-426614174000 ok',
+    ],
+  ];
+  for (const [text, shown] of cases) {
+    it(JSON.stringify(text), () => expect(redactText(text)).toBe(shown));
+  }
+
+  it('hides the following lines too, and keeps text without a secret as it is', () => {
+    expect(redactText('ok\ntoken: abc\nmore')).toBe(`ok\ntoken: ${R}`);
+    expect(redactText('Unauthorized\n')).toBe('Unauthorized\n');
+    expect(redactText('')).toBe('');
+  });
+});
+
+describe('JSON answers (§8.1)', () => {
+  it('#1, #7 hides values by key and reads strings as free text', () => {
+    expect(redactBody('{"user":"bob","password":"hunter2"}')).toBe(
+      `{"user":"bob","password":"${R}"}`,
+    );
+    expect(redactBody('{"note":"password=hunter2","ok":"fine"}')).toBe(
+      `{"note":"password=${R}","ok":"fine"}`,
+    );
+  });
+
+  it('#6 hides a whole value, object or array', () => {
+    expect(redactBody('{"password":{"a":[1,2]},"x":1}')).toBe(`{"password":"${R}","x":1}`);
+  });
+
+  it('#10, #16 hides what a held name names', () => {
+    expect(redactBody('[["Authorization","Bearer abc"],["Accept","x"]]')).toBe(
+      `[["Authorization","${R}"],["Accept","x"]]`,
+    );
+    expect(redactBody('{"label":"Password","value":"hunter2","x":1}')).toBe(
+      `{"label":"Password","value":"${R}","x":"${R}"}`,
+    );
+  });
+
+  it('#4 hides the value, and the name, of a key that is not a plain name', () => {
+    // Both keys are written [redacted], so the object keeps one of them.
+    expect(redactBody('{"pаssword":"x","user[id]":"z","ok":"1"}')).toBe(`{"${R}":"${R}","ok":"1"}`);
+  });
+
+  it('#13 leaves out JSON deeper than 64 levels', () => {
+    const deep = `${'['.repeat(65)}${']'.repeat(65)}`;
+    expect(redactBody(deep)).toBe('[body omitted: 130 bytes, JSON deeper than 64 levels]');
+    expect(redactJson(JSON.parse(deep))).toBe(R);
+  });
+
+  it('reads anything that is not JSON as free text', () => {
+    expect(redactBody('denied: token SECRET-TOKEN-123')).toBe(`denied: ${R}`);
+    expect(redactBody('{"a":')).toBe(R);
+    expect(redactBody('{"active":true}')).toBe('{"active":true}');
+  });
+});
