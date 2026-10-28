@@ -8,7 +8,6 @@ import {
   oneTimeCharge,
   renew,
   requireSubscription,
-  type Shop,
   subscribe,
   transactionId,
 } from './purchases.js';
@@ -68,7 +67,7 @@ const EXPIRATION_INTENT: Record<string, 1 | 2 | 3 | 4> = {
   PRODUCT_NOT_FOR_SALE: 4,
 };
 
-export class Simulation implements Shop {
+export class Simulation {
   readonly app: AppSettings;
   readonly products: Product[];
   readonly random: Random;
