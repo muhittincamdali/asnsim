@@ -156,7 +156,7 @@ function deliveryOptions(command: Command): Command {
 
 const HELP_AFTER = `
 Exit codes:
-  0  every notification delivered as the App Store expects; decode verified
+  0  every notification passed (answered 200-206, checks matched); decode verified
   1  a delivery, expectation or check failed; decode found a problem
   2  bad arguments, no test chain, a scenario that does not load, or an unexpected error
 
@@ -205,7 +205,7 @@ function workspaceFor(context: Context, dir: string) {
 async function reportRun(context: Context, options: DeliveryOptions, result: RunResult) {
   const summary = result.dryRun
     ? `${result.counts.steps} signed, none sent`
-    : `${result.counts.passed} of ${result.counts.steps} delivered`;
+    : `${result.counts.passed} of ${result.counts.steps} passed`;
   await emit(
     context,
     options,

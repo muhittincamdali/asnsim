@@ -27,10 +27,14 @@ function answer(attempt: Attempt | undefined): string {
   return attempt.timedOut ? 'timeout' : 'no answer';
 }
 
+/**
+ * "3 of 3 notifications passed": delivered with a status the App Store counts as success (or the
+ * one the step expects), and the step's check matched.
+ */
 function verdict(result: RunResult): string {
   const { steps, passed, failed, requests } = result.counts;
   if (result.dryRun) return `${plural(steps, 'notification')} signed, none sent (dry run)`;
-  const head = `${passed} of ${plural(steps, 'notification')} delivered as the App Store expects`;
+  const head = `${passed} of ${plural(steps, 'notification')} passed`;
   return `${head}${failed > 0 ? ` · ${failed} failed` : ''} · ${plural(requests, 'request')}`;
 }
 

@@ -233,7 +233,7 @@ describe('runScenario', () => {
     const [problem] = failed.steps[1]?.findings ?? [];
     expect(problem?.code).toBe('check-failed');
     expect(problem?.message).toContain('$.active: expected false, got true');
-    expect(problem?.fix.steps[0]).toBe('After REFUND: The purchase was refunded or revoked.');
+    expect(problem?.fix.steps[0]).toBe('REFUND: The App Store refunded or revoked the purchase.');
   });
 
   it('reports a webhook that is not there', async () => {

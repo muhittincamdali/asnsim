@@ -224,12 +224,12 @@ function statusFinding(attempt: Attempt, expected?: number | number[]): Finding 
 }
 
 const accessHint: Record<Access, string> = {
-  grant: 'Apple describes this event as one that gives the customer access.',
-  keep: 'Apple asks that access continue (Billing Grace Period).',
-  end: 'Apple says the subscription has ended and the service can stop.',
-  revoke: 'The purchase was refunded or revoked.',
+  grant: 'Apple describes this notification as giving the customer access.',
+  keep: 'Apple asks that access continue during Billing Grace Period.',
+  end: 'Apple says the subscription ended and the service can stop.',
+  revoke: 'The App Store refunded or revoked the purchase.',
   reinstate: 'Apple asks that what the refund removed be reinstated.',
-  unchanged: 'This event does not change access by itself.',
+  unchanged: 'This notification does not change access by itself.',
 };
 
 /** What a step adds to the notification: expectations, a check, a duplicate send, a name. */
@@ -306,7 +306,7 @@ async function execute(
               : finding(
                   'check-failed',
                   `The check ${result.check.method} ${result.check.url} did not match: ${result.check.mismatches.join('; ')}.`,
-                  [`After ${name}: ${accessHint[event.event.access]}`],
+                  [`${name}: ${accessHint[event.event.access]}`],
                 ),
           );
         }
