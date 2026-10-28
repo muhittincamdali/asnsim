@@ -1,0 +1,13 @@
+{
+  "notification": {
+    "notificationType": "TEST",
+    "notificationUUID": "20ae8c57-24e1-4eae-abc4-dcc8cf725b6c",
+    "data": {
+      "bundleId": "com.example.app",
+      "bundleVersion": "1",
+      "environment": "Sandbox"
+    },
+    "version": "2.0",
+    "signedDate": 1790845200000
+  }
+}

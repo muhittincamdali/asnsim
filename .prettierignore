@@ -2,7 +2,7 @@
 dist/
 coverage/
 site/
-test/__snapshots__/
+**/__snapshots__/
 test/data/
 .github/brand/
 _work/

@@ -1,0 +1,32 @@
+{
+  "notification": {
+    "notificationType": "ONE_TIME_CHARGE",
+    "notificationUUID": "20ae8c57-24e1-4eae-abc4-dcc8cf725b6c",
+    "data": {
+      "bundleId": "com.example.app",
+      "bundleVersion": "1",
+      "environment": "Sandbox"
+    },
+    "version": "2.0",
+    "signedDate": 1790845200000
+  },
+  "transaction": {
+    "transactionId": "2679945304175953",
+    "originalTransactionId": "2679945304175953",
+    "bundleId": "com.example.app",
+    "productId": "com.example.coins.100",
+    "purchaseDate": 1790845200000,
+    "originalPurchaseDate": 1790845200000,
+    "quantity": 1,
+    "type": "Consumable",
+    "inAppOwnershipType": "PURCHASED",
+    "signedDate": 1790845200000,
+    "environment": "Sandbox",
+    "transactionReason": "PURCHASE",
+    "storefront": "USA",
+    "storefrontId": "143441",
+    "price": 990,
+    "currency": "USD",
+    "appTransactionId": "583623491049200764"
+  }
+}

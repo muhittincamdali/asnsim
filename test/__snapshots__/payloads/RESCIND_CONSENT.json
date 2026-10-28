@@ -1,0 +1,21 @@
+{
+  "notification": {
+    "notificationType": "RESCIND_CONSENT",
+    "notificationUUID": "20ae8c57-24e1-4eae-abc4-dcc8cf725b6c",
+    "appData": {
+      "bundleId": "com.example.app",
+      "environment": "Sandbox"
+    },
+    "version": "2.0",
+    "signedDate": 1790845200000
+  },
+  "appTransaction": {
+    "receiptType": "Sandbox",
+    "bundleId": "com.example.app",
+    "originalApplicationVersion": "1",
+    "receiptCreationDate": 1790845200000,
+    "originalPurchaseDate": 1790845200000,
+    "originalPlatform": "iOS",
+    "appTransactionId": "583623491049200764"
+  }
+}

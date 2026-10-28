@@ -1,0 +1,377 @@
+{
+  "version": "2026.10.28",
+  "readOn": "2026-10-28",
+  "sources": {
+    "notificationType": "https://developer.apple.com/documentation/appstoreservernotifications/notificationtype",
+    "subtype": "https://developer.apple.com/documentation/appstoreservernotifications/subtype",
+    "payload": "https://developer.apple.com/documentation/appstoreservernotifications/responsebodyv2decodedpayload",
+    "changelog": "https://developer.apple.com/documentation/appstoreservernotifications/app-store-server-notifications-changelog"
+  },
+  "types": [
+    {
+      "type": "SUBSCRIBED",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "INITIAL_BUY",
+          "summary": "The customer bought a subscription in the group for the first time, or first got it through Family Sharing.",
+          "access": "grant"
+        },
+        {
+          "subtype": "RESUBSCRIBE",
+          "summary": "The customer subscribed again to the same or another subscription of the group, or got it again through Family Sharing.",
+          "access": "grant"
+        }
+      ]
+    },
+    {
+      "type": "DID_RENEW",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The active subscription renewed for a new period.",
+          "access": "grant"
+        },
+        {
+          "subtype": "BILLING_RECOVERY",
+          "summary": "A subscription that failed to renew was billed in the retry period and renews again.",
+          "access": "grant"
+        }
+      ]
+    },
+    {
+      "type": "DID_FAIL_TO_RENEW",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "GRACE_PERIOD",
+          "summary": "The renewal failed on a billing issue and the subscription is in Billing Grace Period: keep providing the service.",
+          "access": "keep"
+        },
+        {
+          "subtype": null,
+          "summary": "The renewal failed on a billing issue with no grace period: the App Store retries billing for up to 60 days and you can stop the service.",
+          "access": "end"
+        }
+      ]
+    },
+    {
+      "type": "GRACE_PERIOD_EXPIRED",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "Billing Grace Period ended without a renewal; billing retry continues and you can turn off access.",
+          "access": "end"
+        }
+      ]
+    },
+    {
+      "type": "EXPIRED",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "VOLUNTARY",
+          "summary": "The subscription expired after the customer turned off auto-renewal.",
+          "access": "end"
+        },
+        {
+          "subtype": "BILLING_RETRY",
+          "summary": "The billing retry period ended without a successful renewal.",
+          "access": "end"
+        },
+        {
+          "subtype": "PRICE_INCREASE",
+          "summary": "The customer did not consent to a price increase that needed consent.",
+          "access": "end"
+        },
+        {
+          "subtype": "PRODUCT_NOT_FOR_SALE",
+          "summary": "The product was not for sale when the subscription tried to renew.",
+          "access": "end"
+        },
+        {
+          "subtype": null,
+          "summary": "The subscription expired for another reason.",
+          "access": "end"
+        }
+      ]
+    },
+    {
+      "type": "DID_CHANGE_RENEWAL_STATUS",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "AUTO_RENEW_DISABLED",
+          "summary": "The customer turned off auto-renewal, or the App Store did after a refund request; access lasts to the end of the period.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": "AUTO_RENEW_ENABLED",
+          "summary": "The customer turned auto-renewal back on.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": null,
+          "summary": "Listed in Apple's table without a subtype: the customer cancelled after a price increase notice or consent request.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "DID_CHANGE_RENEWAL_PREF",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "UPGRADE",
+          "summary": "The customer upgraded within the group: the new product starts now with a new period and a prorated refund of the old one.",
+          "access": "grant"
+        },
+        {
+          "subtype": "DOWNGRADE",
+          "summary": "The customer downgraded within the group: the change takes effect at the next renewal.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": null,
+          "summary": "The customer went back to the current product, cancelling a downgrade.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "OFFER_REDEEMED",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "A customer with an active subscription redeemed a promotional offer or offer code for it.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": "UPGRADE",
+          "summary": "The customer redeemed an offer to upgrade; it takes effect now.",
+          "access": "grant"
+        },
+        {
+          "subtype": "DOWNGRADE",
+          "summary": "The customer redeemed an offer to downgrade; it takes effect at the next renewal.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "PRICE_INCREASE",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "PENDING",
+          "summary": "The customer was told of a price increase that needs consent and has not answered.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": "ACCEPTED",
+          "summary": "The customer consented to the price increase, or was told of one that needs no consent.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "REFUND",
+      "payload": "data",
+      "products": ["auto-renewable", "consumable", "non-consumable", "non-renewing"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The App Store refunded the transaction; revocationDate and revocationReason say when and why.",
+          "access": "revoke"
+        }
+      ]
+    },
+    {
+      "type": "REFUND_DECLINED",
+      "payload": "data",
+      "products": ["auto-renewable", "consumable", "non-consumable", "non-renewing"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The App Store declined a refund request.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "REFUND_REVERSED",
+      "payload": "data",
+      "products": ["auto-renewable", "consumable", "non-consumable", "non-renewing"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The App Store reversed a refund after a dispute: reinstate what the refund took away.",
+          "access": "reinstate"
+        }
+      ]
+    },
+    {
+      "type": "CONSUMPTION_REQUEST",
+      "payload": "data",
+      "products": ["consumable", "auto-renewable"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The customer asked for a refund and the App Store asks for consumption information; consumptionRequestReason gives their reason.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "REVOKE",
+      "payload": "data",
+      "products": ["auto-renewable", "non-consumable"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "A purchase the customer had through Family Sharing, or through an organization that assigned it, is no longer available.",
+          "access": "revoke"
+        }
+      ]
+    },
+    {
+      "type": "RENEWAL_EXTENDED",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The App Store extended the renewal date of one subscription at your request.",
+          "access": "grant"
+        }
+      ]
+    },
+    {
+      "type": "RENEWAL_EXTENSION",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "events": [
+        {
+          "subtype": "SUMMARY",
+          "summary": "The App Store finished extending renewal dates for all eligible subscribers; the payload has a summary instead of data.",
+          "access": "unchanged",
+          "payload": "summary"
+        },
+        {
+          "subtype": "FAILURE",
+          "summary": "Extending the renewal date failed for one subscription.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "ONE_TIME_CHARGE",
+      "payload": "data",
+      "products": ["consumable", "non-consumable", "non-renewing"],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "The customer bought a consumable, non-consumable or non-renewing subscription, or got a non-consumable through Family Sharing.",
+          "access": "grant"
+        }
+      ]
+    },
+    {
+      "type": "TEST",
+      "payload": "data",
+      "products": [],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "Sent only when you call Request a Test Notification, to check that your server receives notifications.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "EXTERNAL_PURCHASE_TOKEN",
+      "payload": "externalPurchaseToken",
+      "products": [],
+      "events": [
+        {
+          "subtype": "UNREPORTED",
+          "summary": "Apple created an external purchase token for the app but received no report for it.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": "CREATED",
+          "summary": "Apple created a custom link token for the app.",
+          "access": "unchanged"
+        },
+        {
+          "subtype": "ACTIVE_TOKEN_REMINDER",
+          "summary": "Monthly reminder that a custom link token is still active.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "RESCIND_CONSENT",
+      "payload": "appData",
+      "products": [],
+      "events": [
+        {
+          "subtype": null,
+          "summary": "A parent or guardian withdrew consent for a child's use of the app; the payload has appData with a signed app transaction.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "METADATA_UPDATE",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "advancedCommerce": true,
+      "events": [
+        {
+          "subtype": null,
+          "summary": "Advanced Commerce API: you changed a subscription's metadata with Change Subscription Metadata.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "MIGRATION",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "advancedCommerce": true,
+      "events": [
+        {
+          "subtype": null,
+          "summary": "Advanced Commerce API: you migrated a subscription with Migrate a Subscription to Advanced Commerce API.",
+          "access": "unchanged"
+        }
+      ]
+    },
+    {
+      "type": "PRICE_CHANGE",
+      "payload": "data",
+      "products": ["auto-renewable"],
+      "advancedCommerce": true,
+      "events": [
+        {
+          "subtype": null,
+          "summary": "Advanced Commerce API: you called Change Subscription Price.",
+          "access": "unchanged"
+        }
+      ]
+    }
+  ]
+}

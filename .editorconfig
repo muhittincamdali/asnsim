@@ -12,6 +12,6 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 # Recorded payloads and snapshots are kept byte for byte as they were written.
-[{test/data,test/__snapshots__}/**]
+[{test/data/**,**/__snapshots__/**}]
 trim_trailing_whitespace = false
 insert_final_newline = unset
