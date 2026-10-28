@@ -31,7 +31,8 @@ only to servers they start on 127.0.0.1; they need neither the network nor an Ap
 | `npm run docs`      | Builds the documentation site into `site/` (run `npm ci --prefix docs/site` once first) |
 | `npm run smoke`     | Packs the package, installs the tarball and runs it                                     |
 
-The Swift example needs Swift 6.0 or later: see [examples/swift-verifier](examples/swift-verifier).
+The Swift example needs Swift 6.4 (its Package.resolved pins packages that need it): see
+[examples/swift-verifier](examples/swift-verifier).
 
 ## Where things live
 

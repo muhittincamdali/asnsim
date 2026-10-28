@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -314,7 +314,7 @@ Gelesen am 28. Oktober 2026:
 ## Voraussetzungen
 
 Node.js 22.12 oder neuer unter macOS, Linux oder Windows. Sonst nichts: kein Xcode, kein Apple-Konto, kein
-Netzwerk außer deinem Webhook. Das Swift-Beispiel braucht Swift 6.0 oder neuer.
+Netzwerk außer deinem Webhook. Das Swift-Beispiel braucht Swift 6.4: Seine Package.resolved legt swift-collections 1.7.5 fest, das Swift tools 6.4 voraussetzt.
 
 ## Architektur
 

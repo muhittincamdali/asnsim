@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -293,7 +293,7 @@ API リファレンスとガイド：[muhittincamdali.github.io/asnsim](https://
 ## 動作要件
 
 macOS、Linux、Windows 上の Node.js 22.12 以降。ほかには何も要りません。Xcode も Apple アカウントも不要で、
-webhook 以外のネットワークも使いません。Swift のサンプルには Swift 6.0 以降が必要です。
+webhook 以外のネットワークも使いません。Swift のサンプルには Swift 6.4 が必要です。Package.resolved が固定している swift-collections 1.7.5 が Swift tools 6.4 を必要とするためです。
 
 ## アーキテクチャ
 

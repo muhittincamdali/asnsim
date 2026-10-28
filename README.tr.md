@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -313,7 +313,7 @@ API başvurusu ve rehberler: [muhittincamdali.github.io/asnsim](https://muhittin
 ## Gereksinimler
 
 macOS, Linux veya Windows üzerinde Node.js 22.12 veya üstü. Başka bir şey gerekmez: Xcode yok, Apple hesabı yok,
-webhook'unuz dışında ağ yok. Swift örneği için Swift 6.0 veya üstü gerekir.
+webhook'unuz dışında ağ yok. Swift örneği Swift 6.4 gerektirir: Package.resolved dosyası, Swift tools 6.4 isteyen swift-collections 1.7.5'i sabitler.
 
 ## Mimari
 

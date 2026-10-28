@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@4c4a7c9cf9b997c572d3d19b8a246ad01d82a839 status=reviewed -->
+<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -287,7 +287,7 @@ API 参考与指南：[muhittincamdali.github.io/asnsim](https://muhittincamdali
 
 ## 系统要求
 
-macOS、Linux 或 Windows 上的 Node.js 22.12 或更高版本。无需其他任何东西：不需要 Xcode，不需要 Apple 账号，除你的 webhook 之外也不需要网络。Swift 示例需要 Swift 6.0 或更高版本。
+macOS、Linux 或 Windows 上的 Node.js 22.12 或更高版本。无需其他任何东西：不需要 Xcode，不需要 Apple 账号，除你的 webhook 之外也不需要网络。Swift 示例需要 Swift 6.4：它的 Package.resolved 锁定了 swift-collections 1.7.5，而该版本需要 Swift tools 6.4。
 
 ## 架构
 

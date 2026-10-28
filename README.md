@@ -334,7 +334,8 @@ Read on 28 October 2026:
 ## Requirements
 
 Node.js 22.12 or later on macOS, Linux or Windows. Nothing else: no Xcode, no Apple account, no
-network beyond your webhook. The Swift example needs Swift 6.0 or later.
+network beyond your webhook. The Swift example needs Swift 6.4: its
+Package.resolved pins swift-collections 1.7.5, which needs Swift tools 6.4.
 
 ## Architecture
 
