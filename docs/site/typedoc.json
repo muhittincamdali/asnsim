@@ -1,0 +1,46 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "asnsim",
+  "entryPoints": [
+    "../../src/index.ts"
+  ],
+  "tsconfig": "./tsconfig.json",
+  "out": "../../site",
+  "readme": "./index.md",
+  "projectDocuments": [
+    "../guides/trust-the-test-root.md",
+    "../guides/scenarios.md",
+    "../guides/notifications.md",
+    "../guides/decode.md",
+    "../guides/ci.md",
+    "../guides/troubleshooting.md"
+  ],
+  "customCss": "./theme.css",
+  "navigationLinks": {
+    "GitHub": "https://github.com/muhittincamdali/asnsim"
+  },
+  "sourceLinkTemplate": "https://github.com/muhittincamdali/asnsim/blob/{gitRevision}/{path}#L{line}",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "treatWarningsAsErrors": true,
+  "alwaysCreateEntryPointModule": false,
+  "highlightLanguages": [
+    "bash",
+    "java",
+    "javascript",
+    "js",
+    "json",
+    "python",
+    "sh",
+    "swift",
+    "text",
+    "ts",
+    "typescript",
+    "yaml"
+  ]
+}
