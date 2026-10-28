@@ -1,4 +1,4 @@
-import { DATE_FIELDS, type DecodedPart, type DecodeResult } from '../decode/decode.js';
+import { DATE_FIELDS, type DecodedPart, type DecodeResult, NESTED_JWS } from '../decode/decode.js';
 import { formatName } from '../pki/certificate.js';
 import { VERSION } from '../version.js';
 import {
@@ -18,10 +18,10 @@ import type { RenderOptions } from './run.js';
 
 type Row = [key: string, value: string];
 
-function value(key: string, raw: unknown): string {
+function value(key: string, raw: unknown, decoded: boolean): string {
   if (typeof raw === 'string') {
-    if (/^ey[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*$/.test(raw)) {
-      return `${raw.slice(0, 16)}… (JWS, below)`;
+    if (NESTED_JWS.test(raw)) {
+      return `${raw.slice(0, 16)}… (JWS, ${decoded ? 'below' : 'not decoded'})`;
     }
     return JSON.stringify(raw);
   }
@@ -32,15 +32,22 @@ function value(key: string, raw: unknown): string {
   return JSON.stringify(raw) ?? String(raw);
 }
 
-/** The payload as key paths: data.environment, summary.productId … */
-export function rows(payload: unknown, prefix = ''): Row[] {
+/**
+ * The payload as key paths: data.environment, summary.productId … A nested JWS says "below" when
+ * its path is in `decoded` (the parts that follow), and "not decoded" otherwise.
+ */
+export function rows(
+  payload: unknown,
+  prefix = '',
+  decoded: ReadonlySet<string> = new Set(),
+): Row[] {
   if (typeof payload !== 'object' || payload === null || Array.isArray(payload)) {
-    return [[prefix || 'payload', value(prefix, payload)]];
+    return [[prefix || 'payload', value(prefix, payload, decoded.has(prefix))]];
   }
   return Object.entries(payload).flatMap(([key, entry]): Row[] =>
     typeof entry === 'object' && entry !== null && !Array.isArray(entry)
-      ? rows(entry, `${prefix}${key}.`)
-      : [[`${prefix}${key}`, value(key, entry)]],
+      ? rows(entry, `${prefix}${key}.`, decoded)
+      : [[`${prefix}${key}`, value(key, entry, decoded.has(`${prefix}${key}`))]],
   );
 }
 
@@ -71,12 +78,18 @@ const algorithm = (alg: unknown) =>
 const chainKey = (part: DecodedPart) =>
   part.verification?.certificates.map((certificate) => certificate.sha256).join(' ') ?? '';
 
-function plainPart(part: DecodedPart, paint: Paint, width: number, sameChainAs?: string): string[] {
+function plainPart(
+  part: DecodedPart,
+  decoded: ReadonlySet<string>,
+  paint: Paint,
+  width: number,
+  sameChainAs?: string,
+): string[] {
   const state = status(part);
   const lines = [
     `${paint('bold', part.path)}  ${part.kind}  ${paint('dim', `${algorithm(part.header.alg)} · ${part.header.x5c} certificate${part.header.x5c === 1 ? '' : 's'}`)}  ${paint(state.style, state.text)}`,
   ];
-  const entries = rows(part.payload);
+  const entries = rows(part.payload, '', decoded);
   const keyWidth = Math.min(Math.max(...entries.map(([key]) => key.length), 8), 34);
   for (const [key, text] of entries) {
     lines.push(
@@ -108,11 +121,12 @@ function plain(result: DecodeResult, options: RenderOptions): string {
     paint(result.problems.length > 0 ? 'red' : 'green', headline(result)),
     '',
   ];
+  const decoded = new Set(result.parts.map((part) => part.path));
   result.parts.forEach((part, index) => {
     const earlier = result.parts
       .slice(0, index)
       .find((other) => chainKey(other) !== '' && chainKey(other) === chainKey(part));
-    lines.push(...plainPart(part, paint, width, earlier?.path), '');
+    lines.push(...plainPart(part, decoded, paint, width, earlier?.path), '');
   });
   if (result.problems.length > 0) {
     lines.push(paint('bold', 'Problems'));
@@ -135,6 +149,7 @@ function markdown(result: DecodeResult): string {
     '',
     `**${markdownText(headline(result))}**`,
   ];
+  const decoded = new Set(result.parts.map((part) => part.path));
   for (const part of result.parts) {
     lines.push(
       '',
@@ -144,7 +159,7 @@ function markdown(result: DecodeResult): string {
       '',
     );
     lines.push('| Field | Value |', '| ----- | ----- |');
-    for (const [key, text] of rows(part.payload)) {
+    for (const [key, text] of rows(part.payload, '', decoded)) {
       lines.push(`| ${markdownCode(key)} | ${markdownText(text)} |`);
     }
     if (part.verification) {

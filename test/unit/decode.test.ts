@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decode, DecodeError, findToken } from '../../src/decode/decode.js';
+import { renderDecode } from '../../src/report/decode.js';
 import { signJws } from '../../src/jws/jws.js';
 import { createTestChain } from '../../src/pki/chain.js';
 import { signParts } from '../../src/sim/payloads.js';
@@ -10,6 +11,10 @@ const chain = createTestChain();
 const roots = [{ label: 'asnsim test root', der: chain.root }];
 const xcode = (name: string) =>
   readFileSync(new URL(`../data/xcode/${name}`, import.meta.url), 'utf8').trim();
+const base64url = (text: string) => Buffer.from(text).toString('base64url');
+/** An unsigned JWS whose payload is `payload`, as written. */
+const jwsOf = (payload: string) =>
+  `${base64url(JSON.stringify({ alg: 'ES256', x5c: [] }))}.${base64url(payload)}.c2ln`;
 const signed = (type: string, subtype?: string | null) =>
   signParts(standalone(type, subtype, simulation({ start: new Date() })).last, chain).signedPayload;
 
@@ -121,6 +126,69 @@ describe('decode', () => {
     expect(result.parts).toHaveLength(1);
     expect(result.notes[0]).toBe(
       'data.signedTransactionInfo is not a readable JWS: A JWS has three parts separated by dots.',
+    );
+  });
+
+  it('reports a JWS it does not decode, wherever it is, as a problem', () => {
+    const keys = [chain.signing, chain.intermediate, chain.root];
+    // Written as text: JSON.stringify of an array 5,000 levels deep overflows the stack on Linux.
+    const deep = jwsOf(`${'['.repeat(5000)}${']'.repeat(5000)}`);
+    const token = signJws(
+      {
+        notificationType: 'TEST',
+        signedDate: Date.now(),
+        signedTransactionInfo: deep,
+        list: [{ jws: deep }],
+        version: '1.2.3',
+      },
+      chain.signingKey,
+      keys,
+    );
+    const result = decode(token, { roots });
+    expect(result.ok).toBe(false);
+    expect(result.parts).toHaveLength(1);
+    expect(result.problems).toEqual([
+      expect.objectContaining({
+        path: 'jws',
+        code: 'unread-jws',
+        message: expect.stringContaining(
+          '2 JWS were not decoded: signedTransactionInfo, list[0].jws.',
+        ),
+      }),
+    ]);
+    // A JWS the reader decodes is not one.
+    expect(decode(signed('REFUND'), { roots }).problems).toEqual([]);
+  });
+
+  it('leaves out a payload nested more than 64 levels deep, in every report format', () => {
+    const deep = jwsOf(`${'['.repeat(100_000)}${']'.repeat(100_000)}`);
+    const outer = jwsOf(
+      JSON.stringify({ notificationType: 'TEST', data: { signedTransactionInfo: deep } }),
+    );
+    const result = decode(outer, { verify: false });
+    expect(result.parts.map((part) => part.path)).toEqual(['jws', 'data.signedTransactionInfo']);
+    expect(result.parts[1]?.payload).toBe('[payload nested more than 64 levels deep, not shown]');
+    expect(result.problems).toEqual([
+      expect.objectContaining({ path: 'data.signedTransactionInfo', code: 'deep-payload' }),
+    ]);
+    for (const format of ['tty', 'text', 'markdown', 'json'] as const) {
+      expect(renderDecode(result, format)).toContain('deep-payload');
+    }
+    // 64 levels are still shown.
+    const shallow = jwsOf(`${'['.repeat(64)}${']'.repeat(64)}`);
+    expect(decode(shallow, { verify: false }).problems).toEqual([]);
+  });
+
+  it('lists at most five unread JWS by path', () => {
+    const jws = signJws({ a: 1 }, chain.signingKey, [chain.signing]);
+    const token = signJws(
+      { notificationType: 'TEST', signedDate: Date.now(), list: Array(7).fill(jws) },
+      chain.signingKey,
+      [chain.signing, chain.intermediate, chain.root],
+    );
+    const [problem] = decode(token, { roots }).problems;
+    expect(problem?.message).toContain(
+      '7 JWS were not decoded: list[0], list[1], list[2], list[3], list[4], and 2 more.',
     );
   });
 });
