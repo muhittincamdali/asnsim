@@ -1,0 +1,10 @@
+description: A price increase that needs consent goes unanswered and the subscription expires at renewal.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+  - type: PRICE_INCREASE
+    subtype: PENDING
+    price: 12.99
+    after: P7D
+  - type: EXPIRED
+    subtype: PRICE_INCREASE
