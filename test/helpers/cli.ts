@@ -36,6 +36,14 @@ export async function asnsim(
   return { code, stdout, stderr };
 }
 
-/** Report text with request times replaced, so it can be compared with a snapshot. */
+/**
+ * Report text with request times replaced, so it can be compared with a snapshot. The text report
+ * pads the time to a column; there the replacement keeps the column's width, so a request of 12 ms
+ * and one of 2 ms give the same line.
+ */
 export const stableTimes = (text: string) =>
-  text.replace(/\b\d+ ms\b/g, 'N ms').replace(/"ms": \d+/g, '"ms": 0');
+  text
+    .replace(/( *)\b\d+ ms\b/g, (match, spaces: string) =>
+      spaces.length > 1 ? 'N ms'.padStart(match.length) : `${spaces}N ms`,
+    )
+    .replace(/"ms": \d+/g, '"ms": 0');
