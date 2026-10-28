@@ -175,3 +175,59 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
     expect(redactBody(body)).not.toMatch(/hunter2/);
   });
 });
+
+describe('detectors (§8.3)', () => {
+  // asnsim hides every finding whole, so the masks of the reference package (•••• 1111) are [R].
+  const cases: [string, string, string][] = [
+    ['#25', 'paid 4111 1111 1111 1111 ok', `paid ${R}`],
+    ['#25', 'ok 4111-1111-1111-1111 ok', `ok ${R}`],
+    ['#26', '٤٢٤٢ ٤٢٤٢ ٤٢٤٢ ٤٢٤٢', R],
+    ['#27', 'ref DE89 3704 0044 0532 0130 00 ok', `ref ${R}`],
+    // More than the rules: 13 or more digits are hidden whatever their letters.
+    ['#27', 'de89370400440532013000 lowercase', R],
+    ['#28', 'mail alice@example.com ok', `mail ${R}`],
+    ['#29', 'contact alice%40example.com', `contact ${R}`],
+    ['#30', 'tok eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.dozjgNryP4J3jVmNHl0w5N ok', `tok ${R}`],
+    ['#31', 'hdr Bearer abcdefgh12345678 ok', `hdr Bearer ${R}`],
+    ['#31', 'hdr bearer abcdefgh12345678 ok', `hdr bearer ${R}`],
+    ['#32', 'hex 0123456789abcdef0123456789abcdef ok', `hex ${R}`],
+    [
+      '#32',
+      'uuid 123e4567-e89b-12d3-a456-426614174000 ok',
+      'uuid 123e4567-e89b-12d3-a456-426614174000 ok',
+    ],
+    ['#33', 'git clone https://bob:hunter2@github.com/x/y.git', `git clone ${R}`],
+    ['#33', 'redis://:hunter2@host', R],
+    ['#35', 'paid with 4111 1111 1111\u20281111', `paid with ${R}`],
+    ['#35', 'paid with 4111 1111 1111\u000b1111', `paid with ${R}`],
+    ['#35', 'paid 4111\f1111\u00851111\u20291111', `paid ${R}`],
+    ['#35', 'mail ali\u2028ce@example.com ok', `mail ${R}`],
+    // More than the rules, which let a line break end a card number: asnsim reads groups across
+    // line breaks too (SF-ASN-6), as a wrapped log line would split them.
+    ['#36', '4111 1111 1111\n1111', R],
+    ['SF-ASN-6', '4111 1111\n1111 1111', R],
+    ['SF-ASN-6', 'paid 4111 1111\r\n\r\n1111 1111', `paid ${R}`],
+    ['SF-ASN-6', '4111 1111. 1111 1111', R],
+    ['SF-ASN-6', '4111.1111.1111.1111', R],
+    ['SF-ASN-6', '4111/1111/1111/1111', R],
+    ['SF-ASN-6', 'card no 4111 / 1111 / 1111 / 1111', `card ${R}`],
+    ['SF-ASN-6', 'no 4111 - 1111 - 1111 - 1111 ok', `no ${R}`],
+    ['SF-ASN-6', 'no 4111, 1111, 1111, 1111', `no ${R}`],
+    // Short numbers and times stay.
+    ['D1', 'at 12:30 and 13:45, 10 of 12 items ok', 'at 12:30 and 13:45, 10 of 12 items ok'],
+    // Groups further apart than eight white space characters are two numbers.
+    [
+      'D1',
+      `id 4111 1111${'\n'.repeat(9)}1111 1111 ok`,
+      `id 4111 1111${'\n'.repeat(9)}1111 1111 ok`,
+    ],
+  ];
+  for (const [rule, text, shown] of cases) {
+    it(`${rule} ${JSON.stringify(text)}`, () => expect(redactText(text)).toBe(shown));
+  }
+
+  it('#34 hides names that hold a finding', () => {
+    const shown = redactBody('{"4111111111111111":1,"alice@example.com":2}');
+    expect(shown).not.toMatch(/4111|alice/);
+  });
+});
