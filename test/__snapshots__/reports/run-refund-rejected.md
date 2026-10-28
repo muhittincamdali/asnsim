@@ -13,7 +13,7 @@ A one-week free trial, its first paid renewal, then a refund of that renewal.
 | 2 | DID\_RENEW | 200 | N ms |  | ok |
 | 3 | REFUND | 500 | N ms |  | **rejected** |
 
-**2 of 3 notifications delivered as the App Store expects · 1 failed · 3 requests**
+**2 of 3 notifications passed · 1 failed · 3 requests**
 
 ## Failures
 

@@ -6,4 +6,4 @@ Sandbox · com.example.pantry · dated by the scenario
   2  DID_RENEW                                      200     N ms  ok
   3  REFUND                                         200     N ms  ok
 
-3 of 3 notifications delivered as the App Store expects · 3 requests
+3 of 3 notifications passed · 3 requests

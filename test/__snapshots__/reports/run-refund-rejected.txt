@@ -17,4 +17,4 @@ Sandbox · com.example.pantry · dated by the scenario
          retry them.
        https://github.com/muhittincamdali/asnsim/blob/main/docs/guides/troubleshooting.md#rejected
 
-2 of 3 notifications delivered as the App Store expects · 1 failed · 3 requests
+2 of 3 notifications passed · 1 failed · 3 requests
