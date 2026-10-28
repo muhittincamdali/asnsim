@@ -1,8 +1,7 @@
 import { existsSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { type Command, Option } from 'commander';
-import { decode } from '../decode/decode.js';
+import { DecodeError, decode } from '../decode/decode.js';
 import { readCertificates } from '../pki/certificate.js';
 import type { TrustedRoot } from '../pki/verify.js';
 import { renderDecode } from '../report/decode.js';
@@ -27,6 +26,7 @@ import {
   UsageError,
   workspaceFor,
 } from './context.js';
+import { InputTooLarge, readFileLimited } from './input.js';
 import { date, integer, type OutputOptions, outputOptions } from './options.js';
 
 // The commands that do not deliver: init, payload and decode.
@@ -146,15 +146,30 @@ export function addPayload(root: Command, context: Context): void {
     );
 }
 
+/** The bytes of a file decode reads, at most 2 MB of them. */
+async function readSmallFile(path: string, shown: string): Promise<Buffer> {
+  try {
+    return await readFileLimited(path);
+  } catch (error) {
+    if (error instanceof InputTooLarge) throw new DecodeError(`${shown} is ${error.message}.`);
+    throw new UsageError(`Cannot read ${shown}.`);
+  }
+}
+
 /** The text to decode: standard input for `-`, a file when one is there, else the token itself. */
 async function readInput(io: CliEnvironment, input: string): Promise<string> {
   if (input === '-') {
     if (!io.stdin)
       throw new UsageError('Give a file or the token, or pipe it into asnsim decode -.');
-    return io.stdin();
+    try {
+      return await io.stdin();
+    } catch (error) {
+      if (error instanceof InputTooLarge) throw new DecodeError(`The input is ${error.message}.`);
+      throw error;
+    }
   }
   const file = resolve(io.cwd, input);
-  return existsSync(file) ? readFile(file, 'utf8') : input;
+  return existsSync(file) ? (await readSmallFile(file, input)).toString('utf8') : input;
 }
 
 /** The test root in `dir` when it exists, and every certificate in the `--root` files. */
@@ -168,13 +183,11 @@ async function trustedRoots(
   if (existsSync(testRoot)) {
     roots.push({
       label: `asnsim test root (${join(dir, FILES.rootDer)})`,
-      der: Uint8Array.from(await readFile(testRoot)),
+      der: Uint8Array.from(await readSmallFile(testRoot, join(dir, FILES.rootDer))),
     });
   }
   for (const file of files) {
-    const bytes = await readFile(resolve(io.cwd, file)).catch(() => {
-      throw new UsageError(`Cannot read ${file}.`);
-    });
+    const bytes = await readSmallFile(resolve(io.cwd, file), file);
     for (const der of readCertificates(Uint8Array.from(bytes))) roots.push({ label: file, der });
   }
   return roots;

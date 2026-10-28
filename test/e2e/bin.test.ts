@@ -50,4 +50,21 @@ describe('dist/cli/main.js', () => {
     expect(result.stdout).toBe('');
     expect(result.stderr).toContain('Run `asnsim init` first');
   });
+
+  // An endless file or stream is refused after 2 MB instead of being read whole (it used to grow
+  // to gigabytes of memory).
+  it.skipIf(process.platform === 'win32')('refuses /dev/zero and a large pipe after 2 MB', () => {
+    const cwd = scratchDir('bin-large');
+    const started = performance.now();
+    const zero = asnsim(['decode', '/dev/zero'], cwd);
+    expect(performance.now() - started).toBeLessThan(2000);
+    expect(zero.status).toBe(2);
+    expect(zero.stderr).toContain('/dev/zero is larger than 2 MB.');
+    const piped = asnsim(['decode', '-'], cwd, 'a'.repeat(3_000_000));
+    expect(piped.status).toBe(2);
+    expect(piped.stderr).toContain('The input is larger than 2 MB.');
+    const root = asnsim(['decode', 'x', '--root', '/dev/zero'], cwd);
+    expect(root.status).toBe(2);
+    expect(root.stderr).toContain('/dev/zero is larger than 2 MB.');
+  });
 });
