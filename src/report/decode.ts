@@ -39,7 +39,9 @@ function status(part: DecodedPart): { text: string; style: 'green' | 'red' | 'ye
   if (part.skipped === 'xcode') return { text: 'not checked: signed by Xcode', style: 'yellow' };
   if (part.skipped) return { text: 'not checked (--no-verify)', style: 'yellow' };
   const verification = part.verification;
-  if (verification?.ok) return { text: `verified · ${verification.root}`, style: 'green' };
+  if (verification?.ok) {
+    return { text: `verified · ${oneLine(verification.root ?? '')}`, style: 'green' };
+  }
   return { text: 'NOT verified', style: 'red' };
 }
 
@@ -53,13 +55,17 @@ function headline(result: DecodeResult): string {
   return `${result.parts.length} JWS decoded, ${checked.length} verified against ${roots.join(', ')}`;
 }
 
+/** The header's alg as printed: a string from the JWS header, cleaned; anything else as JSON. */
+const algorithm = (alg: unknown) =>
+  cut(oneLine(typeof alg === 'string' ? alg : (JSON.stringify(alg) ?? 'none')), 40);
+
 const chainKey = (part: DecodedPart) =>
   part.verification?.certificates.map((certificate) => certificate.sha256).join(' ') ?? '';
 
 function plainPart(part: DecodedPart, paint: Paint, width: number, sameChainAs?: string): string[] {
   const state = status(part);
   const lines = [
-    `${paint('bold', part.path)}  ${part.kind}  ${paint('dim', `${String(part.header.alg)} · ${part.header.x5c} certificate${part.header.x5c === 1 ? '' : 's'}`)}  ${paint(state.style, state.text)}`,
+    `${paint('bold', part.path)}  ${part.kind}  ${paint('dim', `${algorithm(part.header.alg)} · ${part.header.x5c} certificate${part.header.x5c === 1 ? '' : 's'}`)}  ${paint(state.style, state.text)}`,
   ];
   const entries = rows(part.payload);
   const keyWidth = Math.min(Math.max(...entries.map(([key]) => key.length), 8), 34);

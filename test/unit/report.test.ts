@@ -103,3 +103,26 @@ describe('renderDecode', () => {
     expect(text).toContain('"TEST\\u001b[2J"');
   });
 });
+
+describe('renderDecode with a hostile header', () => {
+  it('prints the header’s alg cleaned, on one line', () => {
+    const chain = createTestChain();
+    const header = Buffer.from(
+      JSON.stringify({
+        alg: 'ES256\u001b[31m\nX',
+        x5c: [chain.signing, chain.intermediate, chain.root].map((der) =>
+          Buffer.from(der).toString('base64'),
+        ),
+      }),
+    ).toString('base64url');
+    const body = Buffer.from(
+      JSON.stringify({ notificationType: 'TEST', signedDate: Date.now() }),
+    ).toString('base64url');
+    const token = `${header}.${body}.${Buffer.alloc(64).toString('base64url')}`;
+    for (const format of ['tty', 'text'] as const) {
+      const text = renderDecode(decode(token), format, { color: true });
+      expect(text, format).not.toContain('ES256\u001b');
+      expect(text, format).toContain('ES256<U+001B>[31m X');
+    }
+  });
+});
