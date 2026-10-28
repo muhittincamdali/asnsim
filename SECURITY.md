@@ -67,7 +67,7 @@ credentials out of test webhooks.
 **What asnsim reads.** Scenario files up to 1 MB and 500 steps, decode input up to 2 MB, a JWS up to
 1,000,000 characters, DER nested at most 32 levels, YAML with at most 100 aliases, and the first
 64 KB of each answer. Decode input and `--root` files are read as a stream and refused at the
-first byte past 2 MB: `asnsim decode /dev/zero` stops with exit 2 in 0.11 to 0.13 seconds at
+first byte past 2 MB: `asnsim decode /dev/zero` stops with exit 2 in 0.10 to 0.13 seconds at
 72 MB maximum resident set size (measured on a Mac (Apple silicon) with Node.js 26). Webhook answers and decoded fields are printed with control and
 bidirectional characters shown as `<U+XXXX>`, so they cannot rewrite the screen, recolour the
 terminal or reorder text; JSON reports keep them as they were.

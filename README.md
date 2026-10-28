@@ -237,7 +237,7 @@ console.log(result.ok, result.counts);
 | Apple's real chain (Apple Root CA - G3, WWDR G6, the 2025 receipt signing certificate) passes decode's chain checks | [test/unit/verify.test.ts](test/unit/verify.test.ts)                          |
 | A transaction and renewal info from StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) decode          | [test/data/xcode](test/data/xcode)                                          |
 
-The suite has 442 tests in 24 files (unit, integration, snapshot and end-to-end), all passing with
+The suite has 708 tests in 26 files (unit, integration, snapshot and end-to-end), all passing with
 `npm test` on 28 October 2026 on a Mac (Apple silicon) with Node.js 26.
 
 ## Demo
@@ -252,8 +252,8 @@ The suite has 442 tests in 24 files (unit, integration, snapshot and end-to-end)
 
 Measured on 28 October 2026 on a Mac (Apple silicon, M5 Max) with Node.js 26.12.1, seven runs
 each, Node.js start-up included: `asnsim send --all` against examples/node-receiver (40
-notifications, each verified by Apple's library in the receiver) took 0.16 to 0.23 seconds,
-median 0.17; the same with `--dry-run` 0.11 to 0.13 seconds.
+notifications, each verified by Apple's library in the receiver) took 0.17 to 0.20 seconds,
+median 0.18; the same with `--dry-run` 0.13 to 0.14 seconds. Other work kept the machine's load average near 11 (18 cores) during the runs.
 
 ## Status
 
@@ -282,7 +282,7 @@ median 0.17; the same with `--dry-run` 0.11 to 0.13 seconds.
   checks are on; the test chain has no OCSP server, so tests run with them off.
 - **One customer per scenario,** with one subscription group and any one-time purchases.
 - **Bounded input.** Scenario files up to 1 MB and 500 steps, decode input up to 2 MB, a JWS up to
-  1,000,000 characters, certificates nested at most 32 levels, and the first 64 KB of each answer.
+  1,000,000 characters, certificates nested at most 32 levels, and the first 64 KB of each answer. Decode input and `--root` files are read as a stream and refused at the first byte past 2 MB: `asnsim decode /dev/zero` stops in 0.10 to 0.13 seconds at 72 MB of memory (Mac (Apple silicon), Node.js 26).
 
 ## Documentation
 

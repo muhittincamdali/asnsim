@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
+<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | Apple'ın gerçek zinciri (Apple Root CA - G3, WWDR G6, 2025 receipt signing sertifikası) decode'un zincir kontrollerinden geçer                   | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                  |
 | StoreKit Testing'den (Xcode 27.1, iOS 27.0 Simulator) bir işlem ve yenileme bilgisi çözülür                                                      | [test/data/xcode](test/data/xcode)                                                                                    |
 
-Test paketi 24 dosyada 442 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
+Test paketi 26 dosyada 708 testten oluşur (birim, entegrasyon, snapshot ve uçtan uca); hepsi 28 Ekim 2026'da bir Mac'te (Apple silicon) Node.js 26 ile `npm test` çalıştırılarak geçti.
 
 ## Demo
 
@@ -231,7 +231,7 @@ Test paketi 24 dosyada 442 testten oluşur (birim, entegrasyon, snapshot ve uçt
 
 28 Ekim 2026'da Node.js 26.12.1 ile bir Mac'te (Apple silicon, M5 Max) ölçüldü; her biri yedi çalıştırma,
 Node.js başlangıç süresi dahil: examples/node-receiver'a karşı `asnsim send --all` (alıcıda her biri Apple'ın kütüphanesiyle
-doğrulanan 40 bildirim) 0,16 ile 0,23 saniye sürdü, medyan 0,17; aynı komut `--dry-run` ile 0,11 ile 0,13 saniye.
+doğrulanan 40 bildirim) 0,17 ile 0,20 saniye sürdü, medyan 0,18; aynı komut `--dry-run` ile 0,13 ile 0,14 saniye. Ölçüm sırasında makinede başka işler de çalışıyordu (yük ortalaması 11 civarı, 18 çekirdek).
 
 ## Durum
 
@@ -260,7 +260,7 @@ doğrulanan 40 bildirim) 0,16 ile 0,23 saniye sürdü, medyan 0,17; aynı komut 
   test zincirinin OCSP sunucusu yoktur, bu yüzden testler bunlar kapalıyken çalışır.
 - **Senaryo başına bir müşteri;** bir abonelik grubu ve istenen sayıda tek seferlik satın alma.
 - **Sınırlı girdi.** En çok 1 MB ve 500 adımlı senaryo dosyaları, en çok 2 MB decode girdisi, en çok
-  1.000.000 karakterlik bir JWS, en çok 32 düzey iç içe sertifika ve her yanıtın ilk 64 KB'ı.
+  1.000.000 karakterlik bir JWS, en çok 32 düzey iç içe sertifika ve her yanıtın ilk 64 KB'ı. Decode girdisi ve `--root` dosyaları akış olarak okunur ve 2 MB'ı aşan ilk baytta reddedilir: `asnsim decode /dev/zero` 0,10 ile 0,13 saniyede, 72 MB bellekle durur (Mac (Apple silicon), Node.js 26).
 
 ## Dokümantasyon
 

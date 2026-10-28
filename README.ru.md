@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
+<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -216,7 +216,7 @@ console.log(result.ok, result.counts);
 | Настоящая цепочка Apple (Apple Root CA - G3, WWDR G6, сертификат подписи квитанций 2025 года) проходит проверки цепочки в decode                      | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                 |
 | Транзакция и данные о продлении из StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) декодируются                                                     | [test/data/xcode](test/data/xcode)                                                                                   |
 
-В наборе 442 теста в 24 файлах (модульные, интеграционные, snapshot и сквозные); все прошли через `npm test` 28 октября 2026 года на Mac (Apple silicon) с Node.js 26.
+В наборе 708 теста в 26 файлах (модульные, интеграционные, snapshot и сквозные); все прошли через `npm test` 28 октября 2026 года на Mac (Apple silicon) с Node.js 26.
 
 ## Демо
 
@@ -230,8 +230,8 @@ console.log(result.ok, result.counts);
 
 Измерено 28 октября 2026 года на Mac (Apple silicon, M5 Max) с Node.js 26.12.1, по семь запусков
 каждого варианта, с учётом запуска Node.js: `asnsim send --all` против examples/node-receiver (40
-уведомлений, каждое проверяется библиотекой Apple в приёмнике) заняла от 0,16 до 0,23 секунды,
-медиана 0,17; то же с `--dry-run` — от 0,11 до 0,13 секунды.
+уведомлений, каждое проверяется библиотекой Apple в приёмнике) заняла от 0,17 до 0,20 секунды,
+медиана 0,18; то же с `--dry-run` — от 0,13 до 0,14 секунды. Во время замеров другая работа держала среднюю нагрузку (load average) машины около 11 (18 ядер).
 
 ## Статус
 
@@ -260,7 +260,7 @@ console.log(result.ok, result.counts);
   у тестовой цепочки нет OCSP-сервера, поэтому тесты запускаются с отключёнными проверками.
 - **Один клиент на сценарий,** с одной группой подписок и любым числом разовых покупок.
 - **Ограниченный ввод.** Файлы сценариев до 1 МБ и 500 шагов, входные данные decode до 2 МБ, JWS до
-  1 000 000 символов, вложенность сертификатов не более 32 уровней и первые 64 КБ каждого ответа.
+  1 000 000 символов, вложенность сертификатов не более 32 уровней и первые 64 КБ каждого ответа. Вход decode и файлы `--root` читаются потоком и отклоняются на первом байте сверх 2 МБ: `asnsim decode /dev/zero` завершается за 0,10–0,13 секунды при 72 МБ памяти (Mac (Apple silicon), Node.js 26).
 
 ## Документация
 
