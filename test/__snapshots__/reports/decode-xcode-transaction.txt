@@ -1,0 +1,31 @@
+asnsim decode · jws
+1 JWS decoded, none verified
+
+jws  transaction  ES256 · 1 certificate  not checked: signed by Xcode
+  appTransactionId             "0"
+  billingPlanType              "BILLED_UPFRONT"
+  bundleId                     "com.example.app"
+  currency                     "USD"
+  deviceVerification           "Weti0Rk7zX7q0+N11Ehi/Rlq6EGbPjxrbS5NQFNzq2RUAQ92c6YCsQ4crmp71H9G"
+  deviceVerificationNonce      "903f64ff-4fec-440b-bb78-a303173fe913"
+  environment                  "Xcode"
+  expiresDate                  1795855535046  2026-11-28T08:45:35.046Z
+  inAppOwnershipType           "PURCHASED"
+  originalPurchaseDate         1793177135046  2026-10-28T08:45:35.046Z
+  originalTransactionId        "1"
+  price                        9990
+  productId                    "com.example.premium.monthly"
+  purchaseDate                 1793177135046  2026-10-28T08:45:35.046Z
+  quantity                     1
+  signedDate                   1793177135049  2026-10-28T08:45:35.049Z
+  storeType                    "CONSUMER"
+  storefront                   "USA"
+  storefrontId                 "143441"
+  subscriptionGroupIdentifier  "21000001"
+  transactionId                "1"
+  transactionReason            "PURCHASE"
+  type                         "Auto-Renewable Subscription"
+  webOrderLineItemId           "1"
+
+Note: Data from Xcode StoreKit Testing (environment Xcode) is signed by Xcode, not the App Store;
+      Apple’s server libraries skip its verification, and so does asnsim.
