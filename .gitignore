@@ -1,0 +1,14 @@
+.test-work/
+_work/
+node_modules/
+dist/
+coverage/
+*.tgz
+/site/
+docs/site/node_modules/
+.lycheecache
+.asnsim/
+examples/**/.build/
+examples/**/.swiftpm/
+examples/**/node_modules/
+.DS_Store
