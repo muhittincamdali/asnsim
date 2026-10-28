@@ -21,11 +21,11 @@ text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",mo
 <text class="t" x="20" y="143" style="animation-delay:5.43s"><tspan fill="#D0E2F7">expects it to stay on, to show what a failed check looks like.</tspan></text>
 <text class="t" x="20" y="162" style="animation-delay:5.46s"><tspan fill="#8FA3BC">Sandbox · com.example.app · dated when sent</tspan></text>
 <text class="t" x="20" y="181" style="animation-delay:5.50s"></text>
-<text class="t" x="20" y="200" style="animation-delay:5.53s"><tspan fill="#D0E2F7">  1  </tspan><tspan fill="#FFFFFF" font-weight="700">SUBSCRIBED/INITIAL_BUY                  </tspan><tspan fill="#D0E2F7">       200    14 ms  </tspan><tspan fill="#5AC8FA">ok</tspan></text>
+<text class="t" x="20" y="200" style="animation-delay:5.53s"><tspan fill="#D0E2F7">  1  </tspan><tspan fill="#FFFFFF" font-weight="700">SUBSCRIBED/INITIAL_BUY                  </tspan><tspan fill="#D0E2F7">       200    15 ms  </tspan><tspan fill="#5AC8FA">ok</tspan></text>
 <text class="t" x="20" y="219" style="animation-delay:5.57s"><tspan fill="#D0E2F7">  2  </tspan><tspan fill="#FFFFFF" font-weight="700">REFUND                                  </tspan><tspan fill="#D0E2F7">       200     2 ms  </tspan><tspan fill="#FFFFFF">failed</tspan></text>
-<text class="t" x="20" y="238" style="animation-delay:5.60s"><tspan fill="#D0E2F7">       </tspan><tspan fill="#8FA3BC">check GET http://127.0.0.1:3000/entitlements/2444252948567601 → 200</tspan><tspan fill="#D0E2F7"> </tspan><tspan fill="#FFFFFF">failed</tspan></text>
-<text class="t" x="20" y="257" style="animation-delay:5.64s"><tspan fill="#D0E2F7">       </tspan><tspan fill="#FFFFFF">check-failed</tspan><tspan fill="#D0E2F7">: The check GET http://127.0.0.1:3000/entitlements/2444252948567601 did not</tspan></text>
-<text class="t" x="20" y="276" style="animation-delay:5.67s"><tspan fill="#D0E2F7">       match: $.active: expected true, got false.</tspan></text>
+<text class="t" x="20" y="238" style="animation-delay:5.60s"><tspan fill="#D0E2F7">       </tspan><tspan fill="#8FA3BC">check GET http://127.0.0.1:3000/entitlements/:id → 200</tspan><tspan fill="#D0E2F7"> </tspan><tspan fill="#FFFFFF">failed</tspan></text>
+<text class="t" x="20" y="257" style="animation-delay:5.64s"><tspan fill="#D0E2F7">       </tspan><tspan fill="#FFFFFF">check-failed</tspan><tspan fill="#D0E2F7">: The check GET http://127.0.0.1:3000/entitlements/:id did not match: $.active:</tspan></text>
+<text class="t" x="20" y="276" style="animation-delay:5.67s"><tspan fill="#D0E2F7">       expected true, got false.</tspan></text>
 <text class="t" x="20" y="295" style="animation-delay:5.71s"><tspan fill="#D0E2F7">       How to fix:</tspan></text>
 <text class="t" x="20" y="314" style="animation-delay:5.74s"><tspan fill="#D0E2F7">       - REFUND: The App Store refunded or revoked the purchase.</tspan></text>
 <text class="t" x="20" y="333" style="animation-delay:5.78s"><tspan fill="#D0E2F7">       - The backend did not reach the state the step checks for. The guide lists what each</tspan></text>

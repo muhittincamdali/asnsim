@@ -22,7 +22,7 @@ text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",mo
 <text class="t" x="20" y="162" style="animation-delay:5.28s"></text>
 <text class="t" x="20" y="181" style="animation-delay:5.31s"><tspan fill="#0B1F33">  1  </tspan><tspan fill="#00285C" font-weight="700">SUBSCRIBED/INITIAL_BUY                  </tspan><tspan fill="#0B1F33">       200     2 ms  </tspan><tspan fill="#0071E3">ok</tspan></text>
 <text class="t" x="20" y="200" style="animation-delay:5.35s"><tspan fill="#0B1F33">       </tspan><tspan fill="#5A6B80">send 200, duplicate 200</tspan></text>
-<text class="t" x="20" y="219" style="animation-delay:5.38s"><tspan fill="#0B1F33">  2  </tspan><tspan fill="#00285C" font-weight="700">DID_RENEW                               </tspan><tspan fill="#0B1F33">       200     1 ms  </tspan><tspan fill="#0071E3">ok</tspan></text>
+<text class="t" x="20" y="219" style="animation-delay:5.38s"><tspan fill="#0B1F33">  2  </tspan><tspan fill="#00285C" font-weight="700">DID_RENEW                               </tspan><tspan fill="#0B1F33">       200     2 ms  </tspan><tspan fill="#0071E3">ok</tspan></text>
 <text class="t" x="20" y="238" style="animation-delay:5.42s"><tspan fill="#0B1F33">       </tspan><tspan fill="#5A6B80">send 200, duplicate 200</tspan></text>
 <text class="t" x="20" y="257" style="animation-delay:5.46s"><tspan fill="#0B1F33">  3  </tspan><tspan fill="#00285C" font-weight="700">REFUND                                  </tspan><tspan fill="#0B1F33">       200     1 ms  </tspan><tspan fill="#0071E3">ok</tspan></text>
 <text class="t" x="20" y="276" style="animation-delay:5.49s"><tspan fill="#0B1F33">       </tspan><tspan fill="#5A6B80">send 200, duplicate 200</tspan></text>

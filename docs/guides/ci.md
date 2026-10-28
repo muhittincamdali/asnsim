@@ -46,6 +46,28 @@ rejected or a check does not match.
   failed steps with `jq`.
 - `--out <folder>` keeps each request body, so a failure can be replayed with `curl` or decoded.
 
+### What the reports hide
+
+A report is written to be pasted into a log or a pull request, so URLs and answers are redacted
+in every format, JSON included, and in the files `-o` writes. The requests asnsim sends are not
+changed.
+
+| asnsim sent or received                               | The report shows                                             |
+| ----------------------------------------------------- | ------------------------------------------------------------ |
+| `--url 'https://hooks.example.com/asn?token=abc#x'`   | `https://hooks.example.com/asn?token=[redacted]`             |
+| check `/entitlements/{originalTransactionId}`         | `http://127.0.0.1:3000/entitlements/:id`                     |
+| a path that names a secret: `/v1/cards/4242/pin/4831` | `/v1/cards/:id/pin/:id`                                      |
+| answer `denied password=hunter2`                      | `answer: denied password=[redacted]`                         |
+| answer `{"user":"bob","password":"hunter2"}`          | `{"user":"bob","password":"[redacted]"}`                     |
+| answer `{"label":"Password","value":"hunter2","x":1}` | `{"label":"Password","value":"[redacted]","x":"[redacted]"}` |
+| answer `Error: card 4111 1111 1111 1111 declined`     | `Error: [redacted]`                                          |
+
+Text is cut at the first word that may hold or name a secret: anything outside printable ASCII,
+quotes, markup, escapes, `@`, a key other than `status`, `method`, `path`, `duration_ms` and
+`count`, a secret's name, or a value that looks like a card number, JWT or long token. That hides
+more than strictly needed (a Turkish error message is cut at its first `ş`); it is meant to.
+A URL with a user name or password is refused before anything is sent.
+
 ## Without a running backend
 
 `--dry-run --out bodies` signs the notifications and writes them, sending nothing. A unit test can

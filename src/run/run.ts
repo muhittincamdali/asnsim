@@ -4,6 +4,9 @@ import { type Access, eventName, events } from '../catalog.js';
 import type { NotificationBody } from '../model.js';
 import { ScenarioError } from '../scenario/load.js';
 import type { Check, Scenario, ScenarioStep } from '../scenario/schema.js';
+import { redactBody, redactJson } from '../redact/body.js';
+import { REDACTED } from '../redact/names.js';
+import { redactLocation, redactUrl } from '../redact/url.js';
 import { buildParts, signParts } from '../sim/payloads.js';
 import { normalizeProducts, type Product } from '../sim/products.js';
 import { Simulation } from '../sim/simulation.js';
@@ -46,6 +49,7 @@ export interface RunOptions {
   onStep?: (step: StepResult) => void;
 }
 
+/** One delivery as the report shows it: `body` and `location` redacted (see src/redact). */
 export interface Attempt extends Delivery {
   /** 1 for the first send; retries and duplicates count on. */
   attempt: number;
@@ -53,11 +57,13 @@ export interface Attempt extends Delivery {
 }
 
 export interface CheckResult {
+  /** The URL with its query values and IDs hidden, as the report shows it. */
   url: string;
   method: 'GET' | 'POST';
   ok: boolean;
   expectedStatus: number;
   status?: number;
+  /** The answer redacted, then cut to 2,000 characters. */
   body?: string;
   error?: string;
   ms: number;
@@ -89,6 +95,7 @@ export interface StepResult {
 export interface RunResult {
   scenario: string;
   description?: string;
+  /** The webhook URL without user name, password and fragment, its query values hidden. */
   url?: string;
   clock: Clock;
   dryRun: boolean;
@@ -108,27 +115,45 @@ const PLACEHOLDERS = [
   'bundleId',
 ] as const;
 
-/** Every key and value of `expected` is in `actual`; arrays must match element by element. */
-export function containsJson(expected: unknown, actual: unknown, path = '$'): string[] {
+/** The part of `shown` (the redacted answer) at `key`, where `actual` holds `value`. */
+function shownAt(shown: unknown, key: string | number, value: unknown): unknown {
+  if (value === undefined) return undefined;
+  if (typeof shown !== 'object' || shown === null || !Object.hasOwn(shown, key)) return REDACTED;
+  return (shown as Record<string, unknown>)[key];
+}
+
+/**
+ * Every key and value of `expected` is in `actual`; arrays must match element by element. The
+ * messages show `actual` as a report may: `shown` is `actual` redacted (see src/redact), so a
+ * value hidden there is hidden in the message too.
+ */
+export function containsJson(
+  expected: unknown,
+  actual: unknown,
+  path = '$',
+  shown: unknown = redactJson(actual),
+): string[] {
+  const got = JSON.stringify(shown) ?? 'undefined';
   if (Array.isArray(expected)) {
     if (!Array.isArray(actual) || actual.length !== expected.length) {
-      return [`${path}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`];
+      return [`${path}: expected ${JSON.stringify(expected)}, got ${got}`];
     }
     return expected.flatMap((item, index) =>
-      containsJson(item, actual[index], `${path}[${index}]`),
+      containsJson(item, actual[index], `${path}[${index}]`, shownAt(shown, index, actual[index])),
     );
   }
   if (typeof expected === 'object' && expected !== null) {
     if (typeof actual !== 'object' || actual === null || Array.isArray(actual)) {
-      return [`${path}: expected an object, got ${JSON.stringify(actual)}`];
+      return [`${path}: expected an object, got ${got}`];
     }
-    return Object.entries(expected).flatMap(([key, value]) =>
-      containsJson(value, (actual as Record<string, unknown>)[key], `${path}.${key}`),
-    );
+    return Object.entries(expected).flatMap(([key, value]) => {
+      const entry = (actual as Record<string, unknown>)[key];
+      return containsJson(value, entry, `${path}.${key}`, shownAt(shown, key, entry));
+    });
   }
   return Object.is(expected, actual)
     ? []
-    : [`${path}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`];
+    : [`${path}: expected ${JSON.stringify(expected)}, got ${got}`];
 }
 
 function checkPlaceholders(template: string, index: number): void {
@@ -231,12 +256,12 @@ async function runCheck(
     }
   }
   return {
-    url,
+    url: redactUrl(url),
     method: check.method,
     ok: answer.status !== undefined && mismatches.length === 0,
     expectedStatus: check.status,
     ...(answer.status === undefined ? {} : { status: answer.status }),
-    ...(answer.body === undefined ? {} : { body: answer.body.slice(0, 2000) }),
+    ...(answer.body === undefined ? {} : { body: redactBody(answer.body).slice(0, 2000) }),
     ...(answer.error === undefined ? {} : { error: answer.error }),
     ms: answer.ms,
     mismatches,
@@ -379,7 +404,16 @@ async function sendStep(
       ...(options.headers ? { headers: options.headers } : {}),
       ...(options.fetch ? { fetch: options.fetch } : {}),
     });
-    const attempt: Attempt = { ...delivery, attempt: result.attempts.length + 1, kind };
+    // The answer is kept as the report shows it: the body and Location header redacted.
+    const attempt: Attempt = {
+      ...delivery,
+      ...(delivery.body === undefined ? {} : { body: redactBody(delivery.body) }),
+      ...(delivery.location === undefined
+        ? {}
+        : { location: redactLocation(delivery.location, url) }),
+      attempt: result.attempts.length + 1,
+      kind,
+    };
     result.attempts.push(attempt);
     return attempt;
   };
@@ -463,7 +497,7 @@ function base(name: string, options: RunOptions, clock: Clock, description?: str
   return {
     scenario: name,
     ...(description ? { description } : {}),
-    ...(options.url && !options.dryRun ? { url: options.url } : {}),
+    ...(options.url && !options.dryRun ? { url: redactUrl(options.url) } : {}),
     clock,
     dryRun: options.dryRun ?? false,
     bundleId: options.workspace.app.bundleId,

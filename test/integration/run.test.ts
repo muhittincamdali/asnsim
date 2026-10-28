@@ -221,7 +221,9 @@ describe('runScenario', () => {
     const good = await server(backend());
     const passed = await runScenario(scenario, { workspace, url: `${good.url}/notifications` });
     expect(passed.ok).toBe(true);
-    expect(passed.steps[1]?.check?.url).toMatch(/\/entitlements\/2\d{15}$/);
+    // The request carries the ID; the result shows it as :id.
+    expect(good.received.at(-1)?.url).toMatch(/^\/entitlements\/2\d{15}$/);
+    expect(passed.steps[1]?.check?.url).toBe(`${good.url}/entitlements/:id`);
     expect(passed.counts.requests).toBe(4);
 
     const forgetful = await server(backend({ revokeOnRefund: false }));
@@ -324,6 +326,21 @@ describe('containsJson', () => {
     expect(containsJson({ a: [1] }, { a: [1, 2] })).toEqual(['$.a: expected [1], got [1,2]']);
     expect(containsJson({ a: 1 }, [])).toEqual(['$: expected an object, got []']);
     expect(containsJson({ a: null }, {})).toEqual(['$.a: expected null, got undefined']);
+  });
+
+  it('shows the backend’s values as a report may: redacted', () => {
+    expect(containsJson({ token: 'x' }, { token: 'hunter2' })).toEqual([
+      '$.token: expected "x", got "[redacted]"',
+    ]);
+    expect(containsJson({ value: 'x' }, { label: 'Password', value: 'hunter2' })).toEqual([
+      '$.value: expected "x", got "[redacted]"',
+    ]);
+    expect(containsJson({ a: { note: 'x' } }, { a: { note: 'password=hunter2' } })).toEqual([
+      '$.a.note: expected "x", got "password=[redacted]"',
+    ]);
+    expect(containsJson({ ids: [1] }, { ids: [4111111111111111] })).toEqual([
+      '$.ids[0]: expected 1, got "[redacted]"',
+    ]);
   });
 });
 

@@ -48,8 +48,21 @@ origin (scheme, host and port): a scenario that names another host, port or sche
 before anything is sent, and the URL is tested again once its placeholders are filled in, so a
 value cannot move it to another host either (an empty one would turn `/{originalTransactionId}/x`
 into `//x`). So a scenario file from someone else cannot make asnsim request other hosts or carry
-your `--header` values elsewhere. Redirects are not followed. `asnsim decode` makes no requests at all; it does not
-check revocation.
+your `--header` values elsewhere. A `--url` with a user name or password is refused (exit 2); send
+credentials with `-H` instead. Redirects are not followed. `asnsim decode` makes no requests at
+all; it does not check revocation.
+
+**What the reports show.** Run and send reports (every format, and the files `-o` writes) are
+meant to be pasted into CI logs and pull requests, so they never show the user name, password or
+fragment of a URL, the values of its query parameters, or path segments that hold an ID (written
+`:id`). `--header` values are never printed. A webhook's or a check's answer is shown redacted:
+JSON values under keys that name a secret (`password`, `token`, `authorization`…) or next to a
+field that names one, card numbers, e-mail addresses, JWTs and long tokens are replaced by
+`[redacted]`, and in text everything from the first word that may hold or name a secret to the end
+is one `[redacted]`. The rules are the ones the author's Swift packages share, read more strictly
+where that was simpler; [docs/guides/ci.md](docs/guides/ci.md#what-the-reports-hide) has examples.
+Requests themselves are sent as written. Hiding is a safety net, not a guarantee: keep real
+credentials out of test webhooks.
 
 **What asnsim reads.** Scenario files up to 1 MB and 500 steps, decode input up to 2 MB, a JWS up to
 1,000,000 characters, DER nested at most 32 levels, YAML with at most 100 aliases, and the first
