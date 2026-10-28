@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { type Access, eventName } from '../catalog.js';
 import type { NotificationBody } from '../model.js';
-import { redactBody } from '../redact/body.js';
+import { redactAnswer } from '../redact/body.js';
 import { redactLocation } from '../redact/url.js';
 import type { ScenarioStep } from '../scenario/schema.js';
 import { buildParts, signParts } from '../sim/payloads.js';
@@ -153,9 +153,10 @@ async function sendStep(
       ...(options.fetch ? { fetch: options.fetch } : {}),
     });
     // The answer is kept as the report shows it: the body and Location header redacted.
+    const { answer, body: _body, ...shown } = delivery;
     const attempt: Attempt = {
-      ...delivery,
-      ...(delivery.body === undefined ? {} : { body: redactBody(delivery.body) }),
+      ...shown,
+      ...(answer === undefined ? {} : { body: redactAnswer(answer) }),
       ...(delivery.location === undefined
         ? {}
         : { location: redactLocation(delivery.location, url) }),

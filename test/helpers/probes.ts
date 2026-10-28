@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
-import { redactBody } from '../../src/redact/body.js';
+import { type Answer, redactAnswer } from '../../src/redact/body.js';
 import { redactText } from '../../src/redact/text.js';
 import { redactUrl } from '../../src/redact/url.js';
-import { bodyText } from '../../src/run/deliver.js';
+import { MAX_BODY } from '../../src/run/deliver.js';
 
 // The shared review corpus of REDACTION-SPEC §8 #65 (test/data/redaction/ReviewProbes.jsonl,
 // the S corpus of 7,866 lines) and the way its probes are judged there: a probe leaks when any
@@ -40,27 +40,20 @@ export function probeText(probe: Probe): string {
   return piece ? piece.prefix + piece.unit.repeat(piece.count) + piece.suffix : '';
 }
 
-/** The body as asnsim keeps a webhook's answer: its first 64 KB, as UTF-8. */
-function probeBody(probe: Probe): string {
+/** The probe's body as asnsim keeps a webhook's answer: its first 64 KB and its content type. */
+function probeAnswer(probe: Probe): Answer {
   const bytes =
     probe.data === undefined ? Buffer.from(probeText(probe)) : Buffer.from(probe.data, 'base64');
-  return bodyText(bytes);
-}
-
-/**
- * Whether asnsim reads the probe the way the corpus means it. asnsim reads a webhook's answer as
- * JSON or as free text whatever its content type, so the bodies the corpus sends as a form,
- * multipart, XML or any other type that is not JSON test rules asnsim does not have.
- */
-export function appliesToAsnsim(probe: Probe): boolean {
-  if (probe.kind !== 'body') return true;
-  const type = (probe.type ?? '').split(';')[0]?.trim().toLowerCase() ?? '';
-  return type === '' || type === 'application/json' || type === 'text/json' || /\+json$/.test(type);
+  return {
+    bytes: bytes.subarray(0, MAX_BODY),
+    contentType: probe.type ?? null,
+    cut: bytes.length > MAX_BODY,
+  };
 }
 
 export function redactProbe(probe: Probe): string {
   if (probe.kind === 'url') return redactUrl(probeText(probe));
-  if (probe.kind === 'body') return redactBody(probeBody(probe));
+  if (probe.kind === 'body') return redactAnswer(probeAnswer(probe));
   return redactText(probeText(probe));
 }
 

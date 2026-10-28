@@ -1,15 +1,19 @@
 import type { NotificationBody } from '../model.js';
+import type { Answer } from '../redact/body.js';
 import { VERSION } from '../version.js';
 
 // One HTTP request the way the App Store sends a notification: a POST with the JSON body
 // { "signedPayload": "…" }. Redirects are not followed, since the App Store counts a 3xx as a
-// failed delivery. Only the first 64 KB of the answer is kept, for the report.
+// failed delivery. Only the first 64 KB of the answer is kept, with its content type, for the
+// checks and the report.
 
 export interface Delivery {
   /** HTTP status, when the server answered. */
   status?: number;
-  /** Response body, cut to 64 KB. */
+  /** Response body, cut to 64 KB and read as UTF-8, for the checks. Never shown as it is. */
   body?: string;
+  /** The answer as the report reads it: src/redact/body.ts redacts it into Attempt.body. */
+  answer?: Answer;
   /** Location header of a redirect. */
   location?: string;
   /** Network error or timeout, when the server did not answer. */
@@ -21,21 +25,25 @@ export interface Delivery {
 
 export type Fetch = typeof fetch;
 
-const MAX_BODY = 65_536;
+/** The bytes of an answer kept for the checks and the report. */
+export const MAX_BODY = 65_536;
 
-async function readBody(response: Response): Promise<string> {
-  if (!response.body) return '';
+async function readAnswer(response: Response): Promise<Answer> {
+  const contentType = response.headers.get('content-type');
+  if (!response.body) return { bytes: new Uint8Array(), contentType, cut: false };
   const reader = response.body.getReader();
   const chunks: Uint8Array[] = [];
   let size = 0;
-  while (size < MAX_BODY) {
+  // Reading on past the limit tells a body of exactly 64 KB from a longer one.
+  while (size <= MAX_BODY) {
     const { done, value } = await reader.read();
     if (done) break;
     chunks.push(value);
     size += value.length;
   }
   await reader.cancel().catch(() => undefined);
-  return bodyText(Buffer.concat(chunks));
+  const bytes = Buffer.concat(chunks).subarray(0, MAX_BODY);
+  return { bytes, contentType, cut: size > MAX_BODY };
 }
 
 /** A response body as asnsim keeps it: its first 64 KB, read as UTF-8. */
@@ -80,9 +88,15 @@ export async function request(url: string, options: RequestOptions): Promise<Del
       redirect: 'manual',
       signal: AbortSignal.timeout(options.timeoutMs),
     });
-    const body = await readBody(response);
+    const answer = await readAnswer(response);
     const location = response.headers.get('location');
-    return { status: response.status, body, ...(location ? { location } : {}), ms: ms() };
+    return {
+      status: response.status,
+      body: bodyText(answer.bytes),
+      answer,
+      ...(location ? { location } : {}),
+      ms: ms(),
+    };
   } catch (error) {
     const name = (error as Error).name;
     if (name === 'TimeoutError' || name === 'AbortError') {

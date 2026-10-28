@@ -36,7 +36,7 @@ export interface RunOptions {
 }
 
 /** One delivery as the report shows it: `body` and `location` redacted (see src/redact). */
-export interface Attempt extends Delivery {
+export interface Attempt extends Omit<Delivery, 'answer'> {
   /** 1 for the first send; retries and duplicates count on. */
   attempt: number;
   kind: 'send' | 'retry' | 'duplicate';

@@ -1,3 +1,4 @@
+import { isUtf8 } from 'node:buffer';
 import {
   heldNameNamesSecret,
   INVISIBLE_CLASS,
@@ -8,11 +9,13 @@ import {
   REDACTED,
   words,
 } from './names.js';
+import { isJsonType, mediaType } from './media.js';
 import { redactText } from './text.js';
 
-// A webhook's answer as a report may show it (REDACTION-SPEC §2, §4): JSON is read as JSON, each
-// value hidden when its key names a secret or is not a plain name, each string read as free text;
-// anything else is free text (§6).
+// A webhook's answer as a report may show it (REDACTION-SPEC §2, §4). Its Content-Type chooses the
+// reading (B0): JSON is read as JSON, each value hidden when its key names a secret or is not a
+// plain name, each string read as free text; text/plain is free text (§6); every other body is
+// left out, as are a body without a content type, one that is not UTF-8 and one cut at 64 KB.
 
 const MAX_DEPTH = 64;
 // Fields that hold the name of another field ({"label":"Password","value":"…"}).
@@ -173,24 +176,47 @@ function unreadable(json: string): string | undefined {
 // White space as JSON has it: a byte order mark or any other space is not JSON.
 const JSON_SPACE = /^[ \t\r\n]+|[ \t\r\n]+$/g;
 
-/** A response body as a report may show it: JSON as JSON, anything else as free text. */
-export function redactBody(body: string): string {
+/** A JSON answer as a report may show it; JSON that does not parse is left out (P2). */
+export function redactJsonBody(body: string): string {
+  const omitted = (note: string) => `[body omitted: ${Buffer.byteLength(body)} bytes, ${note}]`;
   const trimmed = body.replace(JSON_SPACE, '');
-  if (!/^[[{]/.test(trimmed)) return redactText(body);
   let json: unknown;
   try {
     json = JSON.parse(trimmed);
   } catch {
-    return redactText(body);
+    return omitted('JSON that does not parse');
   }
   const problem = unreadable(trimmed);
-  if (problem) return `[body omitted: ${Buffer.byteLength(body)} bytes, ${problem}]`;
+  if (problem) return omitted(problem);
   try {
     return JSON.stringify(redactValue(json, 0));
   } catch (error) {
-    if (error instanceof TooDeep) {
-      return `[body omitted: ${Buffer.byteLength(body)} bytes, JSON deeper than ${MAX_DEPTH} levels]`;
-    }
+    if (error instanceof TooDeep) return omitted(`JSON deeper than ${MAX_DEPTH} levels`);
     throw error;
   }
+}
+
+/** A webhook's answer as asnsim keeps it, before it is redacted. */
+export interface Answer {
+  /** The first 64 KB of the body. */
+  bytes: Uint8Array;
+  /** The Content-Type header, or null when the server sent none. */
+  contentType: string | null;
+  /** Whether the body went on past the bytes kept. */
+  cut: boolean;
+}
+
+/** A webhook's answer as a report may show it, read the way its content type says (B0). */
+export function redactAnswer({ bytes, contentType, cut }: Answer): string {
+  const omitted = (note: string) =>
+    `[body omitted: ${cut ? 'more than ' : ''}${bytes.length} bytes, ${note}]`;
+  if (bytes.length === 0) return '';
+  if (contentType === null) return omitted('no content type');
+  const media = mediaType(contentType);
+  if (!media) return omitted('unreadable content type');
+  if (cut || !media.utf8 || !isUtf8(bytes)) return omitted(media.type);
+  const text = Buffer.from(bytes).toString('utf8');
+  if (isJsonType(media.type)) return redactJsonBody(text);
+  if (media.type === 'text/plain') return redactText(text);
+  return omitted(media.type);
 }

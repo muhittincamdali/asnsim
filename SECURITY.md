@@ -55,8 +55,9 @@ all; it does not check revocation.
 **What the reports show.** Run and send reports (every format, and the files `-o` writes) are
 meant to be pasted into CI logs and pull requests, so they never show the user name, password or
 fragment of a URL, the values of its query parameters, or path segments that hold an ID (written
-`:id`). `--header` values are never printed. A webhook's or a check's answer is shown redacted:
-JSON values under keys that name a secret (`password`, `token`, `authorization`…) or next to a
+`:id`). `--header` values are never printed. A webhook's or a check's answer is read by its content type
+and shown redacted only when that type is JSON or `text/plain`; any other body, and one without a
+content type, is left out (`[body omitted: N bytes, <type>]`). In what is shown, JSON values under keys that name a secret (`password`, `token`, `authorization`…) or next to a
 field that names one, card numbers, e-mail addresses, JWTs and long tokens are replaced by
 `[redacted]`, and in text everything from the first word that may hold or name a secret to the end
 is one `[redacted]`. The rules are the ones the author's Swift packages share, read more strictly
