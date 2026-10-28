@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
+<!-- i18n-source: README.md@82bd21b19ac265498a5e575dd520386f497217a5 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | Apples echte Kette (Apple Root CA - G3, WWDR G6, das Receipt-Signing-Zertifikat von 2025) besteht die Kettenprüfungen von decode                                                           | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                         |
 | Eine Transaktion und Verlängerungsinformationen aus StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) lassen sich dekodieren                                                               | [test/data/xcode](test/data/xcode)                                                                                           |
 
-Die Testsuite umfasst 351 Tests in 24 Dateien (Unit-, Integrations-, Snapshot- und End-to-End-Tests); alle bestanden am 28. Oktober 2026 mit `npm test` auf einem Mac (Apple Silicon) mit Node.js 26.
+Die Testsuite umfasst 402 Tests in 24 Dateien (Unit-, Integrations-, Snapshot- und End-to-End-Tests); alle bestanden am 28. Oktober 2026 mit `npm test` auf einem Mac (Apple Silicon) mit Node.js 26.
 
 ## Demo
 

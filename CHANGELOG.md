@@ -13,6 +13,20 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
   changed or unsigned token that claimed it decoded with exit 0. Verification is skipped only with
   `--environment Xcode`, as Apple's `SignedDataVerifier` skips it only when set up for Xcode, and
   the skipped part is then reported as a `not-verified` problem (exit 1).
+- Reports write a URL that holds a tab or line break, or controls or spaces at either end, as
+  scheme, host and port only: the URL parser drops those characters, so a path such as
+  `/pin/.<TAB>./4831` was printed as `/4831`.
+- Webhook answers no longer show a value next to a name that ends in punctuation
+  (`"DbPassword:"`, `["password:", …]`, `"api_key ="`), next to a name with a control character in
+  it, or next to a string of control characters alone (`"\t"`).
+- A card number wrapped onto the next line or written with `.`, `,` or `/` between its groups is
+  hidden in free text.
+
+### Fixed
+
+- A JSON answer with several hidden member names keeps all of them (`[redacted]`,
+  `[redacted 2]`, …) instead of one.
+- Reports write U+2028 and U+2029 as code points, like the other control characters.
 
 ## [0.1.0] - 2026-10-28
 

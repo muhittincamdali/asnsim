@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
+<!-- i18n-source: README.md@82bd21b19ac265498a5e575dd520386f497217a5 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | La vraie chaîne d'Apple (Apple Root CA - G3, WWDR G6, le certificat de signature des reçus de 2025) passe les contrôles de chaîne de decode                                                  | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                       |
 | Une transaction et des informations de renouvellement issues de StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) se décodent                                                                | [test/data/xcode](test/data/xcode)                                                                                         |
 
-La suite compte 351 tests répartis dans 24 fichiers (unitaires, d'intégration, de snapshot et de bout en bout) ; tous ont réussi avec `npm test` le 28 octobre 2026 sur un Mac (Apple silicon) avec Node.js 26.
+La suite compte 402 tests répartis dans 24 fichiers (unitaires, d'intégration, de snapshot et de bout en bout) ; tous ont réussi avec `npm test` le 28 octobre 2026 sur un Mac (Apple silicon) avec Node.js 26.
 
 ## Démo
 
