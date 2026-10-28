@@ -50,9 +50,14 @@ online. A backend in production should keep online checks on.
 ## Data from StoreKit Testing in Xcode
 
 A transaction your app gets under StoreKit Testing says `"environment": "Xcode"`, has the header
-`kid` `Apple_Xcode_Key` and one certificate in `x5c`: Xcode signs it, not the App Store. Apple's
-server libraries skip verification for the Xcode environment, and so does `asnsim decode`: it
-prints the fields, marks the part "not checked: signed by Xcode" and exits 0.
+`kid` `Apple_Xcode_Key` and one certificate in `x5c`: Xcode signs it, not the App Store, so it
+does not verify. Apple's `SignedDataVerifier` skips the checks only when it is set up for the
+Xcode environment, never because a payload says `"environment": "Xcode"` (anyone can write that).
+`asnsim decode` does the same: without a flag it checks the token like any other, reports
+`chain-length` and exits 1. With `--environment Xcode` it prints the fields, marks each part "not
+checked (--environment Xcode)", reports a `not-verified` problem and still exits 1, since nothing
+proves where the data came from. `--no-verify` decodes it, like any token, without a check and
+exits 0.
 [test/data/xcode](https://github.com/muhittincamdali/asnsim/tree/main/test/data/xcode) holds one recorded with Xcode 27.1, and the probe that
 recorded it.
 

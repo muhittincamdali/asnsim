@@ -96,24 +96,70 @@ describe('decode', () => {
     expect(result.parts[0]?.verification).toBeUndefined();
   });
 
-  it('reads data Xcode StoreKit Testing signed, and skips its verification as Apple’s libraries do', () => {
+  it('verifies data that says environment Xcode unless told otherwise', () => {
+    // Apple's SignedDataVerifier skips the checks only when it is set up for the Xcode
+    // environment, never because the payload says so.
+    for (const file of ['transaction-subscription.jws', 'renewal-info.jws']) {
+      const result = decode(xcode(file));
+      expect(result.ok).toBe(false);
+      expect(result.parts[0]?.skipped).toBeUndefined();
+      expect(result.parts[0]?.verification?.ok).toBe(false);
+      expect(result.problems.map((problem) => problem.code)).toContain('chain-length');
+      expect(result.notes[0]).toContain('pass --environment Xcode');
+    }
+  });
+
+  it('does not trust a payload that claims environment Xcode (SF-ASN-4)', () => {
+    const payload = {
+      transactionId: '1',
+      environment: 'Xcode',
+      bundleId: 'com.example.app',
+      signedDate: Date.now(),
+    };
+    const token = signJws(payload, chain.signingKey, [
+      chain.signing,
+      chain.intermediate,
+      chain.root,
+    ]);
+    expect(decode(token, { roots }).ok).toBe(true);
+    const [header, , signature] = token.split('.');
+    const changed = `${header}.${base64url(JSON.stringify({ ...payload, productId: 'lifetime' }))}.${signature}`;
+    const forged = decode(changed, { roots });
+    expect(forged.ok).toBe(false);
+    expect(forged.problems.map((problem) => problem.code)).toContain('bad-signature');
+    const unsigned = decode(jwsOf(JSON.stringify(payload)), { roots });
+    expect(unsigned.ok).toBe(false);
+    expect(unsigned.parts[0]?.verification?.ok).toBe(false);
+  });
+
+  it('reads Xcode StoreKit Testing data with --environment Xcode, and says it is not verified', () => {
     for (const [file, kind] of [
       ['transaction-subscription.jws', 'transaction'],
       ['renewal-info.jws', 'renewalInfo'],
     ] as const) {
-      const result = decode(xcode(file));
-      expect(result.ok).toBe(true);
+      const result = decode(xcode(file), { environment: 'Xcode' });
+      expect(result.ok).toBe(false);
+      expect(result.problems).toEqual([expect.objectContaining({ code: 'not-verified' })]);
       expect(result.parts[0]).toMatchObject({
         kind,
         skipped: 'xcode',
         header: { alg: 'ES256', x5c: 1 },
       });
+      expect(result.parts[0]?.verification).toBeUndefined();
       expect(result.parts[0]?.payload).toMatchObject({
         environment: 'Xcode',
         productId: 'com.example.premium.monthly',
       });
-      expect(result.notes[0]).toContain('signed by Xcode, not the App Store');
+      expect(result.notes).toEqual([]);
     }
+    // As with Apple's verifier, the environment is still checked.
+    const sandbox = decode(signed('TEST'), { environment: 'Xcode' });
+    expect(sandbox.problems.map((problem) => problem.code)).toEqual([
+      'not-verified',
+      'environment-mismatch',
+    ]);
+    // --no-verify reads it without a problem, as it reads anything.
+    expect(decode(xcode('transaction-subscription.jws'), { verify: false }).ok).toBe(true);
   });
 
   it('notes nested fields that are not JWS', () => {

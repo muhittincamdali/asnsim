@@ -52,7 +52,8 @@ export function rows(
 }
 
 function status(part: DecodedPart): { text: string; style: 'green' | 'red' | 'yellow' } {
-  if (part.skipped === 'xcode') return { text: 'not checked: signed by Xcode', style: 'yellow' };
+  if (part.skipped === 'xcode')
+    return { text: 'not checked (--environment Xcode)', style: 'yellow' };
   if (part.skipped) return { text: 'not checked (--no-verify)', style: 'yellow' };
   const verification = part.verification;
   if (verification?.ok) {

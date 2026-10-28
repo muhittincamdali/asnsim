@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -192,7 +192,7 @@ decode prüft jedes JWS so, wie es der `SignedDataVerifier` von Apple mit ausges
 drei Zertifikate, jedes vom nächsten ausgestellt, Apples zwei Erweiterungen, Gültigkeit zum `signedDate`, die
 ES256-Signatur, und zwar gegen Apple Root CA - G3 (eingebaut), den Test-Root in `.asnsim` und jedes
 `--root`. Die Sperrprüfung braucht Apples OCSP-Server und findet nicht statt.
-Daten aus StoreKit Testing in Xcode signiert Xcode; decode gibt sie aus und überspringt die Prüfung, wie es auch Apples Bibliotheken tun.
+Daten aus StoreKit Testing in Xcode signiert Xcode, deshalb bestehen sie die Prüfung nicht; mit `--environment Xcode` gibt decode sie ohne Prüfung aus und meldet sie als nicht verifiziert, denn auch Apples Verifier überspringt die Prüfung nur, wenn er für Xcode eingerichtet ist.
 [Decode what the App Store sent](docs/guides/decode.md) enthält die Einzelheiten.
 
 ### Aus JavaScript

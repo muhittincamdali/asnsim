@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -187,7 +187,7 @@ decode는 온라인 검사를 끈 Apple의 `SignedDataVerifier`와 같은 방식
 인증서 세 개가 각각 다음 인증서에서 발급되었는지, Apple 확장 두 개, `signedDate` 시점의 유효 기간,
 ES256 서명을 Apple Root CA - G3(내장), `.asnsim`의 테스트 루트, 지정한 모든 `--root`에 대해 확인합니다.
 폐기 여부 확인에는 Apple의 OCSP 서버가 필요하므로 검사하지 않습니다.
-Xcode의 StoreKit Testing 데이터는 Xcode가 서명한 것이므로, decode는 이를 출력하고 검증은 건너뜁니다. Apple의 라이브러리도 그렇게 합니다.
+Xcode의 StoreKit Testing 데이터는 Xcode가 서명한 것이므로 검증을 통과하지 않습니다. `--environment Xcode`를 주면 decode는 검증 없이 출력하고 검증되지 않았다고 보고합니다. Apple의 검증기도 Xcode용으로 설정했을 때만 검증을 건너뜁니다.
 자세한 내용은 [Decode what the App Store sent](docs/guides/decode.md)를 참고하세요.
 
 ### JavaScript에서 사용하기

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -192,7 +192,7 @@ decode verifica cada JWS como o `SignedDataVerifier` da Apple faz com as verific
 três certificados, cada um emitido pelo seguinte, as duas extensões da Apple, validade em `signedDate`, a
 assinatura ES256, contra a Apple Root CA - G3 (embutida), a raiz de teste em `.asnsim` e qualquer
 `--root`. A revogação exige o servidor OCSP da Apple e não é verificada.
-Os dados do StoreKit Testing no Xcode são assinados pelo Xcode; decode os imprime e pula a verificação, como as bibliotecas da Apple fazem.
+Os dados do StoreKit Testing no Xcode são assinados pelo Xcode e por isso não passam na verificação; com `--environment Xcode`, decode os imprime sem verificar e os relata como não verificados, porque o verificador da Apple só pula a verificação quando está configurado para o Xcode.
 [Decode what the App Store sent](docs/guides/decode.md) traz os detalhes.
 
 ### A partir de JavaScript

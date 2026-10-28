@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -192,7 +192,7 @@ decode, her JWS'yi Apple'ın `SignedDataVerifier`'ının çevrimiçi kontroller 
 her biri bir sonrakinin verdiği üç sertifika, Apple'ın iki uzantısı, `signedDate` anında geçerlilik,
 ES256 imzası; bunu Apple Root CA - G3'e (yerleşik), `.asnsim` içindeki test köküne ve
 verilen her `--root`'a karşı yapar. İptal kontrolü Apple'ın OCSP sunucusunu gerektirir ve yapılmaz.
-Xcode'daki StoreKit Testing verisini Xcode imzalar; decode onu yazdırır ve Apple'ın kütüphaneleri gibi doğrulamayı atlar.
+Xcode'daki StoreKit Testing verisini Xcode imzalar, bu yüzden doğrulamadan geçmez; `--environment Xcode` ile decode onu doğrulamadan yazdırır ve doğrulanmadı diye bildirir, çünkü Apple'ın doğrulayıcısı da doğrulamayı yalnız Xcode için ayarlandığında atlar.
 Ayrıntılar için [Decode what the App Store sent](docs/guides/decode.md) rehberine bakın.
 
 ### JavaScript'ten

@@ -7,6 +7,13 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 
 ## [Unreleased]
 
+### Security
+
+- `decode` no longer skips verification because a payload says `"environment": "Xcode"`: a
+  changed or unsigned token that claimed it decoded with exit 0. Verification is skipped only with
+  `--environment Xcode`, as Apple's `SignedDataVerifier` skips it only when set up for Xcode, and
+  the skipped part is then reported as a `not-verified` problem (exit 1).
+
 ## [0.1.0] - 2026-10-28
 
 ### Added

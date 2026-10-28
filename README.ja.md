@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -180,7 +180,7 @@ pbpaste | asnsim decode -
 decode は、オンラインチェックをオフにした Apple の `SignedDataVerifier` と同じ方法で各 JWS を確認します。
 3 枚の証明書がそれぞれ次の証明書によって発行されていること、Apple の 2 つの拡張、`signedDate` 時点での有効性、
 ES256 署名を、Apple Root CA - G3（内蔵）、`.asnsim` のテスト用ルート、指定した `--root` に対して確認します。失効の確認には Apple の OCSP サーバーが必要なので行いません。
-Xcode の StoreKit Testing のデータは Xcode が署名しているため、decode は内容を表示して検証を省略します。これは Apple のライブラリと同じ動作です。詳しくは [Decode what the App Store sent](docs/guides/decode.md) をご覧ください。
+Xcode の StoreKit Testing のデータは Xcode が署名しているため、検証には通りません。`--environment Xcode` を付けると decode は検証せずに内容を表示し、未検証として報告します。Apple の検証器も、Xcode 用に設定したときだけ検証を省略します。詳しくは [Decode what the App Store sent](docs/guides/decode.md) をご覧ください。
 
 ### JavaScript から使う
 

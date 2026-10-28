@@ -22,7 +22,12 @@ export type PartKind =
   'notification' | 'transaction' | 'renewalInfo' | 'appTransaction' | 'unknown';
 
 export type DecodeProblemCode =
-  ProblemCode | 'bundle-id-mismatch' | 'environment-mismatch' | 'unread-jws' | 'deep-payload';
+  | ProblemCode
+  | 'bundle-id-mismatch'
+  | 'environment-mismatch'
+  | 'unread-jws'
+  | 'deep-payload'
+  | 'not-verified';
 
 export interface DecodeProblem {
   /** Which JWS: "signedPayload", "data.signedTransactionInfo", … */
@@ -37,7 +42,7 @@ export interface DecodedPart {
   kind: PartKind;
   header: { alg: unknown; x5c: number };
   payload: unknown;
-  /** Undefined when verification was skipped (--no-verify, or data Xcode signed). */
+  /** Undefined when verification was skipped (--no-verify, or --environment Xcode). */
   verification?: {
     ok: boolean;
     root?: string;
@@ -64,6 +69,10 @@ export interface DecodeOptions {
   /** Leave Apple Root CA - G3 out of the trusted roots. */
   withoutAppleRoot?: boolean;
   bundleId?: string;
+  /**
+   * Fail unless the data is from this environment. "Xcode" also skips verification, as Apple's
+   * SignedDataVerifier does when it is set up for the Xcode environment, and reports it.
+   */
   environment?: string;
 }
 
@@ -92,6 +101,8 @@ const FIXES: Record<DecodeProblemCode, string> = {
     'The data is from another environment: Sandbox and Production data need separate handling.',
   'deep-payload':
     'App Store payloads are a few levels deep, so this one was not made by the App Store. Do not trust its content.',
+  'not-verified':
+    'Xcode signs StoreKit Testing data with its own key, so nothing proves where it came from. Use it only in tests; a server must not accept environment Xcode.',
   'unread-jws':
     'App Store data holds signed values only in those fields. Decode each value on its own with asnsim decode, and check where this payload came from before trusting it.',
 };
@@ -112,6 +123,7 @@ const API_FIELDS = [
 ] as const;
 
 const MAX_INPUT = 2_000_000;
+const XCODE = 'Xcode';
 const LISTED_UNREAD = 5;
 // App Store payloads are three or four levels deep; a deeper one is shown as a note instead, so
 // no report has to print (and JSON.stringify) arrays nested thousands of levels deep.
@@ -269,10 +281,18 @@ export function decode(input: string, options: DecodeOptions = {}): DecodeResult
       payload,
     };
     const environment = environmentOf(payload);
-    if (environment === 'Xcode') {
-      part.skipped = 'xcode';
-    } else if (options.verify === false) {
+    // The payload's own "environment" never turns the check off: anyone can write "Xcode" in it.
+    if (options.verify === false) {
       part.skipped = 'not-requested';
+    } else if (options.environment === XCODE) {
+      part.skipped = 'xcode';
+      result.problems.push({
+        path,
+        code: 'not-verified',
+        message:
+          'Not verified: --environment Xcode skips the signature and chain checks, as Apple’s SignedDataVerifier does when it is set up for the Xcode environment.',
+        fix: FIXES['not-verified'],
+      });
     } else {
       const verification = verifySignedData(decoded, roots, effectiveDateOf(payload));
       part.verification = summarizeVerification(verification);
@@ -326,9 +346,10 @@ export function decode(input: string, options: DecodeOptions = {}): DecodeResult
     }
   };
   visit(source, token);
-  if (result.parts.some((part) => part.skipped === 'xcode')) {
+  const claimsXcode = result.parts.some((part) => environmentOf(part.payload) === XCODE);
+  if (claimsXcode && options.environment !== XCODE && options.verify !== false) {
     result.notes.push(
-      'Data from Xcode StoreKit Testing (environment Xcode) is signed by Xcode, not the App Store; Apple’s server libraries skip its verification, and so does asnsim.',
+      'The payload says environment Xcode. Data from StoreKit Testing in Xcode is signed by Xcode, not the App Store, so it does not verify; pass --environment Xcode to read it without the checks.',
     );
   }
   result.ok = result.problems.length === 0;

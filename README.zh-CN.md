@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@e8d95c809197327ad089406917f6d6d931f18f02 status=reviewed -->
+<!-- i18n-source: README.md@bd40c7c0b1bac39bdb01bb010e2de9fa100852ea status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -179,7 +179,7 @@ pbpaste | asnsim decode -
 
 decode 对每个 JWS 的检查方式与 Apple 的 `SignedDataVerifier` 在关闭在线检查时相同：三个证书、每个由下一个签发、
 Apple 的两个扩展、在 `signedDate` 时有效、ES256 签名；校验对象是 Apple Root CA - G3（内置）、`.asnsim` 中的测试根证书以及所有 `--root`。吊销检查需要 Apple 的 OCSP 服务器，因此不会执行。
-Xcode 中的 StoreKit Testing 数据由 Xcode 签名；decode 会把它打印出来并跳过验证，Apple 的库也是这样处理的。详情见 [Decode what the App Store sent](docs/guides/decode.md)。
+Xcode 中的 StoreKit Testing 数据由 Xcode 签名，因此无法通过验证；加上 `--environment Xcode` 后，decode 会不经验证打印它，并报告为未验证，因为 Apple 的验证器也只在配置为 Xcode 环境时才跳过验证。详情见 [Decode what the App Store sent](docs/guides/decode.md)。
 
 ### 在 JavaScript 中使用
 
