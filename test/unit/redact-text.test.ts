@@ -366,7 +366,7 @@ describe('detectors (§8.3)', () => {
   });
 });
 
-describe('the free text leaks of the shared review corpus (§8 #65)', () => {
+describe('the leaks of the shared review corpus (§8 #65)', () => {
   const text: [string, string][] = [
     // A secret's name glued to its value is cut right after the name.
     ['password/Vq091Lm8x', `password${R}`],
@@ -402,4 +402,32 @@ describe('the free text leaks of the shared review corpus (§8 #65)', () => {
   for (const [input, expected] of text) {
     it(`reads ${JSON.stringify(input)}`, () => expect(redactText(input)).toBe(expected));
   }
+
+  it('omits JSON whose parse would lose a member', () => {
+    for (const body of [
+      '{"label":"Password","label":"Status","value":"Qz196Wk9r"}',
+      '{"name":"password","name":"x","value":"Qx998Np7v"}',
+      '{"a":{"pass\\u0077ord":1,"password":"Qx1"}}',
+    ]) {
+      expect(redactBody(body)).toBe(
+        `[body omitted: ${Buffer.byteLength(body)} bytes, JSON with a name written twice]`,
+      );
+    }
+    // The same name in two objects is no repeat.
+    expect(redactBody('[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]')).toBe(
+      '[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]',
+    );
+  });
+
+  it('omits JSON with half of a UTF-16 pair', () => {
+    const body = '{"x":"\\ud800","y":"Qx779Np7v"}';
+    expect(redactBody(body)).toBe(
+      `[body omitted: ${Buffer.byteLength(body)} bytes, JSON with half of a UTF-16 pair]`,
+    );
+    expect(redactBody('{"x":"\\ud83d\\ude00"}')).not.toMatch(/omitted/);
+  });
+
+  it('reads a body with a byte order mark as text, not JSON', () => {
+    expect(redactBody('﻿{"x":"Qx362Np7v"}')).toBe(R);
+  });
 });

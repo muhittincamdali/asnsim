@@ -134,9 +134,48 @@ export function redactJson(value: unknown): unknown {
   }
 }
 
+const LONE_SURROGATE = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/;
+
+/**
+ * Why JSON.parse() would not give the body as written, or undefined: a name written twice in one
+ * object, where the last one wins and the first is lost ({"label":"Password","label":"Status",
+ * "value":…}), or a string with half of a UTF-16 pair ("\ud800"), which is no text.
+ */
+function unreadable(json: string): string | undefined {
+  // Per open object or array: the names seen so far, or null for an array.
+  const open: (Set<string> | null)[] = [];
+  let expectName = false;
+  for (const token of json.matchAll(/"(?:[^"\\]|\\.)*"|[{}[\],:]/g)) {
+    const text = token[0];
+    const names = open.at(-1);
+    if (text === '{' || text === '[') {
+      open.push(text === '{' ? new Set() : null);
+      expectName = text === '{';
+    } else if (text === '}' || text === ']') {
+      open.pop();
+      expectName = false;
+    } else if (text === ',') {
+      expectName = names instanceof Set;
+    } else if (text === ':') {
+      expectName = false;
+    } else {
+      const value = JSON.parse(text) as string;
+      if (LONE_SURROGATE.test(value)) return 'JSON with half of a UTF-16 pair';
+      if (expectName && names) {
+        if (names.has(value)) return 'JSON with a name written twice';
+        names.add(value);
+      }
+    }
+  }
+  return undefined;
+}
+
+// White space as JSON has it: a byte order mark or any other space is not JSON.
+const JSON_SPACE = /^[ \t\r\n]+|[ \t\r\n]+$/g;
+
 /** A response body as a report may show it: JSON as JSON, anything else as free text. */
 export function redactBody(body: string): string {
-  const trimmed = body.trim();
+  const trimmed = body.replace(JSON_SPACE, '');
   if (!/^[[{]/.test(trimmed)) return redactText(body);
   let json: unknown;
   try {
@@ -144,6 +183,8 @@ export function redactBody(body: string): string {
   } catch {
     return redactText(body);
   }
+  const problem = unreadable(trimmed);
+  if (problem) return `[body omitted: ${Buffer.byteLength(body)} bytes, ${problem}]`;
   try {
     return JSON.stringify(redactValue(json, 0));
   } catch (error) {
