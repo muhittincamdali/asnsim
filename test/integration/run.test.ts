@@ -298,6 +298,12 @@ describe('runScenario', () => {
     const scenario = loadScenario('trial-renew-refund');
     await expect(runScenario(scenario, { workspace })).rejects.toThrow('--url');
     await expect(runScenario(scenario, { workspace, url: 'nope' })).rejects.toThrow('is not a URL');
+    // A URL that does not parse may still hold a password; the message does not repeat it.
+    const unparsed = runScenario(scenario, { workspace, url: 'http://bob:hunter2@exa mple.com/' });
+    await expect(unparsed).rejects.toThrow('--url <unparsed URL> is not a URL.');
+    await expect(
+      runScenario(scenario, { workspace, url: 'http://bob:hunter2@exa mple.com/' }),
+    ).rejects.not.toThrow(/hunter2|bob/);
     await expect(runScenario(scenario, { workspace, url: 'ftp://x/' })).rejects.toThrow(
       'http or https',
     );
