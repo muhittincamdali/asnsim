@@ -7,6 +7,8 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-28
+
 ### Security
 
 - Names held as values are read without every character that shows nothing: Hangul fillers
@@ -105,6 +107,7 @@ text/plain` answers were shown as free text and JSON.
 - A JavaScript API (`@mcamdali/asnsim`), a TypeDoc site with six guides, examples for Node.js,
   Swift, GitHub Actions and the shell, and terminal demos recorded from the CLI.
 
-[Unreleased]: https://github.com/muhittincamdali/asnsim/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/muhittincamdali/asnsim/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/muhittincamdali/asnsim/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/muhittincamdali/asnsim/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.0
