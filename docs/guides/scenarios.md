@@ -134,6 +134,10 @@ check:
   contains: 'revoked' # or text in the body
 ```
 
+The URL is relative to the webhook URL and must stay on its origin (scheme, host and port); a
+check on another host, port or scheme is refused before anything is sent, so a scenario cannot
+send requests, or your `--header` values, elsewhere.
+
 Placeholders: `{originalTransactionId}`, `{transactionId}`, `{productId}`,
 `{notificationUUID}`, `{appAccountToken}`, `{bundleId}`. `json` matches a subset: every key
 given must be there with that value; arrays must match element by element. Quote the URL in YAML

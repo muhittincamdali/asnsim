@@ -327,19 +327,10 @@ describe('containsJson', () => {
   });
 });
 
-describe('headers', () => {
-  it('sends --header values to the webhook and same-origin checks, not to other hosts', async () => {
-    const other = await server(reply(200, '{}'));
+describe('check URLs', () => {
+  it('send --header values to the webhook and its checks', async () => {
     const webhook = await server(reply(200, '{}'));
-    const scenario = parseScenario(
-      {
-        steps: [
-          { type: 'TEST', check: { url: '/state' } },
-          { type: 'TEST', check: { url: `${other.url}/state` } },
-        ],
-      },
-      'headers',
-    );
+    const scenario = parseScenario({ steps: [{ type: 'TEST', check: { url: '/state' } }] }, 'h');
     const result = await runScenario(scenario, {
       workspace,
       url: `${webhook.url}/asn`,
@@ -349,8 +340,24 @@ describe('headers', () => {
     expect(webhook.received.map((request) => request.headers.authorization)).toEqual([
       'Bearer secret',
       'Bearer secret',
-      'Bearer secret',
     ]);
-    expect(other.received[0]?.headers.authorization).toBeUndefined();
+  });
+
+  it('stay on the webhook’s origin: another host, port or scheme is refused before sending', async () => {
+    const webhook = await server(reply(200, '{}'));
+    const other = await server(reply(200, '{}'));
+    for (const [url, message] of [
+      [`${other.url}/state`, `${other.url} is another`],
+      ['https://example.org/{transactionId}', 'https://example.org is another'],
+      ['file:///etc/passwd', 'file: is another'],
+      ['//example.org/x', 'https://example.org'.replace('https', 'http')],
+    ] as const) {
+      const scenario = parseScenario({ steps: [{ type: 'TEST', check: { url } }] }, 'o');
+      await expect(runScenario(scenario, { workspace, url: `${webhook.url}/asn` })).rejects.toThrow(
+        message,
+      );
+    }
+    expect(webhook.received).toHaveLength(0);
+    expect(other.received).toHaveLength(0);
   });
 });
