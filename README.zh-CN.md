@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -93,7 +93,7 @@ POST 正文与 App Store 发送的相同：`{"signedPayload": "…"}`。JWS 由�
 | 其他载荷         | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`；Advanced Commerce 的 `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` 会打印每一对类型，以及 Apple 对它在访问权限方面含义的说明。背后的数据是
-[catalog/notifications.json](catalog/notifications.json)，一旦它与 Apple 页面上的值不一致，测试就会失败。
+[catalog/notifications.json](catalog/notifications.json)，测试会把它与 2026 年 10 月 28 日读取时 Apple 页面列出的值（作为副本保存在测试中）进行比较；Apple 之后新增的类型或子类型不会被自动发现，要等这份副本更新后才会体现。
 [What asnsim sends](docs/guides/notifications.md) 列出了每条通知会改动哪些字段，以及在 Apple 页面没有给出取值的地方 asnsim 选择了哪些值。
 
 ## 使用方法

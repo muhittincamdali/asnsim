@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -101,8 +101,7 @@ alanlarını içerir.
 | Diğer payload'lar                | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` her çifti, Apple'ın erişim açısından ne anlama geldiğini söylediğiyle birlikte yazdırır. Arkasındaki veri
-[catalog/notifications.json](catalog/notifications.json) dosyasıdır ve Apple'ın sayfalarındaki
-değerlerden farklı olduğunda testler başarısız olur. [What asnsim sends](docs/guides/notifications.md) rehberi,
+[catalog/notifications.json](catalog/notifications.json) dosyasıdır; testler onu, Apple'ın sayfalarının 28 Ekim 2026'da okunduğunda listelediği ve testte bir kopya olarak tutulan değerlerle karşılaştırır. Apple'ın sonradan eklediği bir tür ya da alt tür kendiliğinden yakalanmaz, o kopya güncellendiğinde görünür. [What asnsim sends](docs/guides/notifications.md) rehberi,
 her bildirimin hangi alanları değiştirdiğini ve Apple'ın sayfalarında değer verilmeyen yerlerde asnsim'in hangi değerleri seçtiğini listeler.
 
 ## Kullanım

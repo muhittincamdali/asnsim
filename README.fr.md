@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -100,8 +100,7 @@ et de [JWSRenewalInfoDecodedPayload](https://developer.apple.com/documentation/a
 | Autres payloads              | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT` ; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types` affiche chaque paire avec ce qu'Apple dit qu'elle signifie pour l'accès. Les données qui la sous-tendent se trouvent dans
-[catalog/notifications.json](catalog/notifications.json), et les tests échouent quand elles diffèrent des
-valeurs des pages d'Apple. [What asnsim sends](docs/guides/notifications.md) énumère les champs
+[catalog/notifications.json](catalog/notifications.json), et les tests le comparent aux valeurs que listaient les pages d'Apple lors de leur lecture le 28 octobre 2026, conservées en copie dans le test ; un type ou un sous-type qu'Apple ajoute plus tard n'est pas détecté de lui-même, il apparaît quand cette copie est mise à jour. [What asnsim sends](docs/guides/notifications.md) énumère les champs
 que chaque notification modifie et les valeurs qu'asnsim choisit là où les pages d'Apple n'en donnent aucune.
 
 ## Utilisation

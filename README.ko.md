@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@9262135e1f9f81eff255f1b26ba30a9c3fcaabe4 status=reviewed -->
+<!-- i18n-source: README.md@1fb13db0df730411c4e802dfc83364845f082f93 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -97,7 +97,7 @@ Apple 확장 두 개를 가진 인증서 세 개짜리 체인으로 ES256 서명
 | 기타 페이로드        | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`, Advanced Commerce의 `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE` |
 
 `asnsim types`는 각 쌍을, Apple이 접근 권한 측면에서 그 의미를 어떻게 설명하는지와 함께 출력합니다. 그 바탕이 되는 데이터는
-[catalog/notifications.json](catalog/notifications.json)이며, Apple 페이지의 값과 다르면 테스트가 실패합니다.
+[catalog/notifications.json](catalog/notifications.json)이며, 테스트는 이를 2026년 10월 28일에 읽었을 때 Apple 페이지에 나열된 값(테스트에 사본으로 보관)과 비교합니다. Apple이 나중에 추가한 type이나 subtype은 자동으로 잡히지 않고, 그 사본을 갱신해야 드러납니다.
 [What asnsim sends](docs/guides/notifications.md)에는 각 알림이 바꾸는 필드와, Apple 페이지에 값이 없는 곳에서 asnsim이 고르는 값이 정리되어 있습니다.
 
 ## 사용법

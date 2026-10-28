@@ -116,8 +116,9 @@ and [JWSRenewalInfoDecodedPayload](https://developer.apple.com/documentation/app
 | Other payloads             | `EXTERNAL_PURCHASE_TOKEN` (3), `RESCIND_CONSENT`; Advanced Commerce `METADATA_UPDATE`, `MIGRATION`, `PRICE_CHANGE`     |
 
 `asnsim types` prints each pair with what Apple says it means for access. The data behind it is
-[catalog/notifications.json](catalog/notifications.json), and the tests fail when it differs from
-the values on Apple's pages. [What asnsim sends](docs/guides/notifications.md) lists the fields
+[catalog/notifications.json](catalog/notifications.json), and the tests compare it with the values
+Apple's pages listed when they were read on 28 October 2026, kept as a copy in the test; a type or
+subtype Apple adds later shows up once that copy is updated, not on its own. [What asnsim sends](docs/guides/notifications.md) lists the fields
 each notification changes, and which values asnsim chooses where Apple's pages give none.
 
 ## Usage
