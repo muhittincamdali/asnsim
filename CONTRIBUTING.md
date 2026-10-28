@@ -40,10 +40,12 @@ The Swift example needs Swift 6.4 (its Package.resolved pins packages that need 
   and Apple's pages. `src/catalog.ts` loads and checks it.
 - `src/pki/`: the DER writer and reader, the test chain, Apple Root CA - G3 and the verifier checks.
   `src/jws/`: ES256 compact JWS.
-- `src/sim/`: the customer simulation (`simulation.ts`), its state, products, durations, seeded IDs,
-  the payload writer (`payloads.ts`) and the history of a standalone send (`standalone.ts`).
+- `src/sim/`: the customer simulation (`simulation.ts`) with its timing (`timeline.ts`), purchase
+  and refund rules (`purchases.ts`, `refunds.ts`), its state, products, durations, seeded IDs, the
+  payload writer (`payloads.ts`) and the history of a standalone send (`standalone.ts`).
 - `src/scenario/`: the scenario schema and loader; `scenarios/`: the built-in scenarios.
-- `src/run/`: delivery, the App Store's rules, checks and the findings with their fixes.
+- `src/run/`: a run (`run.ts`), one step (`step.ts`), delivery and the App Store's rules, checks
+  (`check.ts`) and the findings with their fixes.
 - `src/decode/`: the decoder. `src/report/`: the reports. `src/cli/`: arguments and exit codes.
 
 ## Tests
