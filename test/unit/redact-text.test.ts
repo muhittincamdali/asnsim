@@ -238,6 +238,76 @@ describe('names with format characters (SF-ASN-9)', () => {
   });
 });
 
+describe('names split by characters that show nothing (SF-ASN-10)', () => {
+  // Each shows nothing or only marks the letter before it: a zero-width space, the Hangul filler
+  // U+3164, the braille blank, a combining acute accent, the Hangul choseong filler, the
+  // halfwidth Hangul filler, the combining grapheme joiner, a variation selector and a tag space.
+  const splitters = {
+    zwsp: '​',
+    hangul: 'ㅤ',
+    braille: '⠀',
+    mark: '́',
+    choseong: 'ᅟ',
+    halfwidth: 'ﾠ',
+    cgj: '͏',
+    vs16: '️',
+    tag: '\u{E0020}',
+  };
+  const halves = [
+    ['pa', 'ss'],
+    ['s', 'id'],
+    ['p', 'w'],
+    ['pass', 'word'],
+    ['to', 'ken'],
+  ];
+  const shapes: [string, (name: string) => string][] = [
+    ['pair', (name) => JSON.stringify([name, 'hunter2'])],
+    ['label', (name) => JSON.stringify({ label: name, value: 'hunter2' })],
+    ['OptionName', (name) => JSON.stringify({ OptionName: name, OptionValue: 'hunter2' })],
+    [
+      'ParameterKey',
+      (name) =>
+        JSON.stringify({ ParameterKey: `DB_${name.toUpperCase()}`, ParameterValue: 'hunter2' }),
+    ],
+  ];
+  for (const [label, splitter] of Object.entries(splitters)) {
+    for (const [first, second] of halves) {
+      const name = `${first}${splitter}${second}`;
+      for (const [shape, body] of shapes) {
+        it(`hides the value next to ${first}|${second} split by ${label} as ${shape}`, () =>
+          expect(redactBody(body(name))).not.toMatch(/hunter2/));
+      }
+      it(`hides the text after ${first}|${second} split by ${label}`, () => {
+        expect(redactText(`DB_${name}=hunter2`)).not.toMatch(/hunter2/);
+        expect(redactText(`error ${name}: hunter2`)).not.toMatch(/hunter2/);
+      });
+    }
+  }
+
+  // Every reading is also tried with its letters and digits joined, so the two halves of a name
+  // cannot be kept apart by a mix of characters, nor by a visible separator in a held name.
+  const joined = ['pa​ss\u0007word', 'pa-ss', 'p_w', 's.id', 'tóken', 'paㅤss​word'];
+  for (const name of joined) {
+    it(`reads ${JSON.stringify(name)} with its letters joined`, () => {
+      expect(redactBody(JSON.stringify({ OptionName: name, OptionValue: 'hunter2' }))).not.toMatch(
+        /hunter2/,
+      );
+      expect(redactBody(JSON.stringify([name, 'hunter2']))).not.toMatch(/hunter2/);
+    });
+  }
+
+  it('reads a name of these characters alone as controls alone (K11)', () => {
+    expect(redactBody('{"title":"\\u3164","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
+    expect(redactBody('["\\u2800","x"]')).toBe(`["${R}","${R}"]`);
+  });
+
+  it('keeps a value next to a name that names no secret', () => {
+    expect(redactBody('{"OptionName":"sta\\u3164tus","OptionValue":"x"}')).toBe(
+      `{"OptionName":"${R}","OptionValue":"x"}`,
+    );
+  });
+});
+
 describe('detectors (§8.3)', () => {
   // asnsim hides every finding whole, so the masks of the reference package (•••• 1111) are [R].
   const cases: [string, string, string][] = [
@@ -293,5 +363,71 @@ describe('detectors (§8.3)', () => {
       // A key that is not a plain name holds a name, so the other value is hidden too.
       `{"${R}":"${R}","[redacted 2]":"${R}"}`,
     );
+  });
+});
+
+describe('the leaks of the shared review corpus (§8 #65)', () => {
+  const text: [string, string][] = [
+    // A secret's name glued to its value is cut right after the name.
+    ['password/Vq091Lm8x', `password${R}`],
+    ['password.Vq107Lm8x', `password${R}`],
+    ['password,Vq412Lm8x', `password${R}`],
+    ['password(Vq416Lm8x)', `password${R}`],
+    ['token-Qx166Np7v', `token${R}`],
+    ['token_Qx165Np7v', `token${R}`],
+    ["token'Qx161Np7v", `token${R}`],
+    ['sid.Qz427Wk7r', `sid${R}`],
+    ['pin-Qz428Wk7r', `pin${R}`],
+    ['p_w Qx495Np7v', `p_w ${R}`],
+    ['to ken/Qx1Np7v', `to ken${R}`],
+    // ... also in a path, the value of an allowed key included.
+    ['path=/v1/pin/Vq125Lm8x', `path=/v1/pin${R}`],
+    ['GET /reset/password/Qn610Rt7w 200', `GET /reset/password${R}`],
+    ['GET /api/v1/token/Qz340Wk7r/info 200', `GET /api/v1/token${R}`],
+    ['status=200 path=/v1/api-keys/Qx429Np7v', `status=200 path=/v1/api-keys${R}`],
+    // A name with nothing after it in its word is kept whole, as before.
+    ['enter password, then hunter2', `enter password, ${R}`],
+    // An allowed key holds one plain value.
+    ['count=12:30 Qx31Sec', `count=${R}`],
+    ['status=200 count=3', 'status=200 count=3'],
+    // A card number that starts as the value of a key.
+    ['status=4111 1111 1111 1111', `status=${R}`],
+    ['count=4242 4242 4242 4242', `count=${R}`],
+    // A URL that ends in punctuation and a line break may go on, wrapped.
+    ['see https://x.example/a/b.\nQx283Np7v', `see ${R}`],
+    ['see https://x.example/a. Next', 'see https://x.example/a. Next'],
+    // What follows an OpenSSH key type is a key.
+    ['ssh-rsa AAAAB3NzaC1yc2E Jx384Pb8n bob@host', `ssh-rsa ${R}`],
+  ];
+  for (const [input, expected] of text) {
+    it(`reads ${JSON.stringify(input)}`, () => expect(redactText(input)).toBe(expected));
+  }
+
+  it('omits JSON whose parse would lose a member', () => {
+    for (const body of [
+      '{"label":"Password","label":"Status","value":"Qz196Wk9r"}',
+      '{"name":"password","name":"x","value":"Qx998Np7v"}',
+      '{"a":{"pass\\u0077ord":1,"password":"Qx1"}}',
+    ]) {
+      expect(redactBody(body)).toBe(
+        `[body omitted: ${Buffer.byteLength(body)} bytes, JSON with a name written twice]`,
+      );
+    }
+    // The same name in two objects is no repeat.
+    expect(redactBody('[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]')).toBe(
+      '[{"label":"Status","value":"ok"},{"label":"Status","value":"ok"}]',
+    );
+  });
+
+  it('omits JSON with half of a UTF-16 pair', () => {
+    const body = '{"x":"\\ud800","y":"Qx779Np7v"}';
+    expect(redactBody(body)).toBe(
+      `[body omitted: ${Buffer.byteLength(body)} bytes, JSON with half of a UTF-16 pair]`,
+    );
+    expect(redactBody('{"x":"\\ud83d\\ude00"}')).not.toMatch(/omitted/);
+  });
+
+  it('reads a body with a byte order mark as text, not JSON', () => {
+    expect(redactBody('﻿{"x":"Qx362Np7v"}')).toBe(R);
   });
 });

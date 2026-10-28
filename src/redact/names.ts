@@ -79,28 +79,42 @@ export function namesSecret(parts: string[]): boolean {
   return WORD.some((name) => parts.some((word) => isWord(word, name)));
 }
 
-// Control (Cc) and format (Cf) characters: a zero-width space, soft hyphen, word joiner or BOM
-// shows nothing, so "pass\u200Bword" reads as "password" on screen.
-const INVISIBLE = /[\p{Cc}\p{Cf}]/gu;
+// Characters that show nothing, or only mark the letter before them, so "pass\u200Bword",
+// "pass\u3164word" and "to\u0301ken" read as a secret's name on screen: controls (Cc), format
+// characters (Cf), marks (M), the default-ignorable code points (variation selectors, the
+// combining grapheme joiner, tags, Hangul fillers) and the blanks that are none of these (the
+// braille blank U+2800). One set, used wherever a name is read without them.
+const INVISIBLE_SET =
+  '\\p{Cc}\\p{Cf}\\p{M}\\p{Default_Ignorable_Code_Point}\\u115F\\u1160\\u2800\\u3164\\uFFA0';
+/** One character of INVISIBLE_SET, for building other patterns. */
+export const INVISIBLE_CLASS = `[${INVISIBLE_SET}]`;
+const INVISIBLE = new RegExp(INVISIBLE_CLASS, 'gu');
+const ANY_INVISIBLE = new RegExp(INVISIBLE_CLASS, 'u');
+const ONLY_INVISIBLE = new RegExp(`^(?:${INVISIBLE_CLASS}|\\s)+$`, 'u');
 
 /**
- * Whether a name held as a value names a secret (K10, K11): read as written, with its control and
- * format characters left out ("pa\nss", "s\u200Bid"), and in its compatibility form ("ⓟⓘⓝ"),
- * again without them. words() already reads such a character as a space ("Db\nPassword").
+ * Whether a name held as a value names a secret (K10, K11, SF-ASN-10): read as written, in its
+ * compatibility forms (NFKC "ⓟⓘⓝ", NFKD "tóken" as "to\u0301ken"), each also without its
+ * invisible characters ("pa\nss", "s\u200Bid", "pa\u3164ss"), and each of these both word by
+ * word and as its letters and digits joined, so a separator between the halves of a name
+ * ("pa-ss", "p_w") cannot hide it. words() already reads an invisible character as a space
+ * ("Db\nPassword").
  */
 export function heldNameNamesSecret(name: string): boolean {
-  const compatible = name.normalize('NFKC');
-  return [name, name.replace(INVISIBLE, ''), compatible, compatible.replace(INVISIBLE, '')].some(
-    (reading) => namesSecret(words(reading)),
+  return [name, name.normalize('NFKC'), name.normalize('NFKD')].some((form) =>
+    [form, form.replace(INVISIBLE, '')].some((reading) => {
+      const parts = words(reading);
+      return namesSecret(parts) || namesSecret([parts.join('')]);
+    }),
   );
 }
 
 /**
- * A short string of control and format characters and spaces only, with at least one control or
- * format character (K11): "\t", "\uFEFF\u200B".
+ * A short string of invisible characters (INVISIBLE_SET) and spaces only, with at least one
+ * invisible character (K11): "\t", "\uFEFF\u200B", "\u3164".
  */
 export const isOnlyControls = (text: string) =>
-  [...text].length <= 256 && /^[\p{Cc}\p{Cf}\s]+$/u.test(text) && /[\p{Cc}\p{Cf}]/u.test(text);
+  [...text].length <= 256 && ONLY_INVISIBLE.test(text) && ANY_INVISIBLE.test(text);
 
 /** A plain ASCII name (K1): letters, digits, `_ - .` and spaces, at least one letter or digit. */
 export const isPlainName = (name: string) =>

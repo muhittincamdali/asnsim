@@ -35,8 +35,12 @@ async function readBody(response: Response): Promise<string> {
     size += value.length;
   }
   await reader.cancel().catch(() => undefined);
-  return Buffer.concat(chunks).subarray(0, MAX_BODY).toString('utf8');
+  return bodyText(Buffer.concat(chunks));
 }
+
+/** A response body as asnsim keeps it: its first 64 KB, read as UTF-8. */
+export const bodyText = (bytes: Uint8Array) =>
+  Buffer.from(bytes).subarray(0, MAX_BODY).toString('utf8');
 
 interface Cause {
   code?: string;
