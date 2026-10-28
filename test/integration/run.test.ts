@@ -326,3 +326,31 @@ describe('containsJson', () => {
     expect(containsJson({ a: null }, {})).toEqual(['$.a: expected null, got undefined']);
   });
 });
+
+describe('headers', () => {
+  it('sends --header values to the webhook and same-origin checks, not to other hosts', async () => {
+    const other = await server(reply(200, '{}'));
+    const webhook = await server(reply(200, '{}'));
+    const scenario = parseScenario(
+      {
+        steps: [
+          { type: 'TEST', check: { url: '/state' } },
+          { type: 'TEST', check: { url: `${other.url}/state` } },
+        ],
+      },
+      'headers',
+    );
+    const result = await runScenario(scenario, {
+      workspace,
+      url: `${webhook.url}/asn`,
+      headers: { authorization: 'Bearer secret' },
+    });
+    expect(result.ok).toBe(true);
+    expect(webhook.received.map((request) => request.headers.authorization)).toEqual([
+      'Bearer secret',
+      'Bearer secret',
+      'Bearer secret',
+    ]);
+    expect(other.received[0]?.headers.authorization).toBeUndefined();
+  });
+});
