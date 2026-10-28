@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
+<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -212,7 +212,7 @@ console.log(result.ok, result.counts);
 | Apple의 실제 체인(Apple Root CA - G3, WWDR G6, 2025년 receipt signing 인증서)이 decode의 체인 검사를 통과                 | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                            |
 | StoreKit Testing(Xcode 27.1, iOS 27.0 Simulator)의 거래와 갱신 정보를 디코딩                                              | [test/data/xcode](test/data/xcode)                                                                              |
 
-테스트 스위트는 24개 파일, 테스트 442개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있으며, 2026년 10월 28일 Mac(Apple silicon)에서 Node.js 26으로 `npm test`를 실행해 모두 통과했습니다.
+테스트 스위트는 26개 파일, 테스트 708개(단위, 통합, 스냅샷, 엔드투엔드)로 이루어져 있으며, 2026년 10월 28일 Mac(Apple silicon)에서 Node.js 26으로 `npm test`를 실행해 모두 통과했습니다.
 
 ## 데모
 
@@ -226,7 +226,7 @@ console.log(result.ok, result.counts);
 
 2026년 10월 28일 Mac(Apple silicon, M5 Max)에서 Node.js 26.12.1로 각각 일곱 번씩 실행해 측정했으며
 Node.js 시작 시간을 포함합니다. examples/node-receiver를 대상으로 한 `asnsim send --all`(알림 40개, 수신 쪽에서 각각 Apple의 라이브러리로 검증)은
-0.16초에서 0.23초, 중앙값 0.17초가 걸렸고, `--dry-run`을 붙이면 0.11초에서 0.13초가 걸렸습니다.
+0.17초에서 0.20초, 중앙값 0.18초가 걸렸고, `--dry-run`을 붙이면 0.13초에서 0.14초가 걸렸습니다. 측정하는 동안 다른 작업이 함께 돌고 있어 머신의 load average는 11 안팎(18코어)이었습니다.
 
 ## 상태
 
@@ -254,7 +254,7 @@ Node.js 시작 시간을 포함합니다. examples/node-receiver를 대상으로
   테스트 체인에는 OCSP 서버가 없으므로 테스트는 온라인 검사를 끈 상태로 실행합니다.
 - **시나리오 하나에 고객 한 명,** 구독 그룹 하나와 임의 개수의 일회성 구매를 다룹니다.
 - **입력에는 한도가 있습니다.** 시나리오 파일은 1 MB, 500단계까지, decode 입력은 2 MB까지, JWS는 1,000,000자까지,
-  인증서 중첩은 최대 32단계, 각 응답은 처음 64 KB까지만 읽습니다.
+  인증서 중첩은 최대 32단계, 각 응답은 처음 64 KB까지만 읽습니다. decode 입력과 `--root` 파일은 스트림으로 읽으며 2 MB를 넘는 첫 바이트에서 거부합니다. `asnsim decode /dev/zero`는 0.10초에서 0.13초, 메모리 72 MB로 끝납니다(Mac(Apple silicon), Node.js 26).
 
 ## 문서
 

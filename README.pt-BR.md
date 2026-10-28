@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
+<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -217,7 +217,7 @@ console.log(result.ok, result.counts);
 | A cadeia real da Apple (Apple Root CA - G3, WWDR G6, o certificado de assinatura de recibos de 2025) passa nas verificações de cadeia do decode                           | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                          |
 | Uma transação e as informações de renovação do StoreKit Testing (Xcode 27.1, iOS 27.0 Simulator) são decodificadas                                                        | [test/data/xcode](test/data/xcode)                                                                                            |
 
-A suíte tem 442 testes em 24 arquivos (unitários, de integração, de snapshot e de ponta a ponta); todos passaram com `npm test` em 28 de outubro de 2026 em um Mac (Apple silicon) com Node.js 26.
+A suíte tem 708 testes em 26 arquivos (unitários, de integração, de snapshot e de ponta a ponta); todos passaram com `npm test` em 28 de outubro de 2026 em um Mac (Apple silicon) com Node.js 26.
 
 ## Demonstração
 
@@ -231,8 +231,8 @@ A suíte tem 442 testes em 24 arquivos (unitários, de integração, de snapshot
 
 Medido em 28 de outubro de 2026 em um Mac (Apple silicon, M5 Max) com Node.js 26.12.1, sete execuções
 de cada, incluindo a inicialização do Node.js: `asnsim send --all` contra examples/node-receiver (40
-notificações, cada uma verificada pela biblioteca da Apple no receptor) levou de 0,16 a 0,23 segundo,
-mediana 0,17; o mesmo com `--dry-run`, de 0,11 a 0,13 segundo.
+notificações, cada uma verificada pela biblioteca da Apple no receptor) levou de 0,17 a 0,20 segundo,
+mediana 0,18; o mesmo com `--dry-run`, de 0,13 a 0,14 segundo. Durante as execuções, outros trabalhos mantinham a carga média (load average) da máquina perto de 11 (18 núcleos).
 
 ## Status
 
@@ -261,7 +261,7 @@ mediana 0,17; o mesmo com `--dry-run`, de 0,11 a 0,13 segundo.
   a cadeia de teste não tem servidor OCSP, então os testes rodam com elas desativadas.
 - **Um cliente por cenário,** com um grupo de assinatura e qualquer número de compras avulsas.
 - **Entrada limitada.** Arquivos de cenário de até 1 MB e 500 etapas, entrada do decode de até 2 MB, um JWS de até
-  1.000.000 de caracteres, certificados aninhados em no máximo 32 níveis e os primeiros 64 KB de cada resposta.
+  1.000.000 de caracteres, certificados aninhados em no máximo 32 níveis e os primeiros 64 KB de cada resposta. A entrada do decode e os arquivos de `--root` são lidos como fluxo e recusados no primeiro byte além de 2 MB: `asnsim decode /dev/zero` para em 0,10 a 0,13 segundo com 72 MB de memória (Mac (Apple silicon), Node.js 26).
 
 ## Documentação
 

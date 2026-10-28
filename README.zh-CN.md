@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@d8776793741de1ca59d33e396ce2a62f41e12b57 status=reviewed -->
+<!-- i18n-source: README.md@0c7c503bbb941d6838ce83808e35ae955ef56b21 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -203,7 +203,7 @@ console.log(result.ok, result.counts);
 | Apple 的真实证书链（Apple Root CA - G3、WWDR G6、2025 年 receipt signing 证书）通过 decode 的证书链检查                     | [test/unit/verify.test.ts](test/unit/verify.test.ts)                                                                      |
 | 来自 StoreKit Testing（Xcode 27.1、iOS 27.0 Simulator）的一笔交易和续订信息可以解码                                         | [test/data/xcode](test/data/xcode)                                                                                        |
 
-测试套件共有 24 个文件、442 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
+测试套件共有 26 个文件、708 个测试（单元、集成、快照和端到端），2026 年 10 月 28 日在 Mac（Apple 芯片）上用 Node.js 26 运行 `npm test` 全部通过。
 
 ## 演示
 
@@ -215,7 +215,7 @@ console.log(result.ok, result.counts);
 | 一个失败的检查及其修复方法                         | [浅色](docs/media/demo-failure-light.svg) · [深色](docs/media/demo-failure-dark.svg)           |
 | 对 StoreKit Testing 签名的交易运行 `asnsim decode` | [浅色](docs/media/demo-decode-xcode-light.svg) · [深色](docs/media/demo-decode-xcode-dark.svg) |
 
-2026 年 10 月 28 日在 Mac（Apple silicon，M5 Max）上使用 Node.js 26.12.1 测得，每项运行七次，包含 Node.js 启动时间：针对 examples/node-receiver 运行 `asnsim send --all`（40 条通知，接收端用 Apple 的库逐条验证）耗时 0.16 到 0.23 秒，中位数 0.17 秒；加上 `--dry-run` 时为 0.11 到 0.13 秒。
+2026 年 10 月 28 日在 Mac（Apple silicon，M5 Max）上使用 Node.js 26.12.1 测得，每项运行七次，包含 Node.js 启动时间：针对 examples/node-receiver 运行 `asnsim send --all`（40 条通知，接收端用 Apple 的库逐条验证）耗时 0.17 到 0.20 秒，中位数 0.18 秒；加上 `--dry-run` 时为 0.13 到 0.14 秒。测量期间机器上还有其他任务在运行，负载均值（load average）约为 11（18 核）。
 
 ## 状态
 
@@ -237,7 +237,7 @@ console.log(result.ok, result.counts);
 - **是测试根证书，不是 Apple 的。** asnsim 签名的任何内容都无法通过 Apple Root CA - G3 的验证。后端必须在测试中信任 `.asnsim/root.cer`，并且绝不能在 Production 中信任它。
 - **在线检查已关闭。** 开启在线检查时，Apple 的验证器会通过 Apple 的 OCSP 服务器检查吊销情况；测试证书链没有 OCSP 服务器，所以测试要在关闭在线检查的情况下运行。
 - **每个场景只有一位客户，** 包含一个订阅组和任意数量的一次性购买。
-- **输入有上限。** 场景文件最大 1 MB、最多 500 步，decode 输入最大 2 MB，JWS 最多 1,000,000 个字符，证书最多嵌套 32 层，每个响应只读取前 64 KB。
+- **输入有上限。** 场景文件最大 1 MB、最多 500 步，decode 输入最大 2 MB，JWS 最多 1,000,000 个字符，证书最多嵌套 32 层，每个响应只读取前 64 KB。decode 输入和 `--root` 文件以流方式读取，超过 2 MB 的第一个字节即被拒绝：`asnsim decode /dev/zero` 在 0.10 到 0.13 秒内结束，内存 72 MB（Mac（Apple silicon），Node.js 26）。
 
 ## 文档
 
