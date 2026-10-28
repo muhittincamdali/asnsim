@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
+<!-- i18n-source: README.md@96700b9724784fa6daebc2437aeedce047a58e27 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -49,15 +49,14 @@ webhook на библиотеке Apple для Node.js (<code>npm run demo</code
 brew install muhittincamdali/tap/asnsim
 ```
 
-Или через npm из [релиза на GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2); для этого нужен
+Или через npm; для этого нужен
 [Node.js](https://nodejs.org/) 22.12 или новее (версию покажет `node --version`):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
 
-Пакета пока нет в реестре npm; его планируется опубликовать там как `@mcamdali/asnsim`.
-Обе команды устанавливают один и тот же архив релиза.
+Обе команды устанавливают тот же архив, что и [релиз на GitHub](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2).
 
 **2. Создайте тестовую цепочку и сделайте так, чтобы бэкенд доверял ей в тестах.** В папке вашего проекта:
 

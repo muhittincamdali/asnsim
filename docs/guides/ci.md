@@ -10,8 +10,8 @@ instead of keeping one in the repository.
 workflow. Its steps:
 
 ```yaml
-- name: Install asnsim from its GitHub release
-  run: npm install --global https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+- name: Install asnsim from npm
+  run: npm install --global @mcamdali/asnsim@0.1.2
 
 - name: Create the test chain
   run: asnsim init --bundle-id com.example.app

@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
+<!-- i18n-source: README.md@96700b9724784fa6daebc2437aeedce047a58e27 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -49,14 +49,14 @@ Apple の Request a Test Notification エンドポイントが送るのは `TEST
 brew install muhittincamdali/tap/asnsim
 ```
 
-または、[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) から npm でインストールします。この場合は
+または、npm でインストールします。この場合は
 [Node.js](https://nodejs.org/) 22.12 以降が必要です（`node --version` で確認できます）：
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
 
-このパッケージはまだ npm registry にありません。`@mcamdali/asnsim` として公開する予定です。どちらのコマンドも、同じ release の tarball をインストールします。
+どちらのコマンドも、[GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2) と同じ tarball をインストールします。
 
 **2. テスト用の証明書チェーンを作り、バックエンドがテストでそれを信頼するようにします。** プロジェクトのフォルダーで：
 

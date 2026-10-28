@@ -1,4 +1,4 @@
-<!-- i18n-source: README.md@064e2227318fe11006d8584defd9c98001cac064 status=reviewed -->
+<!-- i18n-source: README.md@96700b9724784fa6daebc2437aeedce047a58e27 status=reviewed -->
 <!-- brand:start -->
 
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-dark.svg"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg"><img src="https://raw.githubusercontent.com/muhittincamdali/asnsim/main/.github/brand/banner-light.svg" alt="asnsim: Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."></picture></p>
@@ -49,15 +49,14 @@ Apple의 Node.js 라이브러리로 만든 webhook입니다(<code>npm run demo</
 brew install muhittincamdali/tap/asnsim
 ```
 
-또는 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2)에서 npm으로 설치합니다. 이 경우
+또는 npm으로 설치합니다. 이 경우
 [Node.js](https://nodejs.org/) 22.12 이상이 필요합니다(`node --version`으로 확인할 수 있습니다):
 
 ```sh
-npm i -g https://github.com/muhittincamdali/asnsim/releases/download/v0.1.2/asnsim-0.1.2.tgz
+npm i -g @mcamdali/asnsim
 ```
 
-이 패키지는 아직 npm registry에 없으며, `@mcamdali/asnsim`이라는 이름으로 게시할 계획입니다.
-두 명령 모두 같은 release tarball을 설치합니다.
+두 명령 모두 [GitHub release](https://github.com/muhittincamdali/asnsim/releases/tag/v0.1.2)와 같은 tarball을 설치합니다.
 
 **2. 테스트 인증서 체인을 만들고, 백엔드가 테스트에서 이를 신뢰하게 합니다.** 프로젝트 폴더에서:
 
