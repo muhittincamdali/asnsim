@@ -1,0 +1,31 @@
+name: StoreKitProbe
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget: { iOS: '18.0' }
+targets:
+  StoreKitProbe:
+    type: application
+    platform: iOS
+    sources: [App]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.app
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+        SWIFT_VERSION: '6.0'
+  ProbeTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [ProbeTests]
+    dependencies: [{ target: StoreKitProbe }]
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+        SWIFT_VERSION: '6.0'
+        TEST_HOST: '$(BUILT_PRODUCTS_DIR)/StoreKitProbe.app/StoreKitProbe'
+        BUNDLE_LOADER: '$(TEST_HOST)'
+schemes:
+  StoreKitProbe:
+    build: { targets: { StoreKitProbe: all, ProbeTests: [test] } }
+    test: { targets: [ProbeTests] }
