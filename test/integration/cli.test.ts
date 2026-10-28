@@ -144,6 +144,24 @@ describe('asnsim run', () => {
     }
   });
 
+  it('exits 2, before sending, for a webhook URL with a user name or password', async () => {
+    const before = webhook.received.length;
+    const host = new URL(webhook.url).host;
+    for (const url of [`http://alice:hunter2@${host}/asn`, `http://alice@${host}/asn`]) {
+      for (const args of [
+        ['run', 'trial-renew-refund', '--url', url],
+        ['send', 'TEST', '--url', url],
+      ]) {
+        const result = await asnsim(args, { cwd: project });
+        expect(result.code, args.join(' ')).toBe(2);
+        expect(result.stderr).toContain('must not hold a user name or password');
+        expect(result.stderr).not.toContain('hunter2');
+        expect(result.stdout).toBe('');
+      }
+    }
+    expect(webhook.received).toHaveLength(before);
+  });
+
   it('runs a scenario file with a check', async () => {
     writeFileSync(
       join(project, 'mine.yaml'),

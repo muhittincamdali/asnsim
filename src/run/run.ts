@@ -450,6 +450,13 @@ function checkUrl(options: RunOptions): void {
   if (url.protocol !== 'http:' && url.protocol !== 'https:') {
     throw new ScenarioError(`--url must be http or https, not ${url.protocol}`);
   }
+  // fetch() refuses such a URL, which would show up as a connection failure; the name and
+  // password are not repeated in the message.
+  if (url.username || url.password) {
+    throw new ScenarioError(
+      `--url must not hold a user name or password (user:password@host). Send them as a header: -H 'Authorization: Basic …'.`,
+    );
+  }
 }
 
 function base(name: string, options: RunOptions, clock: Clock, description?: string) {
