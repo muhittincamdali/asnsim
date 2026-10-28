@@ -1,0 +1,8 @@
+description: >-
+  A check that fails on purpose: after a refund the receiver turns access off, and this scenario
+  expects it to stay on, to show what a failed check looks like.
+steps:
+  - type: SUBSCRIBED
+    subtype: INITIAL_BUY
+  - type: REFUND
+    check: { url: '/entitlements/{originalTransactionId}', json: { active: true } }

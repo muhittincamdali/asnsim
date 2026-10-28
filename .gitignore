@@ -12,3 +12,4 @@ examples/**/.build/
 examples/**/.swiftpm/
 examples/**/node_modules/
 .DS_Store
+.asnsim-bodies/
