@@ -1,0 +1,17 @@
+{
+  "notification": {
+    "notificationType": "RENEWAL_EXTENSION",
+    "subtype": "SUMMARY",
+    "notificationUUID": "d14f85a7-b214-4db5-86c1-d6f4b4941319",
+    "summary": {
+      "requestIdentifier": "a66ef406-ab18-4971-a38f-f192645468b5",
+      "environment": "Sandbox",
+      "bundleId": "com.example.app",
+      "productId": "com.example.premium.monthly",
+      "failedCount": 0,
+      "succeededCount": 1
+    },
+    "version": "2.0",
+    "signedDate": 1790931600000
+  }
+}

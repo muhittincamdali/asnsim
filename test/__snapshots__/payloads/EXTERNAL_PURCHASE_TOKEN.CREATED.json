@@ -1,0 +1,16 @@
+{
+  "notification": {
+    "notificationType": "EXTERNAL_PURCHASE_TOKEN",
+    "subtype": "CREATED",
+    "notificationUUID": "20ae8c57-24e1-4eae-abc4-dcc8cf725b6c",
+    "externalPurchaseToken": {
+      "externalPurchaseId": "SANDBOX_442fdb31-4023-4b96-b4a1-c5d7f9e1e934",
+      "tokenCreationDate": 1790845200000,
+      "bundleId": "com.example.app",
+      "tokenExpirationDate": 1822381200000,
+      "tokenType": "SERVICES"
+    },
+    "version": "2.0",
+    "signedDate": 1790845200000
+  }
+}
