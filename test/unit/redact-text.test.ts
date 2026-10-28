@@ -162,6 +162,22 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
     ['K12', '{"title":"ⓟⓘⓝ","v":"1234"}', `{"title":"${R}","v":${R_}}`],
     // A sentence is free text, not a name.
     ['K12', '{"note":"pass: ok, done","id":"7"}', `{"note":"pass: ${R}","id":"7"}`],
+    // K10: a value that names a secret too is still the value of the pair, not a second name.
+    ['K10', '{"label":"Password","value":"Secret2024!"}', `{"label":"Password","value":${R_}}`],
+    ['K10', '{"value":"Secret2024!","label":"Password"}', `{"value":${R_},"label":"Password"}`],
+    ['K10', '{"name":"api_key","value":"livekey"}', `{"name":"api_key","value":${R_}}`],
+    ['K10', '{"Name":"token","Value":"tokenABC"}', `{"Name":"token","Value":${R_}}`],
+    ['K10', '{"field":"pin","value":"pin"}', `{"field":"pin","value":${R_}}`],
+    [
+      'K10',
+      '{"ParameterKey":"DbPassword","ParameterValue":"supersecret"}',
+      `{"ParameterKey":${R_},"ParameterValue":${R_}}`,
+    ],
+    [
+      'K10',
+      '{"OptionName":"DbPassword","Value":"MyPassword1"}',
+      `{"OptionName":${R_},"Value":${R_}}`,
+    ],
   ];
   for (const [rule, body, shown] of cases) {
     it(`${rule} ${body}`, () => expect(redactBody(body)).toBe(shown));
@@ -176,6 +192,17 @@ describe('held names and control characters (§8.2, K10–K12)', () => {
       Value: 'hunter2-c',
     });
     expect(redactBody(body)).not.toMatch(/hunter2/);
+  });
+
+  it('hides a value that names a secret next to the name it belongs to (K10)', () => {
+    const body = JSON.stringify({
+      errors: [
+        { label: 'Password', value: 'Secret2024!' },
+        { name: 'api_key', value: 'livekey' },
+        { ParameterKey: 'DbPassword', ParameterValue: 'supersecret' },
+      ],
+    });
+    expect(redactBody(body)).not.toMatch(/Secret2024|livekey|supersecret/);
   });
 });
 
