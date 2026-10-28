@@ -3,6 +3,7 @@ import { VERSION } from '../version.js';
 import {
   cut,
   type Format,
+  markdownCode,
   markdownText,
   oneLine,
   type Paint,
@@ -104,7 +105,7 @@ function markdown(result: RunResult): string {
   const lines = [`# asnsim: ${markdownText(result.scenario)}`, ''];
   if (result.description) lines.push(markdownText(result.description), '');
   lines.push(
-    `- Webhook: ${result.url ? `\`${oneLine(result.url)}\`` : 'none (dry run)'}`,
+    `- Webhook: ${result.url ? markdownCode(result.url) : 'none (dry run)'}`,
     `- App: \`${result.bundleId}\`, ${result.environment}`,
     `- Dates: ${result.clock === 'live' ? 'each notification dated when it was sent' : 'the scenario’s own'}`,
     `- asnsim ${VERSION}`,

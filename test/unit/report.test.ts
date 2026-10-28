@@ -4,7 +4,7 @@ import { signJws } from '../../src/jws/jws.js';
 import { createTestChain } from '../../src/pki/chain.js';
 import { rows, renderDecode } from '../../src/report/decode.js';
 import { renderRun } from '../../src/report/run.js';
-import { clean, cut, markdownText, oneLine, wrap } from '../../src/report/style.js';
+import { clean, cut, markdownCode, markdownText, oneLine, wrap } from '../../src/report/style.js';
 import type { RunResult } from '../../src/run/run.js';
 import { finding } from '../../src/run/findings.js';
 
@@ -124,5 +124,33 @@ describe('renderDecode with a hostile header', () => {
       expect(text, format).not.toContain('ES256\u001b');
       expect(text, format).toContain('ES256<U+001B>[31m X');
     }
+  });
+});
+
+describe('renderDecode with a hostile payload key', () => {
+  const key = 'a` | <img src=x onerror=alert(1)> | `b';
+  const keys = createTestChain();
+  const token = signJws({ notificationType: 'TEST', [key]: 1 }, keys.signingKey, [
+    keys.signing,
+    keys.intermediate,
+    keys.root,
+  ]);
+
+  it('keeps the key inside its table cell in Markdown', () => {
+    const text = renderDecode(decode(token, { verify: false }), 'markdown');
+    const row = text.split('\n').find((line) => line.includes('onerror'));
+    expect(row).toBe('| a\\` \\| \\<img src=x onerror=alert(1)\\> \\| \\`b | 1 |');
+    // Three unescaped pipes: the two edges and the one between the cells.
+    expect(row?.match(/(?<!\\)\|/g)).toHaveLength(3);
+    expect(text).not.toMatch(/(?<!\\)<img/);
+  });
+
+  it('writes plain names as code spans, and anything with a backtick or pipe escaped', () => {
+    expect(markdownCode('data.signedTransactionInfo')).toBe('`data.signedTransactionInfo`');
+    expect(markdownCode('http://127.0.0.1:3000/asn')).toBe('`http://127.0.0.1:3000/asn`');
+    expect(markdownCode('<b>x</b>')).toBe('`<b>x</b>`');
+    expect(markdownCode('a`b')).toBe('a\\`b');
+    expect(markdownCode('a|b')).toBe('a\\|b');
+    expect(markdownCode('')).toBe('');
   });
 });
