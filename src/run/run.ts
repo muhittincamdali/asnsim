@@ -159,11 +159,15 @@ async function runCheck(
   index: number,
   options: RunOptions,
 ): Promise<CheckResult> {
-  const url = new URL(fillTemplate(check.url, values, index), base).toString();
+  const target = new URL(fillTemplate(check.url, values, index), base);
+  const url = target.toString();
+  // --header values are often credentials for the webhook's host: a check on another host, which
+  // a scenario file can name, does not get them.
+  const sameOrigin = base !== undefined && target.origin === new URL(base).origin;
   const answer = await request(url, {
     method: check.method,
     timeoutMs: options.timeoutMs ?? 10_000,
-    ...(options.headers ? { headers: options.headers } : {}),
+    ...(options.headers && sameOrigin ? { headers: options.headers } : {}),
     ...(options.fetch ? { fetch: options.fetch } : {}),
   });
   const mismatches: string[] = [];
