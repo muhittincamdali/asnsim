@@ -1,0 +1,13 @@
+{
+  "name": "asnsim-docs",
+  "private": true,
+  "description": "Builds the documentation site: the API reference from src/ and the guides from docs/guides/.",
+  "type": "module",
+  "scripts": {
+    "build": "typedoc"
+  },
+  "devDependencies": {
+    "typedoc": "0.28.20",
+    "typescript": "6.0.3"
+  }
+}
