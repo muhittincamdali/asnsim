@@ -1,5 +1,6 @@
 import {
   heldNameNamesSecret,
+  INVISIBLE_CLASS,
   isOnlyControls,
   isPlainName,
   looksSecret,
@@ -26,8 +27,10 @@ class TooDeep extends Error {}
 const isNameField = (key: string) =>
   NAME_FIELDS.has(key.toLowerCase()) || NAME_FIELDS_SHORT.has(key.toLowerCase());
 
-// Punctuation, symbols, spaces and controls at either end of a name ("Password:", "api_key =").
-const NAME_EDGES = /^[\p{P}\p{S}\p{Z}\p{Cc}\p{Cf}]+|[\p{P}\p{S}\p{Z}\p{Cc}\p{Cf}]+$/gu;
+// Punctuation, symbols, spaces and invisible characters at either end of a name ("Password:",
+// "api_key =", "token\u3164").
+const EDGE = `(?:[\\p{P}\\p{S}\\p{Z}]|${INVISIBLE_CLASS})+`;
+const NAME_EDGES = new RegExp(`^${EDGE}|${EDGE}$`, 'gu');
 
 /**
  * A string that is only a name (K12): at most 256 characters, a letter or digit (in compatibility

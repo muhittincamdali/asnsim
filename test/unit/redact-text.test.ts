@@ -238,6 +238,76 @@ describe('names with format characters (SF-ASN-9)', () => {
   });
 });
 
+describe('names split by characters that show nothing (SF-ASN-10)', () => {
+  // Each shows nothing or only marks the letter before it: a zero-width space, the Hangul filler
+  // U+3164, the braille blank, a combining acute accent, the Hangul choseong filler, the
+  // halfwidth Hangul filler, the combining grapheme joiner, a variation selector and a tag space.
+  const splitters = {
+    zwsp: '​',
+    hangul: 'ㅤ',
+    braille: '⠀',
+    mark: '́',
+    choseong: 'ᅟ',
+    halfwidth: 'ﾠ',
+    cgj: '͏',
+    vs16: '️',
+    tag: '\u{E0020}',
+  };
+  const halves = [
+    ['pa', 'ss'],
+    ['s', 'id'],
+    ['p', 'w'],
+    ['pass', 'word'],
+    ['to', 'ken'],
+  ];
+  const shapes: [string, (name: string) => string][] = [
+    ['pair', (name) => JSON.stringify([name, 'hunter2'])],
+    ['label', (name) => JSON.stringify({ label: name, value: 'hunter2' })],
+    ['OptionName', (name) => JSON.stringify({ OptionName: name, OptionValue: 'hunter2' })],
+    [
+      'ParameterKey',
+      (name) =>
+        JSON.stringify({ ParameterKey: `DB_${name.toUpperCase()}`, ParameterValue: 'hunter2' }),
+    ],
+  ];
+  for (const [label, splitter] of Object.entries(splitters)) {
+    for (const [first, second] of halves) {
+      const name = `${first}${splitter}${second}`;
+      for (const [shape, body] of shapes) {
+        it(`hides the value next to ${first}|${second} split by ${label} as ${shape}`, () =>
+          expect(redactBody(body(name))).not.toMatch(/hunter2/));
+      }
+      it(`hides the text after ${first}|${second} split by ${label}`, () => {
+        expect(redactText(`DB_${name}=hunter2`)).not.toMatch(/hunter2/);
+        expect(redactText(`error ${name}: hunter2`)).not.toMatch(/hunter2/);
+      });
+    }
+  }
+
+  // Every reading is also tried with its letters and digits joined, so the two halves of a name
+  // cannot be kept apart by a mix of characters, nor by a visible separator in a held name.
+  const joined = ['pa​ss\u0007word', 'pa-ss', 'p_w', 's.id', 'tóken', 'paㅤss​word'];
+  for (const name of joined) {
+    it(`reads ${JSON.stringify(name)} with its letters joined`, () => {
+      expect(redactBody(JSON.stringify({ OptionName: name, OptionValue: 'hunter2' }))).not.toMatch(
+        /hunter2/,
+      );
+      expect(redactBody(JSON.stringify([name, 'hunter2']))).not.toMatch(/hunter2/);
+    });
+  }
+
+  it('reads a name of these characters alone as controls alone (K11)', () => {
+    expect(redactBody('{"title":"\\u3164","data":"x"}')).toBe(`{"title":"${R}","data":"${R}"}`);
+    expect(redactBody('["\\u2800","x"]')).toBe(`["${R}","${R}"]`);
+  });
+
+  it('keeps a value next to a name that names no secret', () => {
+    expect(redactBody('{"OptionName":"sta\\u3164tus","OptionValue":"x"}')).toBe(
+      `{"OptionName":"${R}","OptionValue":"x"}`,
+    );
+  });
+});
+
 describe('detectors (§8.3)', () => {
   // asnsim hides every finding whole, so the masks of the reference package (•••• 1111) are [R].
   const cases: [string, string, string][] = [
