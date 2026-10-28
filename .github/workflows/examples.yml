@@ -1,0 +1,59 @@
+name: Examples
+
+# Verifies the notifications asnsim writes with Apple's App Store Server Library for Swift
+# (examples/swift-verifier): all 40 notification types, written with --dry-run and checked by
+# SignedDataVerifier with the test root. The Node.js receiver runs in the CI tests.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'catalog/**'
+      - 'examples/swift-verifier/**'
+      - '.github/workflows/examples.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'catalog/**'
+      - 'examples/swift-verifier/**'
+      - '.github/workflows/examples.yml'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  swift-verifier:
+    name: Swift library verifies every type
+    runs-on: macos-15
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+
+      - name: Write every notification type
+        run: |
+          node dist/cli/main.js init
+          node dist/cli/main.js send --all --dry-run --out .asnsim-bodies/all
+
+      - name: Verify them with the Swift library
+        working-directory: examples/swift-verifier
+        run: |
+          swift --version
+          swift run -q VerifyNotification ../../.asnsim/root.cer ../../.asnsim-bodies/all/*.json | tee verified.txt
+          test "$(grep -c ': verified' verified.txt)" = 40

@@ -1,0 +1,19 @@
+{
+  "name": "asnsim",
+  "repository": "muhittincamdali/asnsim",
+  "tagline": {
+    "en": "Signed App Store Server Notifications V2 on your machine: renewals, refunds and grace periods sent to your webhook."
+  },
+  "tags": {
+    "en": ["Notifications V2", "StoreKit", "Signed JWS", "Webhooks"]
+  },
+  "motif": "code",
+  "buttons": ["start", "docs", "guides", "examples"],
+  "links": {
+    "docs": "https://muhittincamdali.github.io/asnsim/",
+    "guides": "docs/guides/",
+    "examples": "examples/"
+  },
+  "languages": ["en", "tr", "zh-CN", "ja", "ko", "es", "de", "fr", "pt-BR", "ru"],
+  "socialTheme": "dark"
+}
