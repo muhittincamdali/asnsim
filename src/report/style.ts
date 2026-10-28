@@ -74,9 +74,16 @@ export function wrap(text: string, width: number, indent = '', start = indent.le
   return lines.map((entry, index) => (index === 0 ? entry : `${indent}${entry}`)).join('\n');
 }
 
-/** Escapes text for a Markdown table cell or paragraph. */
+/**
+ * Escapes text for a Markdown table cell or paragraph: the characters that mark up text, links,
+ * images, entities and strikethrough, and the `://` and `www.` that GitHub turns into a link.
+ * (GitHub links an e-mail address whatever is escaped in it.)
+ */
 export function markdownText(text: string): string {
-  return oneLine(text).replace(/([\\`*_[\]<>|#])/g, '\\$1');
+  return oneLine(text)
+    .replace(/([\\`*_[\]<>|#!()&~])/g, '\\$1')
+    .replace(/:\/\//g, '\\://')
+    .replace(/\b(www)\./gi, '$1\\.');
 }
 
 /**

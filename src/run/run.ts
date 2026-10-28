@@ -479,7 +479,8 @@ function checkUrl(options: RunOptions): void {
   try {
     url = new URL(options.url);
   } catch {
-    throw new ScenarioError(`--url ${options.url} is not a URL.`);
+    // The text is not repeated: what failed to parse may still hold a user name and password.
+    throw new ScenarioError('--url <unparsed URL> is not a URL.');
   }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') {
     throw new ScenarioError(`--url must be http or https, not ${url.protocol}`);

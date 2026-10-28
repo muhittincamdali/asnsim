@@ -26,12 +26,16 @@ JSON report layout (`schemaVersion` 0) may change in a minor version.
   `{"ParameterKey":"DbPassword","ParameterValue":"supersecret"}`).
 - Names are read without zero-width spaces, soft hyphens, word joiners and byte order marks, and a
   string of those characters alone hides the values next to it, as a string of controls does.
+- A `--url` that does not parse is no longer repeated in the usage error, which printed any user
+  name and password in it; the message says `<unparsed URL>`.
 
 ### Fixed
 
 - A JSON answer with several hidden member names keeps all of them (`[redacted]`,
   `[redacted 2]`, …) instead of one.
 - Reports write U+2028 and U+2029 as code points, like the other control characters.
+- Markdown reports escape `! ( ) & ~` and bare URLs in decoded text, so it no longer renders as an
+  image, a link, an entity or strikethrough.
 
 ## [0.1.0] - 2026-10-28
 
