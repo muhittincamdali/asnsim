@@ -1,0 +1,41 @@
+billing-retry-expired
+  A renewal fails without a grace period and the 60-day billing retry ends without payment.
+  SUBSCRIBED/INITIAL_BUY → DID_FAIL_TO_RENEW → EXPIRED/BILLING_RETRY
+
+billing-retry-grace-recovery
+  A renewal fails, Billing Grace Period runs out, then billing retry recovers the subscription.
+  SUBSCRIBED/INITIAL_BUY → DID_RENEW → DID_FAIL_TO_RENEW/GRACE_PERIOD → GRACE_PERIOD_EXPIRED →
+  DID_RENEW/BILLING_RECOVERY
+
+cancel-expire-winback
+  The customer turns off auto-renew, the subscription expires, and a win-back offer brings them
+  back.
+  SUBSCRIBED/INITIAL_BUY → DID_CHANGE_RENEWAL_STATUS/AUTO_RENEW_DISABLED → EXPIRED/VOLUNTARY →
+  SUBSCRIBED/RESUBSCRIBE
+
+consumable-refund-dispute
+  Coins bought, a refund request with a consumption request, the refund, then the refund reversed
+  after a dispute.
+  ONE_TIME_CHARGE → CONSUMPTION_REQUEST → REFUND → REFUND_REVERSED
+
+family-sharing-revoke
+  A family member gets the subscription through Family Sharing, then loses it.
+  SUBSCRIBED/INITIAL_BUY → REVOKE
+
+price-increase-accepted
+  A price increase that needs consent, the customer consents, and the next renewal charges the new
+  price.
+  SUBSCRIBED/INITIAL_BUY → PRICE_INCREASE/PENDING → PRICE_INCREASE/ACCEPTED → DID_RENEW
+
+price-increase-declined
+  A price increase that needs consent goes unanswered and the subscription expires at renewal.
+  SUBSCRIBED/INITIAL_BUY → PRICE_INCREASE/PENDING → EXPIRED/PRICE_INCREASE
+
+trial-renew-refund
+  A one-week free trial, its first paid renewal, then a refund of that renewal.
+  SUBSCRIBED/INITIAL_BUY → DID_RENEW → REFUND
+
+upgrade-downgrade
+  Basic to Premium at once, then a downgrade back to Basic that waits for the next renewal.
+  SUBSCRIBED/INITIAL_BUY → DID_CHANGE_RENEWAL_PREF/UPGRADE → DID_CHANGE_RENEWAL_PREF/DOWNGRADE →
+  DID_RENEW

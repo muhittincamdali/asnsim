@@ -1,5 +1,6 @@
 import { type CatalogEvent, findEvent } from '../catalog.js';
 import { DEFAULT_PRODUCTS, type Product } from './products.js';
+import { SimulationError } from './simulation.js';
 import type { StepInput } from './step.js';
 
 // `asnsim send DID_RENEW/BILLING_RECOVERY` sends one notification, but the notification only makes
@@ -10,11 +11,8 @@ import type { StepInput } from './step.js';
 const KEY = (type: string, subtype: string | null) => (subtype ? `${type}/${subtype}` : type);
 
 const SUBSCRIBE: StepInput = { type: 'SUBSCRIBED', subtype: 'INITIAL_BUY' };
-const SUBSCRIBE_BASIC: StepInput = {
-  type: 'SUBSCRIBED',
-  subtype: 'INITIAL_BUY',
-  product: 'com.example.basic.monthly',
-};
+/** Stands for a subscription to the lowest level of the group, so that an upgrade has a target. */
+const SUBSCRIBE_LOWEST: StepInput = { type: 'SUBSCRIBED', subtype: 'INITIAL_BUY' };
 
 const HISTORY: Record<string, StepInput[]> = {
   'SUBSCRIBED/INITIAL_BUY': [],
@@ -36,9 +34,9 @@ const HISTORY: Record<string, StepInput[]> = {
     { type: 'DID_CHANGE_RENEWAL_STATUS', subtype: 'AUTO_RENEW_DISABLED' },
   ],
   DID_CHANGE_RENEWAL_STATUS: [SUBSCRIBE, { type: 'PRICE_INCREASE', subtype: 'PENDING' }],
-  'DID_CHANGE_RENEWAL_PREF/UPGRADE': [SUBSCRIBE_BASIC],
+  'DID_CHANGE_RENEWAL_PREF/UPGRADE': [SUBSCRIBE_LOWEST],
   DID_CHANGE_RENEWAL_PREF: [SUBSCRIBE, { type: 'DID_CHANGE_RENEWAL_PREF', subtype: 'DOWNGRADE' }],
-  'OFFER_REDEEMED/UPGRADE': [SUBSCRIBE_BASIC],
+  'OFFER_REDEEMED/UPGRADE': [SUBSCRIBE_LOWEST],
   'PRICE_INCREASE/ACCEPTED': [SUBSCRIBE, { type: 'PRICE_INCREASE', subtype: 'PENDING' }],
   REFUND_REVERSED: [SUBSCRIBE, { type: 'REFUND' }],
   REVOKE: [{ ...SUBSCRIBE, ownership: 'FAMILY_SHARED' }],
@@ -76,7 +74,7 @@ export function standaloneSteps(
     ? products.find((entry) => entry.id === options.product)
     : undefined;
   if (options.product && !product) {
-    throw new Error(
+    throw new SimulationError(
       `Unknown product ${options.product}. Products: ${products.map((entry) => entry.id).join(', ')}.`,
     );
   }
@@ -91,10 +89,20 @@ export function standaloneSteps(
   }
   // A named subscription is the one the history subscribes to, unless the event moves to it.
   const moves = event.subtype === 'UPGRADE' || event.subtype === 'DOWNGRADE';
-  const history = (HISTORY[KEY(event.type, event.subtype)] ?? [SUBSCRIBE]).map((entry) =>
-    entry.type === 'SUBSCRIBED' && product?.type === 'auto-renewable' && !moves
+  const lowest = lowestLevel(products);
+  const history = (HISTORY[KEY(event.type, event.subtype)] ?? [SUBSCRIBE]).map((entry) => {
+    if (entry === SUBSCRIBE_LOWEST) return lowest ? { ...entry, product: lowest.id } : entry;
+    return entry.type === 'SUBSCRIBED' && product?.type === 'auto-renewable' && !moves
       ? { ...entry, product: product.id }
-      : entry,
-  );
+      : entry;
+  });
   return { event, steps: [...history, step] };
+}
+
+/** The lowest level (highest number) of the first subscription group. */
+function lowestLevel(products: Product[]): Product | undefined {
+  const first = products.find((entry) => entry.type === 'auto-renewable');
+  return products
+    .filter((entry) => entry.type === 'auto-renewable' && entry.group === first?.group)
+    .sort((a, b) => (b.level ?? 1) - (a.level ?? 1))[0];
 }

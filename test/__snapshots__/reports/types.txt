@@ -1,0 +1,108 @@
+SUBSCRIBED/INITIAL_BUY                         grant      The customer bought a subscription in the
+                                                          group for the first time, or first got it
+                                                          through Family Sharing.
+SUBSCRIBED/RESUBSCRIBE                         grant      The customer subscribed again to the same
+                                                          or another subscription of the group, or
+                                                          got it again through Family Sharing.
+DID_RENEW                                      grant      The active subscription renewed for a new
+                                                          period.
+DID_RENEW/BILLING_RECOVERY                     grant      A subscription that failed to renew was
+                                                          billed in the retry period and renews
+                                                          again.
+DID_FAIL_TO_RENEW/GRACE_PERIOD                 keep       The renewal failed on a billing issue and
+                                                          the subscription is in Billing Grace
+                                                          Period: keep providing the service.
+DID_FAIL_TO_RENEW                              end        The renewal failed on a billing issue with
+                                                          no grace period: the App Store retries
+                                                          billing for up to 60 days and you can stop
+                                                          the service.
+GRACE_PERIOD_EXPIRED                           end        Billing Grace Period ended without a
+                                                          renewal; billing retry continues and you
+                                                          can turn off access.
+EXPIRED/VOLUNTARY                              end        The subscription expired after the
+                                                          customer turned off auto-renewal.
+EXPIRED/BILLING_RETRY                          end        The billing retry period ended without a
+                                                          successful renewal.
+EXPIRED/PRICE_INCREASE                         end        The customer did not consent to a price
+                                                          increase that needed consent.
+EXPIRED/PRODUCT_NOT_FOR_SALE                   end        The product was not for sale when the
+                                                          subscription tried to renew.
+EXPIRED                                        end        The subscription expired for another
+                                                          reason.
+DID_CHANGE_RENEWAL_STATUS/AUTO_RENEW_DISABLED  unchanged  The customer turned off auto-renewal, or
+                                                          the App Store did after a refund request;
+                                                          access lasts to the end of the period.
+DID_CHANGE_RENEWAL_STATUS/AUTO_RENEW_ENABLED   unchanged  The customer turned auto-renewal back on.
+DID_CHANGE_RENEWAL_STATUS                      unchanged  Listed in Apple's table without a subtype:
+                                                          the customer cancelled after a price
+                                                          increase notice or consent request.
+DID_CHANGE_RENEWAL_PREF/UPGRADE                grant      The customer upgraded within the group:
+                                                          the new product starts now with a new
+                                                          period and a prorated refund of the old
+                                                          one.
+DID_CHANGE_RENEWAL_PREF/DOWNGRADE              unchanged  The customer downgraded within the group:
+                                                          the change takes effect at the next
+                                                          renewal.
+DID_CHANGE_RENEWAL_PREF                        unchanged  The customer went back to the current
+                                                          product, cancelling a downgrade.
+OFFER_REDEEMED                                 unchanged  A customer with an active subscription
+                                                          redeemed a promotional offer or offer code
+                                                          for it.
+OFFER_REDEEMED/UPGRADE                         grant      The customer redeemed an offer to upgrade;
+                                                          it takes effect now.
+OFFER_REDEEMED/DOWNGRADE                       unchanged  The customer redeemed an offer to
+                                                          downgrade; it takes effect at the next
+                                                          renewal.
+PRICE_INCREASE/PENDING                         unchanged  The customer was told of a price increase
+                                                          that needs consent and has not answered.
+PRICE_INCREASE/ACCEPTED                        unchanged  The customer consented to the price
+                                                          increase, or was told of one that needs no
+                                                          consent.
+REFUND                                         revoke     The App Store refunded the transaction;
+                                                          revocationDate and revocationReason say
+                                                          when and why.
+REFUND_DECLINED                                unchanged  The App Store declined a refund request.
+REFUND_REVERSED                                reinstate  The App Store reversed a refund after a
+                                                          dispute: reinstate what the refund took
+                                                          away.
+CONSUMPTION_REQUEST                            unchanged  The customer asked for a refund and the
+                                                          App Store asks for consumption
+                                                          information; consumptionRequestReason
+                                                          gives their reason.
+REVOKE                                         revoke     A purchase the customer had through Family
+                                                          Sharing, or through an organization that
+                                                          assigned it, is no longer available.
+RENEWAL_EXTENDED                               grant      The App Store extended the renewal date of
+                                                          one subscription at your request.
+RENEWAL_EXTENSION/SUMMARY                      unchanged  The App Store finished extending renewal
+                                                          dates for all eligible subscribers; the
+                                                          payload has a summary instead of data.
+RENEWAL_EXTENSION/FAILURE                      unchanged  Extending the renewal date failed for one
+                                                          subscription.
+ONE_TIME_CHARGE                                grant      The customer bought a consumable,
+                                                          non-consumable or non-renewing
+                                                          subscription, or got a non-consumable
+                                                          through Family Sharing.
+TEST                                           unchanged  Sent only when you call Request a Test
+                                                          Notification, to check that your server
+                                                          receives notifications.
+EXTERNAL_PURCHASE_TOKEN/UNREPORTED             unchanged  Apple created an external purchase token
+                                                          for the app but received no report for it.
+EXTERNAL_PURCHASE_TOKEN/CREATED                unchanged  Apple created a custom link token for the
+                                                          app.
+EXTERNAL_PURCHASE_TOKEN/ACTIVE_TOKEN_REMINDER  unchanged  Monthly reminder that a custom link token
+                                                          is still active.
+RESCIND_CONSENT                                unchanged  A parent or guardian withdrew consent for
+                                                          a child's use of the app; the payload has
+                                                          appData with a signed app transaction.
+METADATA_UPDATE                                unchanged  Advanced Commerce API: you changed a
+                                                          subscription's metadata with Change
+                                                          Subscription Metadata.
+MIGRATION                                      unchanged  Advanced Commerce API: you migrated a
+                                                          subscription with Migrate a Subscription
+                                                          to Advanced Commerce API.
+PRICE_CHANGE                                   unchanged  Advanced Commerce API: you called Change
+                                                          Subscription Price.
+
+40 notifications, from Apple's pages read 2026-10-28:
+https://developer.apple.com/documentation/appstoreservernotifications/notificationtype

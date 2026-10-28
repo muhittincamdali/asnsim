@@ -38,10 +38,18 @@ async function readBody(response: Response): Promise<string> {
   return Buffer.concat(chunks).subarray(0, MAX_BODY).toString('utf8');
 }
 
+interface Cause {
+  code?: string;
+  message?: string;
+  errors?: Cause[];
+}
+
+/** The network error under fetch's "fetch failed": ECONNREFUSED, ENOTFOUND, … */
 function describe(error: unknown): string {
-  const cause = (error as { cause?: { code?: string; message?: string } }).cause;
-  if (cause?.code) return `${cause.code}${cause.message ? `: ${cause.message}` : ''}`;
-  return (error as Error).message;
+  const cause = (error as { cause?: Cause }).cause;
+  const inner = cause?.code ? cause : cause?.errors?.find((entry) => entry.code);
+  if (inner?.code) return `${inner.code}${inner.message ? `: ${inner.message}` : ''}`;
+  return [(error as Error).message, cause?.message].filter(Boolean).join(': ');
 }
 
 export interface RequestOptions {
