@@ -3,7 +3,7 @@
 // Webhook answers and decoded payloads come from outside: a response body or a field of a pasted
 // payload could carry terminal escape sequences or bidirectional controls. clean() replaces every
 // control character except the line breaks a block may keep, so nothing the report prints can
-// move the cursor, change colours or reorder text.
+// rewrite the screen, change colours or reorder text.
 
 export const FORMATS = ['tty', 'text', 'markdown', 'json'] as const;
 export type Format = (typeof FORMATS)[number];
